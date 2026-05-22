@@ -20,8 +20,10 @@ describe("init integration", () => {
     expect(fs.existsSync(path.join(tmp, "specx", "discovery", "01-problem-statement.md"))).toBe(true);
     expect(fs.existsSync(path.join(tmp, ".cursor", "rules", "specx.mdc"))).toBe(true);
     const rules = fs.readFileSync(path.join(tmp, ".cursor", "rules", "specx.mdc"), "utf8");
-    expect(rules).toContain("/specx:propose");
-    expect(rules).toContain("Spec-Driven Development");
+    expect(rules).toContain("specx-propose");
+    expect(rules).toContain("reference.md");
+    expect(fs.existsSync(path.join(tmp, ".cursor", "skills", "specx-sdd", "reference.md"))).toBe(true);
+    expect(fs.existsSync(path.join(tmp, ".cursor", "skills", "specx-discover", "phases.md"))).toBe(true);
     expect(fs.existsSync(path.join(tmp, ".specx", "AGENTS.md"))).toBe(true);
     expect(fs.existsSync(path.join(tmp, ".specx", "commands", "propose.md"))).toBe(true);
     expect(fs.readFileSync(path.join(tmp, ".specx", "commands", "build.md"), "utf8")).toContain(

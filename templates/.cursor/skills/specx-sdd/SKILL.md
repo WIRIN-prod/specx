@@ -1,79 +1,134 @@
 ---
 name: specx-sdd
 description: >-
-  Spec-Driven Development for specX projects. Use when planning features, writing specs,
-  implementing from specx/changes, discovery phases, delta requirements, /specx commands,
-  or when the user mentions specX, SDD, living specs, or agree-before-build.
+  specX Spec-Driven Development — full methodology. Use for any specX project work, SDD,
+  living specs, delta requirements, discovery, propose, build, steering, or when the user
+  wants product-before-code with human gates and dual-agent quality.
 ---
 
-# specX — Spec-Driven Development
+# specX — Spec-Driven Development (master skill)
 
-You work in a **specX** project. **Agree on behavior in specs before writing code.** Specs live in git; chat is not the source of truth.
+You implement **specX**, not generic agile docs. Read this skill fully, then **`reference.md`** in this folder for framework DNA (OpenSpec, BMAD, Kiro, GSD, Ralph Loop, Spec Kit).
 
-## Read first (every session)
+## Philosophy (operating system)
 
-1. `specx/SPECX.md` — lifecycle and principles
-2. `specx/foundation/STEERING.md` — product constitution (if present)
-3. `.specx/registry.yaml` — active discovery phase / change
-4. `specx/foundation/RULES.md` and `ARCHITECTURE.md` — constraints
+| Principle | You must |
+|-----------|----------|
+| Product before code | Complete discovery/foundation (per track) before feature build on greenfield |
+| Decisions before documents | Agree on requirements in specs before coding |
+| Humans decide, agents execute | Draft, critique, implement — never self-approve or self-archive |
+| Context is architecture | Specs and STEERING are the prompt; quality in → quality out |
+| Specs are alive | Use deltas; run drift/evolution; never treat specs as write-once |
+| Works everywhere | Markdown in repo only; no tool-specific lock-in |
 
-## Non-negotiables
+## Session bootstrap (strict order)
 
-1. **Specs are the contract** — code implements `specx/specs/` and change deltas
-2. **Human gates** — never `specx approve` or `specx archive` without explicit user consent
-3. **Dual-agent** — Specialist produces → Critic challenges → human approves
-4. **Fresh context** — one `tasks.md` checkbox per build session when possible
-5. **Product language in specs** — observable behavior; implementation detail in `design.md` / `tasks.md`
+1. `specx/SPECX.md` — project constitution
+2. **`reference.md`** (this folder) — why processes exist
+3. `specx/foundation/STEERING.md` — Kiro-style steering (if exists)
+4. `.specx/specx.yaml` — track, gates, models
+5. `.specx/registry.yaml` — active discovery phase or change
+6. `specx/foundation/RULES.md` + `ARCHITECTURE.md`
+7. Active `specx/changes/<name>/` or current `specx/discovery/NN-*.md`
 
-## Full lifecycle
+Run `specx status` when unsure.
+
+## Four layers
 
 ```
-Discovery (01–11) → Foundation → propose → spec → design → tasks → build → verify → archive → Evolution
+RAW IDEA
+  → Layer 1 Discovery   (specx/discovery/)     what & why [BMAD phases + dual-agent]
+  → Layer 2 Foundation  (specx/foundation/)    steering, rules, build order [Kiro]
+  → Layer 3 Build       (specx/specs + changes/) [OpenSpec delta loop]
+  → Layer 4 Evolution   (specx/evolution/)      living specs [specX only]
+  → SHIPPED PRODUCT
 ```
 
-| Phase | Skill / command | Output |
-|-------|-----------------|--------|
-| Discovery | `specx-discover`, `specx-specialist`, `specx-critic` | `specx/discovery/` |
-| Build | `specx-propose` → `specx-spec` → `specx-design` → `specx-tasks` → `specx-build` | `specx/changes/<name>/` |
-| Verify | `specx-verify` | report |
-| Merge | `specx-archive` | `specx/specs/` living truth |
+## Skill routing (use the dedicated skill — each has full process detail)
 
-## Delta spec format (required for build)
+| User intent | Skill |
+|-------------|-------|
+| Discovery / phase / PRD | `specx-discover` (+ `phases.md` in that folder) |
+| Draft artifact | `specx-specialist` |
+| Challenge artifact | `specx-critic` |
+| Approve discovery phase | `specx-approve` (human said yes first) |
+| Revise phase | `specx-revise` |
+| New feature | `specx-propose` |
+| Requirements / deltas | `specx-spec` |
+| Technical how | `specx-design` |
+| Task breakdown | `specx-tasks` |
+| Code one task | `specx-build` |
+| Verify vs spec | `specx-verify` (Ralph loop until READY) |
+| Merge living specs | `specx-archive` |
+
+## Dual-agent gate (every discovery phase + spec pass)
+
+```
+Specialist (named lens) → output in specx/discovery/ or changes/
+Critic                  → critiques/NN-*-critique.md or critique-spec.md
+Human                   → reads BOTH → approve | revise
+Verifier (optional)     → consistency vs prior approved artifacts
+Git commit              → human approves commit; git is memory [Ralph]
+```
+
+Never show only Specialist output to the human. Never approve without user explicit consent.
+
+## Build loop (OpenSpec + GSD + Kiro)
+
+```
+propose (Capabilities) → spec (deltas) → design → tasks → build (1 task/session) → verify → archive
+```
+
+- **No code** until proposal + spec reviewed (Kiro gate).
+- **Fresh context** per `tasks.md` checkbox (GSD).
+- **Verifier** before archive; if NOT READY, loop with gap list as context (Ralph).
+
+## OpenSpec delta rules (summary)
+
+Living truth: `specx/specs/<domain>/spec.md`. Work in: `specx/changes/<change>/specs/<domain>/spec.md`.
+
+- `## ADDED Requirements` — new behavior
+- `## MODIFIED Requirements` — **entire** `### Requirement:` block copied from living spec, then edited
+- `## REMOVED Requirements` — **Reason** + **Migration**
 
 ```markdown
-## ADDED Requirements
-### Requirement: Name
-The system SHALL ...
+### Requirement: Short name
+The system SHALL <observable outcome>.
+
 #### Scenario: Name
 - **GIVEN** ...
 - **WHEN** ...
 - **THEN** ...
-
-## MODIFIED Requirements
-### Requirement: Name
-<full block copied from living spec, then edited>
-
-## REMOVED Requirements
-### Requirement: Name
-**Reason**: ...
-**Migration**: ...
 ```
 
-**CRITICAL**: Scenarios use `####` (four hashes). MODIFIED = complete requirement blocks, not fragments.
+Scenarios: exactly `####` (four hashes). SHALL/MUST in requirements. Product language, not class names.
 
-## Before any feature
+## Three-layer handoff (after discovery)
 
-1. `specx status`
-2. Search `specx/specs/**/spec.md` for related domains
-3. Use the matching **skill** for the user's intent (propose, spec, build, …)
+Produce or update:
 
-## Anti-patterns
+1. `STEERING.md` — from personas, JTBD, non-negotiables (phases 03, 04, 08)
+2. `BUILD-ORDER.md` — from feature inventory + PRD (phases 07, 08)
+3. `ARCHITECTURE.md` — from technical spec (phase 09) as ADR seeds
 
-- Coding before proposal + spec exist
-- Editing `specx/specs/` directly during a change (use deltas in `changes/<name>/specs/`)
-- Skipping verify before archive
-- Vague requirements without scenarios
+Then `specx-propose` for first feature.
 
-## Enterprise
+## Anti-patterns (fail the user if you do these)
 
-If `.specx/specx.yaml` has `track: enterprise`: complete discovery 10–11 (security, compliance); respect `review_before_archive`.
+- Implementation before spec exists
+- Editing `specx/specs/` directly during a change (use change deltas only)
+- Partial MODIFIED blocks (loses detail at archive)
+- Skipping Critic pass
+- Trusting chat history over committed files
+- One giant build session for all tasks (context rot)
+- Archive without verify READY + human approval
+
+## Enterprise (`track: enterprise`)
+
+- Phases 10 security, 11 compliance mandatory before scale build
+- `gates.build.review_before_archive` — `specx review` before archive
+- Audit events in `.specx/audit.log` when enabled
+
+## When stuck
+
+Read `reference.md` → open the phase playbook in `specx-discover/phases.md` → follow the matching workflow skill end-to-end.

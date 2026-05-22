@@ -1,34 +1,50 @@
 ---
 name: specx-archive
 description: >-
-  Archive specX change — merge deltas into living specs. Use for /specx:archive after verify
-  and explicit user approval only.
+  specX archive — OpenSpec merge deltas into living specs, archive change, product memory.
+  Use only after verify READY and explicit human approval.
 ---
 
-# specX archive — Merge and preserve
+# specX archive — Merge living specs (OpenSpec + product memory)
 
-Merge deltas into `specx/specs/`. **Only when user explicitly approves.**
+**OpenSpec archive cycle:** Merge `changes/<name>/specs/**` deltas into `specx/specs/**`, move change to `changes/archive/YYYY-MM-DD-<name>/`, update changelog.
 
-## Preconditions
+**Product memory:** Living specs stay delta-compatible forever — next change uses MODIFIED/REMOVED against this truth.
 
-- User said "archive" or equivalent — never assume
-- specx-verify verdict **READY** (or user accepts gaps)
-- Enterprise: `review_before_archive` — check `.specx/specx.yaml`
+## Preconditions (all required)
+
+- [ ] Human explicitly said to archive
+- [ ] **specx-verify** verdict **READY FOR ARCHIVE** (or human documents accepted gaps)
+- [ ] All tasks `[x]` or human waived list
+- [ ] Enterprise: `review_before_archive` — `specx review` completed if config requires
 
 ## Steps
 
-1. Confirm `specx/changes/<change>/specs/**` complete
-2. `specx archive <change>`
-3. Optional `specx changelog`
-4. Suggest git commit: specs + code + registry
+1. Final read of delta specs — no placeholders
+2. `specx archive <change>` (CLI merges ADDED/MODIFIED/REMOVED)
+3. `specx changelog` if product changelog maintained
+4. Update `BUILD-ORDER.md` — mark feature shipped
+5. Git commit: `specx/specs/`, `changes/archive/`, code, `.specx/registry.yaml`
 
-## Post-archive
+Suggested message: `specx: archive <change> — <summary>`
 
-- Update `BUILD-ORDER.md` if feature shipped
-- Optional retrospective
-- `specx drift` after large merges
+## Post-archive evolution
 
-## Rules
+- **specx retro** optional — learn spec quality gaps
+- **specx drift** after large merges
+- **specx health** periodic
 
-- No open `- [ ]` tasks unless user waives
-- Do not hand-edit living specs — CLI merge is truth
+## Forbidden
+
+- Hand-edit living specs instead of archive merge
+- Archive with open critical verify FAIL
+- Archive without user words of approval
+
+## What archive does NOT do
+
+- Does not delete history — full change preserved in archive folder
+- Does not replace STEERING — update via separate change if product truth shifted
+
+## Next feature
+
+**specx-propose** for following BUILD-ORDER item.

@@ -1,45 +1,44 @@
 ---
-description: specX Spec-Driven Development — apply on all specX projects; use bundled skills for full workflows
+description: specX SDD — read specx-sdd skill and reference.md first; use workflow skills for full process detail
 globs:
 alwaysApply: true
 ---
 
-# specX — Spec-Driven Development
+# specX — agents must use skills (not improvisation)
 
-Specs are the **contract**; code is the implementation. Use **Cursor skills** in `.cursor/skills/specx-*` — each contains the full OpenCode-style playbook (not a one-line pointer).
+This project uses **specX Spec-Driven Development**. Generic agile or "write a spec" behavior is wrong.
 
-## Read first
+## Mandatory first read
 
-1. `specx/SPECX.md`
-2. `.specx/AGENTS.md`
-3. `specx/foundation/STEERING.md`
-4. `.specx/registry.yaml`
+1. `.cursor/skills/specx-sdd/SKILL.md`
+2. `.cursor/skills/specx-sdd/reference.md` — OpenSpec, BMAD, Kiro, GSD, Ralph, Spec Kit DNA
+3. `specx/SPECX.md`
+4. `specx/foundation/STEERING.md`
+5. `.specx/registry.yaml`
 
-## Skills map (invoke these — they contain full instructions)
+## Workflow skills (full process — read entire SKILL.md)
 
-| User intent | Skill | Slash |
-|-------------|-------|-------|
-| SDD discipline | `specx-sdd` | — |
-| Discovery | `specx-discover` | `/specx:discover` |
-| Draft phase/spec | `specx-specialist` | `/specx:specialist` |
-| Challenge draft | `specx-critic` | `/specx:critic` |
-| Approve phase | `specx-approve` | `/specx:approve` |
-| Revise phase | `specx-revise` | `/specx:revise` |
-| New change | `specx-propose` | `/specx:propose` |
-| Requirements | `specx-spec` | `/specx:spec` |
-| Technical design | `specx-design` | `/specx:design` |
-| Task list | `specx-tasks` | `/specx:tasks` |
-| Implement task | `specx-build` | `/specx:build` |
-| Verify vs spec | `specx-verify` | `/specx:verify` |
-| Archive change | `specx-archive` | `/specx:archive` |
+| Intent | Skill | Extra detail |
+|--------|-------|----------------|
+| Discovery | `specx-discover` | `phases.md` — lens per phase |
+| Draft | `specx-specialist` | Named persona |
+| Challenge | `specx-critic` | Verdict required |
+| Approve phase | `specx-approve` | Human said yes only |
+| Revise | `specx-revise` | |
+| New feature | `specx-propose` | Capabilities = OpenSpec |
+| Requirements | `specx-spec` | ADDED/MODIFIED/REMOVED |
+| Design | `specx-design` | ADR traceability |
+| Tasks | `specx-tasks` | One checkbox = one session |
+| Code | `specx-build` | Fresh context |
+| Verify | `specx-verify` | Ralph loop until READY |
+| Archive | `specx-archive` | Living specs merge |
 
-When the user runs a slash command or asks for a specX workflow, **load and follow the matching skill's SKILL.md in full**.
+Slash commands and `.specx/commands/` mirror these skills — **skills are authoritative**.
 
-## Gates
+## Non-negotiables
 
-- Specialist → Critic → **human** → approve (discovery) or archive (build)
-- Never archive or approve without explicit user consent
-
-## Delta format
-
-`## ADDED|MODIFIED|REMOVED Requirements` — MODIFIED = full requirement blocks; scenarios use `####` and GIVEN/WHEN/THEN.
+- Dual-agent: Specialist + Critic before human gate
+- Git commits after approvals (git is memory)
+- No code before spec reviewed (Kiro)
+- Delta specs only during changes (OpenSpec)
+- Product language in requirements; implementation in design/tasks

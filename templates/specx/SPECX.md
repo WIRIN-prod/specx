@@ -2,18 +2,47 @@
 
 > **{{PROJECT_NAME}}** | Track: **{{TRACK}}** | Initialized: {{DATE}}
 
-specX is the only framework you need from **raw idea** to **shipped, maintained product**. Not glue between other tools — four layers, one repo, git-committed truth.
+specX is the only framework you need from **raw idea** to **shipped, maintained product**. Self-sufficient — not glue between OpenSpec, BMAD, Kiro, GSD, or Ralph.
 
 ## Philosophy
 
-- **Self-sufficient** — Discovery, Foundation, Build, Evolution in one system
-- **Human-gated** — No phase advances without approve/revise
-- **Git is truth** — Approved artifacts are committed; chat is not the source of truth
-- **Dual-agent** — Specialist produces; Critic challenges; human sees both
-- **Living specs** — Specs evolve with the product; drift is detected
-- **Brownfield-ready** — Works on existing codebases
-- **Provider-agnostic** — Any model via `.specx/specx.yaml`
-- **Solo-first** — Team gates are additive
+- **Product before code**
+- **Decisions before documents**
+- **Humans decide, agents execute**
+- **Context is architecture** — specs and steering are prompts; quality in → quality out
+- **Specs are alive, not archives** — delta updates for the product lifetime
+- **Works everywhere, locks you in nowhere** — markdown in git; any agent
+
+## What specX combines
+
+| Source | What we take |
+|--------|----------------|
+| **OpenSpec** | Delta specs (ADDED/MODIFIED/REMOVED), `specs/` + `changes/`, archive merge |
+| **BMAD** | Three tracks; named specialist lens per discovery phase |
+| **Kiro** | `STEERING.md` every session; no build before spec review |
+| **GSD** | Fresh context per phase/task; verifier before gate; specs are prompts |
+| **Ralph Loop** | Git as memory; verify loop until READY |
+| **Spec Kit** | Agent-agnostic markdown only |
+
+## What only specX has
+
+1. **Pre-product discovery** — phases 01–09 (+10–11 enterprise) before technical build
+2. **Dual-agent** — Specialist + Critic; human sees both before approve
+3. **Three-layer handoff** — specs folder + STEERING + BUILD-ORDER
+4. **Product memory** — living specs via deltas; evolution (drift, health, retro)
+
+## Agent instructions (where detail lives)
+
+**Full playbooks:** `.cursor/skills/specx-*/SKILL.md`
+
+| Start here | Skill |
+|------------|-------|
+| Methodology | `specx-sdd` + `reference.md` |
+| Discovery | `specx-discover` + `phases.md` |
+| Features | `specx-propose` → `specx-spec` → `specx-design` → `specx-tasks` → `specx-build` |
+| Quality | `specx-specialist`, `specx-critic`, `specx-verify` |
+
+Also: `.specx/AGENTS.md`, `.specx/commands/` (synced from skills)
 
 ## Four layers
 
@@ -21,67 +50,40 @@ specX is the only framework you need from **raw idea** to **shipped, maintained 
 RAW IDEA → Discovery → Foundation → Build → Evolution → SHIPPED PRODUCT
 ```
 
-| Layer | Path | Purpose |
-|-------|------|---------|
-| 1 Discovery | `specx/discovery/` | Pre-product design (9–11 phases) |
-| 2 Foundation | `specx/foundation/` | STEERING, ARCHITECTURE, RULES, BUILD-ORDER |
-| 3 Build | `specx/specs/`, `specx/changes/` | Feature loop + delta specs |
-| 4 Evolution | `specx/evolution/` | Drift, health, changelog, retros |
+| Layer | Path |
+|-------|------|
+| 1 Discovery | `specx/discovery/` |
+| 2 Foundation | `specx/foundation/` |
+| 3 Build | `specx/specs/`, `specx/changes/` |
+| 4 Evolution | `specx/evolution/` |
 
-## Agent bootstrap (required order)
+## Bootstrap order
 
-1. Read this file (`specx/SPECX.md`)
-2. Read `specx/foundation/STEERING.md` if present
-3. Read `.specx/specx.yaml` and `.specx/registry.yaml`
-4. Load active change from registry
-5. Never skip human gates; never archive without explicit approval
+1. This file
+2. `.cursor/skills/specx-sdd/SKILL.md` + `reference.md`
+3. `foundation/STEERING.md`
+4. `.specx/specx.yaml`, `.specx/registry.yaml`
+5. Active change or discovery phase file
 
 ## Tracks
 
-| Track | Discovery | Foundation | Evolution |
-|-------|-----------|------------|-----------|
-| quick | 07–09 | RULES, BUILD-ORDER | changelog |
-| standard | 01–09 | all four | drift + health + changelog |
-| enterprise | 01–11 | all + team/RBAC | full + audit |
-
-## Commands
-
-| Slash | CLI |
-|-------|-----|
-| `/specx:discover` | `specx discover` |
-| `/specx:propose` | `specx propose <name>` |
-| `/specx:spec` | `specx spec` |
-| `/specx:design` | `specx design` |
-| `/specx:tasks` | `specx tasks` |
-| `/specx:build` | `specx build` |
-| `/specx:verify` | `specx verify` |
-| `/specx:archive` | `specx archive <name>` |
-| `/specx:drift` | `specx drift` |
-| `/specx:onboard` | `specx onboard` |
+| Track | Discovery | Foundation |
+|-------|-----------|------------|
+| quick | 07–09 | RULES, BUILD-ORDER |
+| standard | 01–09 | all four |
+| enterprise | 01–11 | all + team/RBAC + audit |
 
 ## Build loop
 
 ```
-propose → spec → design → tasks → build → verify → archive
+propose (Capabilities) → spec (deltas) → design → tasks → build (1 task) → verify → archive
 ```
 
-Delta format: `## ADDED|MODIFIED|REMOVED Requirements` with `### Requirement:` and GIVEN/WHEN/THEN scenarios (OpenSpec-compatible).
-
-## Dual-agent gate
+## Dual-agent + git gate
 
 ```
-Specialist → output.md
-Critic     → critiques/*-critique.md
-Human      → approve | revise
-Verifier   → consistency vs prior approved docs
-Git commit → approved only
+Specialist → Critic → Human → approve/archive → git commit
 ```
-
-## Non-goals
-
-- Not a replacement for code review or security audit
-- Not vendor-locked to one AI provider
-- Not waterfall — gates are checkpoints, not months of planning
 
 ## This project
 
