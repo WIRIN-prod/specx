@@ -1,3 +1,3 @@
-# Copilot instructions
+# Copilot — specX SDD
 
-See specx/SPECX.md and .cursor/rules/specx.mdc for specX workflow.
+Follow [.specx/AGENTS.md](.specx/AGENTS.md). Spec-driven: agree in `specx/specs/` before code. Slash commands map to `.specx/commands/*.md`.

@@ -60,7 +60,7 @@ export async function runInit(
         }
   }
 
-  const agents = generateAgentIntegrations(projectRoot);
+  const agents = generateAgentIntegrations(projectRoot, vars);
   spinner.succeed(`specX initialized (${track} track)`);
 
   console.log(chalk.dim("\nCreated:"));
