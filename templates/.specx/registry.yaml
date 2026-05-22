@@ -1,0 +1,7 @@
+version: 1
+discovery:
+  current_phase: null
+  phases: {}
+changes:
+  active: null
+  items: {}

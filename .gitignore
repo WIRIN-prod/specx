@@ -1,0 +1,10 @@
+node_modules/
+dist/
+specx/changes/*/
+!specx/changes/_template/
+!specx/changes/archive/
+.specx/cache/
+*.log
+.DS_Store
+coverage/
+.pnpm-store/

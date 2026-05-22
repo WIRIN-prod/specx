@@ -1,0 +1,45 @@
+---
+description: specX slash commands and agent workflow
+globs:
+alwaysApply: true
+---
+
+# specX Agent Instructions
+
+Read `specx/SPECX.md` first, then `specx/foundation/STEERING.md` if it exists.
+
+## Slash commands
+
+- **/specx:discover** → `specx discover` — Start or show discovery status
+- **/specx:discover quick** → `specx discover quick` — Quick track (phases 07-09)
+- **/specx:phase** → `specx phase <n>` — Scaffold discovery phase output
+- **/specx:approve** → `specx approve` — Approve current discovery phase
+- **/specx:revise** → `specx revise` — Request revision on current phase
+- **/specx:propose** → `specx propose <name>` — Start a new change
+- **/specx:spec** → `specx spec [change]` — Generate spec from proposal
+- **/specx:design** → `specx design [change]` — Generate design from spec
+- **/specx:tasks** → `specx tasks [change]` — Generate tasks from design
+- **/specx:build** → `specx build [change]` — Execute tasks with fresh context
+- **/specx:verify** → `specx verify [change]` — Verify implementation vs spec
+- **/specx:archive** → `specx archive <change>` — Merge deltas and archive
+- **/specx:status** → `specx status` — Show registry state
+- **/specx:diff** → `specx diff [change]` — Show pending spec deltas
+- **/specx:drift** → `specx drift` — Detect spec/code drift
+- **/specx:health** → `specx health` — Spec health report
+- **/specx:onboard** → `specx onboard` — Project context for agents
+- **/specx:changelog** → `specx changelog` — Regenerate changelog
+- **/specx:review** → `specx review <change>` — Flag change for review (enterprise)
+
+## Session bootstrap
+
+1. Read specx/SPECX.md
+2. Read .specx/registry.yaml for active phase/change
+3. Read specx/foundation/STEERING.md when present
+4. Never skip human approval gates
+5. Never archive without explicit user approval
+
+## Dual-agent (Discovery + Build specs)
+
+- **Specialist**: produce the artifact
+- **Critic**: challenge assumptions, contradictions, gaps
+- Human sees both before approve/revise

@@ -1,0 +1,35 @@
+version: 1
+discovery:
+  current_phase: 1
+  phases:
+    "10":
+      status: pending
+    "11":
+      status: pending
+    "01":
+      status: pending
+    "02":
+      status: pending
+    "03":
+      status: pending
+    "04":
+      status: pending
+    "05":
+      status: pending
+    "06":
+      status: pending
+    "07":
+      status: pending
+    "08":
+      status: pending
+    "09":
+      status: pending
+changes:
+  active: test2
+  items:
+    demo-feature:
+      status: proposed
+      created_at: 2026-05-22T06:04:41.524Z
+    test2:
+      status: proposed
+      created_at: 2026-05-22T06:04:49.441Z
