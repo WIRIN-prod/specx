@@ -1,45 +1,64 @@
 ---
-description: Implement one tasks.md checkbox against spec with fresh context. Use for /specx:build, implement feature, execute tasks, coding from specx/changes.
+description: specX build — implement one tasks.md item with fresh context against spec scenarios. GSD context engineering. Kiro: spec is contract. Use /specx:build or coding from changes.
 ---
 
-# specX build — Implement from spec
+# specX build — Implement from spec (GSD + Kiro)
 
-**SDD build mode**: spec = contract; tasks = plan; code must match both.
+**Kiro:** Spec is the contract — if it's not in spec, don't build it without spec revision.  
+**GSD:** Fresh context per task — treat each checkbox as a new session.  
+**Ralph:** Git is memory — commit logical units; don't rely on chat.
 
-## Session setup (required)
+## Session setup (mandatory)
 
-1. `specx build <change>` OR open `specx/changes/<change>/tasks.md` — pick **one** unchecked `- [ ]` task
-2. Read in order:
-   - `spec.md` + `specs/**/spec.md` deltas
-   - `design.md`
-   - `specx/foundation/RULES.md`
-3. **Clear unrelated chat context** when switching tasks
-4. Search codebase only for files this task needs
+1. Identify change: `specx status` or user name
+2. Open `specx/changes/<change>/tasks.md` — pick **one** `- [ ] X.Y` task
+3. Load **only**:
+   - That task line + referenced requirement/scenario
+   - Relevant `specs/**/spec.md` sections (not entire repo spec)
+   - `design.md` sections referenced by task
+   - `RULES.md`
+4. **Clear unrelated chat context** when starting a new task number
+5. Grep codebase narrowly for files in design/task scope
 
-## Execution rules
+## Implementation rules
 
-- Implement **only** the current task
-- Satisfy **GIVEN/WHEN/THEN** for touched scenarios
-- Follow RULES.md and ARCHITECTURE.md
-- Mark done: `- [x] 1.1 ...` after verify
-- Ambiguous spec → **stop and ask** — never guess requirements
+| Rule | Action |
+|------|--------|
+| Scope | Only current task |
+| Spec | Satisfy GIVEN/WHEN/THEN for referenced scenarios |
+| Patterns | Follow ARCHITECTURE + RULES |
+| Done | Mark `- [x] X.Y` only after tests/verification |
+| Ambiguity | Stop — ask human or request specx-spec revision |
+| Scope creep | Reject — belongs in new propose |
+
+## Per-task report
+
+```markdown
+## Task X.Y complete
+- Requirement: ...
+- Scenario: ...
+- Files: ...
+- Tests: ...
+- Next: X.Z
+```
+
+## Testing
+
+If spec scenario is testable, add/run tests in same task. Do not defer all tests to end unless tasks.md explicitly batches them.
 
 ## Forbidden
 
-- Skip tests when spec implies testability
-- Change spec without specx-spec revision
-- Tasks not in tasks.md without user approval
-- Drive-by refactors
+- Implementing unchecked tasks in same session without user OK
+- Editing living `specx/specs/` directly (change deltas only until archive)
+- Changing requirements without specx-spec pass
+- Drive-by refactor
 
-## After each task
+## When all tasks `[x]`
 
-Report:
+1. **specx-verify** — Ralph loop until READY
+2. Human explicit approval
+3. **specx-archive**
 
-- Implementation vs requirement/scenario
-- Files changed
-- Tests run
-- Next task number
+## Context rot warning
 
-## When all `[x]`
-
-User runs **specx-verify**, then **specx-archive** after explicit approval.
+If conversation > ~30 turns on one task, suggest `/clear` or new session with task brief from `specx build <change> --task X.Y`.

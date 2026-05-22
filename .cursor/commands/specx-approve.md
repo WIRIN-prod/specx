@@ -10,24 +10,37 @@ Read that skill completely and execute it step by step. Do not summarize or skip
 
 ---
 
-# specX approve — Discovery gate
+# specX approve — Human gate (discovery)
 
-**Only when the user explicitly approves** the current discovery phase.
+**Humans decide.** You run this only when the user **explicitly approves** the current discovery phase after reading Specialist + Critic outputs.
 
-## Checklist
+## Preconditions
 
-- [ ] Specialist output in `specx/discovery/NN-*.md` is complete (no placeholders)
-- [ ] Critic file exists in `specx/discovery/critiques/`
-- [ ] User said "approve" or equivalent in chat
+- [ ] `specx/discovery/NN-*.md` complete (no `<!-- Specialist writes below -->`)
+- [ ] `specx/discovery/critiques/NN-*-critique.md` exists
+- [ ] Critic verdict not `REVISE_REQUIRED` unless human overrides with documented risk
+- [ ] Verifier: no contradiction with prior **approved** phases
+- [ ] User said "approve" / "approved" / equivalent in chat
 
-## Then
+## Actions
 
-1. Run `specx approve` (updates `.specx/registry.yaml`)
-2. Suggest git add: discovery files + registry
-3. Tell user next phase: `specx phase <n+1>` or discovery complete → update STEERING
+1. `specx approve` — updates `.specx/registry.yaml`, may advance `current_phase`
+2. Append audit log if enterprise `evolution.audit: true`
+3. Recommend commit:
+
+```bash
+git add specx/discovery/ .specx/registry.yaml
+git commit -m "specx: approve discovery phase NN"
+```
+
+**Ralph Loop:** Approved truth must be in git — not only in chat.
+
+## After approve
+
+Tell user next phase from track (read `.specx/specx.yaml` track + `specx-discover/phases.md`).
 
 ## Never
 
-- Approve without user consent
-- Skip critic pass
-- Approve empty/template-only outputs
+- Self-approve
+- Approve without critic file
+- Skip to build without foundation synthesis when discovery complete

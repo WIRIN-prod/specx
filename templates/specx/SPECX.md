@@ -24,6 +24,10 @@ specX is the only framework you need from **raw idea** to **shipped, maintained 
 | **Ralph Loop** | Git as memory; verify loop until READY |
 | **Spec Kit** | Agent-agnostic markdown only |
 
+## Six elements of a good spec
+
+Every agent spec must answer: **outcomes**, **in/out scope**, **constraints**, **decisions made**, **task breakdown**, **verification**. See `.cursor/skills/specx-sdd/six-elements.md`.
+
 ## What only specX has
 
 1. **Pre-product discovery** — phases 01–09 (+10–11 enterprise) before technical build

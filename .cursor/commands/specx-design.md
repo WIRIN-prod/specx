@@ -12,54 +12,71 @@ Read that skill completely and execute it step by step. Do not summarize or skip
 
 # specX design — Technical design
 
-Explain **HOW** to satisfy the spec. Design implements requirements; it does not replace them.
+**Role:** Solution implementer planning **HOW** — requirements in spec say **WHAT**.
+
+**Elements 3–4:** Capture remaining **constraints** and **decisions already made** not fully covered in proposal/spec. Do not leave decisions for the implementer to invent.
 
 ## When required
 
-Create `design.md` if any apply:
+Create/update `specx/changes/<change>/design.md` if any:
 
-- Multiple modules/services or new pattern
-- New dependency, schema migration, external API
-- Security, performance, compliance (enterprise)
-- Ambiguity needing decisions before tasks
+- Cross-cutting change (multiple services/modules)
+- New dependency, persistence, or public API
+- Security/performance/compliance (enterprise)
+- Ambiguity that blocks task breakdown
 
-Skip only trivial single-file changes.
+Trivial single-file changes: minimal design with explicit "trivial change" rationale.
 
-## Steps
+## Inputs (read all)
 
-1. Read `proposal.md`, `spec.md`, all `specs/**/spec.md` deltas
-2. Read `specx/foundation/ARCHITECTURE.md` — align or add ADRs
-3. Search codebase for current implementation
-4. Write `specx/changes/<change>/design.md`
+1. `proposal.md` — scope and out-of-scope
+2. `spec.md` + every `specs/**/spec.md` delta
+3. `specx/foundation/ARCHITECTURE.md` — extend, don't fight
+4. `RULES.md` — stack and patterns
+5. Codebase search on touched domains
 
 ## Required sections
 
 ### Context
-Current state, constraints, discovery/PRD links.
+Current behavior, links to discovery 09 / PRD feature IDs.
 
 ### Goals / Non-Goals
+Tied to proposal out-of-scope.
 
-### Decisions
-Per decision: **Choice**, **Rationale**, **Alternatives considered**.
+### Decisions (ADR style)
+For each:
+
+| Decision | Choice | Rationale | Alternatives rejected |
+|----------|--------|-----------|----------------------|
+
+Promote stable decisions to `ARCHITECTURE.md` as new ADR entries (supersede old, don't edit in place).
 
 ### Data & API
-Only what spec requires.
+Only what spec requires — schemas, endpoints, events.
+
+### Security & compliance (enterprise)
+Map to phase 10/11 controls if applicable.
 
 ### Risks / Trade-offs
 `[Risk] → Mitigation`
 
 ### Migration plan
-Deploy, rollback, feature flags.
+Order of deploy, rollback, feature flags, data backfill.
 
 ### Open questions
-Blockers before tasks.
+Blockers — resolve before **specx-tasks**.
 
-## Rules
+## Traceability matrix
 
-- Every decision traces to a **Requirement** in spec
-- No contradiction with STEERING or approved discovery
-- Prefer existing `ARCHITECTURE.md` patterns
+| Requirement (name) | Design section | Task group (later) |
+|--------------------|----------------|------------------|
 
-## After
+Every spec SHALL maps to at least one design decision or explicit "direct map to existing pattern X."
 
-Human approves → **specx-tasks** skill.
+## Dual-agent
+
+Critic reviews: over-engineering? spec gaps exposed? ADR conflicts?
+
+## After human approval
+
+**specx-tasks** — tasks reference design decisions by name.

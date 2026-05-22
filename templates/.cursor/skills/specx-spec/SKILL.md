@@ -1,8 +1,8 @@
 ---
 name: specx-spec
 description: >-
-  specX spec — OpenSpec delta requirements ADDED MODIFIED REMOVED with scenarios. GSD: specs
-  are prompts. Use after propose, for requirements, behavior contracts, SHALL GIVEN WHEN THEN.
+  specX spec — six elements of a good spec plus OpenSpec deltas. Outcomes, scope, constraints,
+  decisions, verification criteria. Use after propose for requirements and GIVEN WHEN THEN.
 ---
 
 # specX spec — Behavior specification (OpenSpec delta model)
@@ -10,6 +10,42 @@ description: >-
 Translate **Capabilities** into testable requirements. Living truth path: `specx/specs/<domain>/spec.md`. Work path: `specx/changes/<change>/specs/<domain>/spec.md`.
 
 **GSD:** Write each spec as the **only** instructions an implementer will receive for that domain.
+
+Read **`specx-sdd/six-elements.md`** — every change must cover all six before design/tasks/build.
+
+## Six elements → where you write them
+
+| Element | You write |
+|---------|-----------|
+| **1 Outcomes** | `### Requirement:` + `#### Scenario:` — outcome statements, not feature names ("auth flow" → sign-up, verify email, login, session persists) |
+| **2 Scope** | Pull from proposal; add `## In scope` / `## Out of scope` at top of change `spec.md` — **out-of-scope is mandatory** (e.g. "OAuth out of scope") |
+| **3 Constraints** | `## Assumptions and constraints` in spec — stack, APIs, perf, limits not obvious from code alone; cite STEERING/RULES |
+| **4 Decisions made** | `## Decisions already made` in spec — schema, libraries, patterns already chosen; rest goes to design.md |
+| **5 Task breakdown** | Not in spec file — **specx-tasks** maps each requirement/scenario → checkbox |
+| **6 Verification** | Every scenario = testable acceptance; add `## Verification criteria` summary listing tests + edge cases for **specx-verify** |
+
+## Change-level `spec.md` header (required)
+
+At `specx/changes/<change>/spec.md` before domain deltas:
+
+```markdown
+## In scope
+- ...
+
+## Out of scope
+- OAuth / social login (not this change)
+- ...
+
+## Assumptions and constraints
+- ...
+
+## Decisions already made
+- ...
+
+## Verification criteria
+- Tests: ...
+- Edge cases: expired token, duplicate email, ...
+```
 
 ## Prerequisites
 
@@ -79,12 +115,15 @@ Add optional table in change `spec.md`:
 | Capability | Requirement | PRD ref | Feature ID |
 |------------|-------------|---------|------------|
 
-## Critic must validate
+## Critic must validate (six elements)
 
-- Every SHALL has scenario
-- No contradiction with living specs (list conflicts)
-- Breaking changes have REMOVED + Migration
-- Enterprise security requirements from phase 10 reflected if applicable
+- [ ] **1** Outcomes are testable outcome statements, not feature labels
+- [ ] **2** Out-of-scope list is explicit and closes common agent expansions
+- [ ] **3** Constraints/assumptions stated (not only in chat)
+- [ ] **4** Decisions made are listed — agent won't re-decide schema/library
+- [ ] **5** (after tasks) Every requirement maps to a task — flag if missing
+- [ ] **6** Verification criteria name tests and edge cases
+- Every SHALL has scenario; MODIFIED full blocks; REMOVED has Migration
 
 ## Common failures (avoid)
 

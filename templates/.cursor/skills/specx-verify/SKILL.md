@@ -11,6 +11,8 @@ description: >-
 
 **Ralph Loop:** If NOT READY, output gaps → implementer fixes → re-verify. Feed previous gap list as context on rerun. Do not declare READY while any SHALL fails.
 
+**Element 6:** Verification is not "does it work." Check change `spec.md` **Verification criteria** + every scenario against named tests and edge cases.
+
 ## Inputs
 
 1. All `specx/changes/<change>/specs/**/spec.md` deltas
@@ -21,8 +23,9 @@ description: >-
 
 ## Process
 
-1. Extract every `### Requirement:` from deltas
-2. For each scenario, find code/test evidence or mark FAIL
+1. Read **Verification criteria** section in change `spec.md` (element 6)
+2. Extract every `### Requirement:` from deltas
+3. For each scenario, find code/test evidence or mark FAIL — include edge cases listed in verification criteria
 3. Check STEERING non-negotiables
 4. Check ARCHITECTURE decisions used
 5. Enterprise: security/compliance requirements from discovery reflected

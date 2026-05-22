@@ -2,6 +2,10 @@
 
 This document explains **why** specX works the way it does. Agents must internalize this before discovery, build, or evolution work.
 
+## The six elements of a good spec
+
+Every agent-facing spec must answer six questions (outcomes, scope boundaries, constraints, decisions made, task breakdown, verification). See **`six-elements.md`** in this folder for the full table and artifact mapping. Critics and verifiers enforce all six.
+
 ## specX philosophy
 
 - **Product before code** — discovery and specs precede implementation

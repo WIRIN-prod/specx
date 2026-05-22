@@ -45,14 +45,44 @@ This section drives **all** spec files. Research `specx/specs/` first.
 **Unchanged capabilities** (optional):
 - Domains touched but no requirement change — documents scope boundary
 
+### Constraints and assumptions (element 3)
+
+What affects implementation and is **not** obvious from code alone:
+
+- Stack, hosting, data store
+- Third-party API limits, quotas, SLAs
+- Performance (p95, max payload)
+- Regulatory or STEERING non-negotiables
+
+Persistent context: `STEERING.md`, `RULES.md`, root `AGENTS.md`.
+
+### Decisions already made (element 4)
+
+If humans already chose approach, list here so agents don't re-decide:
+
+- "Session store: existing Redis"
+- "Email provider: SendGrid (existing integration)"
+
+Unset decisions → leave for **specx-design**.
+
 ### Impact
 - APIs, events, schemas
 - Dependencies, feature flags
 - Security/compliance (enterprise)
 - Migration / rollout
 
-### Out of scope
-Explicit list — prevents agent scope creep in build.
+### In scope
+Bullet list of what **this change includes** — tie to outcomes, not feature names.
+
+### Out of scope (mandatory — element 2)
+
+**As important as in-scope.** Agents expand scope without this. Be explicit:
+
+- "OAuth / Google sign-in — out of scope"
+- "Password reset — separate change"
+- "Admin impersonation — not included"
+
+If it is commonly assumed for this feature type, **still list it as out of scope**.
 
 ### Risks & open questions
 What could block spec or design.

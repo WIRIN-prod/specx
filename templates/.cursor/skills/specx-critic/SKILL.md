@@ -41,6 +41,14 @@ You are the **Critic**: independent challenge pass. You do **not** rewrite the f
 - NFRs: performance, a11y, i18n, ...
 - Enterprise: security 10 / compliance 11 coverage
 
+## Six elements (build — see specx-sdd/six-elements.md)
+- [ ] **1 Outcomes** — requirements are testable outcomes, not "build X"
+- [ ] **2 Scope** — out-of-scope list exists and closes obvious expansions
+- [ ] **3 Constraints** — assumptions written, STEERING honored
+- [ ] **4 Decisions** — made decisions documented; no duplicate re-deciding
+- [ ] **5 Tasks** — (if tasks.md exists) traceability to requirements
+- [ ] **6 Verification** — criteria name tests + edge cases, not "works"
+
 ## Spec quality (build only)
 - [ ] Orphan requirements (no scenario)
 - [ ] Partial MODIFIED blocks

@@ -1,45 +1,101 @@
 ---
-description: Start a specX change with proposal.md and Capabilities section. Use for /specx:propose, new features, "add X to the product", or before any spec-driven implementation.
+description: specX propose — start OpenSpec-style change with proposal and Capabilities. Kiro gate: no implementation until human reviews proposal. Use /specx:propose or new features.
 ---
 
-# specX propose — Start a change
+# specX propose — Start a change (OpenSpec + Kiro)
 
-You are starting a **spec-driven change**. **Do not write production code** until the proposal is reviewed and the user moves to spec.
+**Kiro gate:** No production code until proposal is reviewed and user proceeds to spec.
 
-## Steps
+**OpenSpec:** Proposal **Capabilities** section creates the contract for the spec phase — one delta spec file per capability.
 
-1. Run `specx status` and read `.specx/registry.yaml`.
-2. Search `specx/specs/**/spec.md` for domains this feature touches.
-3. Read `specx/foundation/STEERING.md` and `BUILD-ORDER.md` — confirm alignment.
-4. Create folder: `specx propose <kebab-name> -m "<summary>"` or `specx/changes/<name>/`.
+## Before writing
+
+1. `specx status` + `.specx/registry.yaml`
+2. Glob `specx/specs/**/spec.md` — list domains that exist
+3. Read `STEERING.md` — confirm feature aligns; note non-negotiables
+4. Read `BUILD-ORDER.md` — confirm feature is scheduled (or user waives)
+5. Read `RULES.md` + `ARCHITECTURE.md` for constraints
+6. `specx propose <kebab-name> -m "summary"` if folder missing
 
 ## Write `specx/changes/<name>/proposal.md`
 
-### Why
-1–2 sentences: problem, opportunity, why now.
+### Why (1–2 sentences)
+Problem/opportunity. Why now. Link to PRD feature ID or BUILD-ORDER item if exists.
 
 ### What changes
-Bullet list. Mark **BREAKING** items.
+- Bullet each observable change
+- **BREAKING:** prefix breaking changes
+- User-visible impact first
 
-### Capabilities (CRITICAL — drives `/specx:spec`)
+### Capabilities (CRITICAL — OpenSpec)
 
-- **New capabilities**: kebab-case → `specx/changes/<change>/specs/<name>/spec.md` → later `specx/specs/<name>/spec.md`
-- **Modified capabilities**: existing `specx/specs/<domain>/` whose **requirements** change (not refactors alone)
+This section drives **all** spec files. Research `specx/specs/` first.
 
-Research existing specs first. Empty modified list if no requirement changes.
+**New capabilities** (kebab-case):
+- `user-auth` → will create `changes/<change>/specs/user-auth/spec.md` → eventually `specs/user-auth/spec.md`
+
+**Modified capabilities** (existing folders under `specx/specs/`):
+- Only if **requirement-level behavior** changes
+- Refactors alone do not belong here — design.md only
+- List exact folder names: `auth-session`, `checkout-cart`
+
+**Unchanged capabilities** (optional):
+- Domains touched but no requirement change — documents scope boundary
+
+### Constraints and assumptions (element 3)
+
+What affects implementation and is **not** obvious from code alone:
+
+- Stack, hosting, data store
+- Third-party API limits, quotas, SLAs
+- Performance (p95, max payload)
+- Regulatory or STEERING non-negotiables
+
+Persistent context: `STEERING.md`, `RULES.md`, root `AGENTS.md`.
+
+### Decisions already made (element 4)
+
+If humans already chose approach, list here so agents don't re-decide:
+
+- "Session store: existing Redis"
+- "Email provider: SendGrid (existing integration)"
+
+Unset decisions → leave for **specx-design**.
 
 ### Impact
-APIs, data models, dependencies, security, migrations.
+- APIs, events, schemas
+- Dependencies, feature flags
+- Security/compliance (enterprise)
+- Migration / rollout
 
-### Out of scope
-What this change will **not** do.
+### In scope
+Bullet list of what **this change includes** — tie to outcomes, not feature names.
 
-## Rules
+### Out of scope (mandatory — element 2)
 
-- 1–2 pages max; "how" belongs in `design.md`
-- Kebab-case names: `add-oauth-login`
-- Present to human; wait before spec phase
+**As important as in-scope.** Agents expand scope without this. Be explicit:
+
+- "OAuth / Google sign-in — out of scope"
+- "Password reset — separate change"
+- "Admin impersonation — not included"
+
+If it is commonly assumed for this feature type, **still list it as out of scope**.
+
+### Risks & open questions
+What could block spec or design.
+
+## Dual-agent on proposal (recommended)
+
+1. Specialist drafts proposal
+2. Critic checks: capabilities complete? wrong domains? MVP violation?
+3. Human approves before **specx-spec**
+
+## Product memory
+
+Proposal is not living truth — **specs are**, after archive. Proposal is the intent record in `changes/archive/`.
 
 ## After
 
-Tell user: **Next — run specX spec skill** (`/specx:spec` or `specx spec`).
+User proceeds → **specx-spec** (Specialist + Critic on deltas).
+
+**Forbidden:** Code, tasks, or design before Capabilities approved by human.

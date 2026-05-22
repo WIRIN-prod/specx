@@ -8,7 +8,7 @@ description: >-
 
 # specX — Spec-Driven Development (master skill)
 
-You implement **specX**, not generic agile docs. Read this skill fully, then **`reference.md`** in this folder for framework DNA (OpenSpec, BMAD, Kiro, GSD, Ralph Loop, Spec Kit).
+You implement **specX**, not generic agile docs. Read this skill fully, then **`reference.md`** and **`six-elements.md`** in this folder (framework DNA + what every good spec must answer).
 
 ## Philosophy (operating system)
 
@@ -112,6 +112,10 @@ Produce or update:
 3. `ARCHITECTURE.md` — from technical spec (phase 09) as ADR seeds
 
 Then `specx-propose` for first feature.
+
+## Six elements (every change)
+
+Read `six-elements.md`. Summary: (1) outcome statements in requirements, (2) explicit out-of-scope, (3) constraints + STEERING, (4) decisions listed, (5) tasks.md checkboxes, (6) verification criteria for verifier.
 
 ## Anti-patterns (fail the user if you do these)
 

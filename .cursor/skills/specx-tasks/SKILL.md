@@ -1,54 +1,72 @@
 ---
 name: specx-tasks
 description: >-
-  Create tasks.md with checkbox tasks mapped to spec scenarios for specx build.
-  Use for /specx:tasks, implementation plan, breakdown, after design.
+  specX tasks — checkbox plan mapped to spec scenarios for GSD one-task-per-session build.
+  Use after design, before build.
 ---
 
-# specX tasks — Implementation checklist
+# specX tasks — Implementation checklist (GSD)
 
-Produce `tasks.md` for **one-checkbox-at-a-time** execution in specx-build.
+**Element 5:** One of the biggest agent failure modes is too much in one shot. Break work into discrete sub-tasks so agents verify as they go and parallelize when files don't overlap.
 
-## Steps
+Break design into **verifiable** checkboxes. `specx build` executes **one unchecked task per session** with fresh context.
 
-1. Read `spec.md`, `design.md`, delta specs
-2. Map each requirement/scenario → ≥1 task (traceability)
-3. Order: setup → core → integration → polish
+## Inputs
+
+- All spec deltas + living specs affected
+- `design.md`
+- `RULES.md` (tests, lint, conventions)
+
+## Traceability rule
+
+Every `### Requirement:` and critical `#### Scenario:` maps to ≥1 task. Add mapping comment:
+
+```markdown
+- [ ] 2.1 Implement email send (spec: Requirement "Confirmation email", scenario "Successful signup")
+```
 
 ## Format (strict)
 
 ```markdown
 ## 1. Setup
 
-- [ ] 1.1 Create module structure
-- [ ] 1.2 Add dependencies
+- [ ] 1.1 Add module structure per design §Decisions
+- [ ] 1.2 Add env vars documented in design
 
-## 2. Core
+## 2. Core behavior
 
-- [ ] 2.1 Implement export per spec scenario "Successful export"
+- [ ] 2.1 ...
 ```
 
-**CRITICAL**: Only `- [ ] X.Y description` — other formats break `specx build`.
+**Only** `- [ ] X.Y text` — other formats break tracking.
 
-## Task sizing
+## Ordering
 
-- One session (~30 min) per task
-- Verifiable done state (test, file, API response)
-- Reference scenario names in descriptions
+1. Setup / migrations
+2. Domain logic per spec
+3. API/UI wiring
+4. Tests per scenario (explicit tasks)
+5. Docs if spec mandates
+6. Enterprise: security/compliance verification tasks
 
-## Include when needed
+## Sizing (GSD)
 
-- Tests per new SHALL requirement
-- Docs if spec mandates
-- Migration from design.md
-- Enterprise security/compliance checks
+- One session (~30 min) per checkbox
+- Done = test green or explicit verification step passed
+- No "implement entire feature" tasks
 
-## Do not
+## Include
 
-- Vague tasks ("implement feature")
-- Skip tests for new requirements
-- Bundle unrelated requirements
+- [ ] Unit/integration tests naming scenario
+- [ ] Update OpenAPI/README if spec requires
+- [ ] Migration script task if design has migration
 
-## After
+## Critic checks
 
-Human reviews → **specx-build** (one task per session).
+- Orphan requirements without tasks
+- Tasks that don't map to spec (scope creep)
+- Missing test tasks for new SHALL
+
+## After human approval
+
+**specx-build** — never start build with unapproved task list on enterprise review gate.

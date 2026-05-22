@@ -9,6 +9,8 @@ description: >-
 
 **Role:** Solution implementer planning **HOW** — requirements in spec say **WHAT**.
 
+**Elements 3–4:** Capture remaining **constraints** and **decisions already made** not fully covered in proposal/spec. Do not leave decisions for the implementer to invent.
+
 ## When required
 
 Create/update `specx/changes/<change>/design.md` if any:
