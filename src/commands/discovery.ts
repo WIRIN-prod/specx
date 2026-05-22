@@ -7,20 +7,14 @@ import { getRoots } from "../lib/paths.js";
 import { appendAudit } from "../lib/audit.js";
 import { printGitHint } from "../lib/git.js";
 import { writeFromTemplate, defaultVars } from "../lib/template.js";
+import {
+  DISCOVERY_PHASES,
+  formatPhaseLabel,
+} from "../lib/discovery-phases.js";
 
-const PHASE_FILES: Record<number, string> = {
-  1: "01-problem-statement.md",
-  2: "02-market-research.md",
-  3: "03-personas.md",
-  4: "04-user-journeys.md",
-  5: "05-information-architecture.md",
-  6: "06-user-flows.md",
-  7: "07-feature-inventory.md",
-  8: "08-prd.md",
-  9: "09-technical-spec.md",
-  10: "10-security.md",
-  11: "11-compliance.md",
-};
+function phaseFile(n: number): string {
+  return DISCOVERY_PHASES[n]?.file ?? `${String(n).padStart(2, "0")}.md`;
+}
 
 export function runDiscover(): void {
   const config = loadConfig();
@@ -37,7 +31,9 @@ export function runDiscover(): void {
     for (const n of phases) {
       const key = phaseKey(n);
       const st = registry.discovery.phases?.[key]?.status ?? "pending";
-      console.log(`  ${key} ${PHASE_FILES[n]}: ${st}`);
+      console.log(`  ${formatPhaseLabel(n)}: ${st}`);
+      const meta = DISCOVERY_PHASES[n];
+      if (meta) console.log(chalk.dim(`      ${meta.file}`));
     }
   }
 }
@@ -71,7 +67,7 @@ export function runPhase(phaseNum: number): void {
   }
 
   const { specxDir, projectRoot } = getRoots();
-  const file = PHASE_FILES[phaseNum];
+  const file = phaseFile(phaseNum);
   if (!file) {
     console.error(chalk.red(`Unknown phase: ${phaseNum}`));
     process.exit(1);
@@ -147,7 +143,7 @@ export function runApprove(): void {
 
   const key = phaseKey(phase);
   const { specxDir } = getRoots();
-  const file = PHASE_FILES[phase];
+  const file = phaseFile(phase);
   const outPath = path.join(specxDir, "discovery", file!);
 
   if (!fs.existsSync(outPath)) {

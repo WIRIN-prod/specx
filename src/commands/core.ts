@@ -2,43 +2,33 @@ import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import { execSync } from "node:child_process";
-import {
-  SpecxConfigSchema,
-  TRACK_PHASES,
-  type SpecxConfig,
-} from "../../schemas/specx-config.js";
+import { SpecxConfigSchema, TRACK_PHASES } from "../../schemas/specx-config.js";
 import { defaultRegistry } from "../../schemas/registry.js";
-import { loadConfig, saveConfig, getPhasesForTrack } from "../lib/config.js";
+import { loadConfig, saveConfig } from "../lib/config.js";
 import { loadRegistry, saveRegistry } from "../lib/registry.js";
-import { getRoots, findProjectRoot } from "../lib/paths.js";
+import { getRoots } from "../lib/paths.js";
 import { generateAgentIntegrations } from "../lib/agents.js";
+import {
+  printChangesStatus,
+  printDiscoveryStatus,
+  printFoundationStatus,
+} from "../lib/status-display.js";
 import { runPropose } from "./build.js";
 import { runPhase } from "./discovery.js";
 
 export function runStatus(): void {
   const config = loadConfig();
   const registry = loadRegistry();
+  const { specxDir } = getRoots();
 
   console.log(chalk.bold("\nspecX status"));
-  console.log(`Track: ${chalk.cyan(config.track)}`);
-  console.log(`Project: ${config.project?.name ?? "—"}`);
+  console.log(`  Project: ${config.project?.name ?? "—"}`);
+  console.log(`  Root: ${specxDir.replace(/\/specx$/, "")}`);
 
-  const phase = registry.discovery?.current_phase;
-  console.log(`\nDiscovery: phase ${phase ?? "—"}`);
-  const phases = getPhasesForTrack(config.track);
-  for (const n of phases) {
-    const key = String(n).padStart(2, "0");
-    const st = registry.discovery?.phases?.[key]?.status ?? "pending";
-    console.log(`  ${key}: ${st}`);
-  }
-
-  console.log(`\nActive change: ${registry.changes?.active ?? "—"}`);
-  const items = registry.changes?.items ?? {};
-  for (const [name, item] of Object.entries(items)) {
-    if (item.status !== "archived") {
-      console.log(`  ${name}: ${item.status}`);
-    }
-  }
+  printDiscoveryStatus(config, registry, specxDir);
+  printFoundationStatus(config, specxDir);
+  printChangesStatus(registry, specxDir);
+  console.log();
 }
 
 export function runConfig(openEditor: boolean): void {

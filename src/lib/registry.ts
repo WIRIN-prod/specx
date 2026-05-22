@@ -4,6 +4,7 @@ import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import {
   RegistrySchema,
   defaultRegistry,
+  normalizeRegistryRaw,
   type Registry,
 } from "../../schemas/registry.js";
 import { getPhasesForTrack, loadConfig } from "./config.js";
@@ -19,7 +20,10 @@ export function loadRegistry(projectRoot?: string): Registry {
     return reg;
   }
   const raw = parseYaml(fs.readFileSync(registryPath, "utf8"));
-  return RegistrySchema.parse(raw);
+  const { value, changed } = normalizeRegistryRaw(raw);
+  const parsed = RegistrySchema.parse(value);
+  if (changed) saveRegistry(parsed, projectRoot);
+  return parsed;
 }
 
 export function saveRegistry(
