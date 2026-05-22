@@ -3,28 +3,35 @@ import path from "node:path";
 import { getRoots, resolvePackageTemplates } from "./paths.js";
 import { substitute, type TemplateVars } from "./template.js";
 
-export const COMMANDS = [
-  { slash: "/specx:discover", file: "discover", desc: "Discovery layer — pre-product SDD" },
-  { slash: "/specx:phase", file: "discover", desc: "Scaffold discovery phase (use with phase number)" },
-  { slash: "/specx:specialist", file: "specialist", desc: "Specialist agent — produce artifact" },
-  { slash: "/specx:critic", file: "critic", desc: "Critic agent — challenge artifact" },
-  { slash: "/specx:approve", file: "discover", desc: "Approve phase (human gate first)" },
-  { slash: "/specx:revise", file: "discover", desc: "Request phase revision" },
-  { slash: "/specx:propose", file: "propose", desc: "Start change — proposal + capabilities" },
-  { slash: "/specx:spec", file: "spec", desc: "Behavior specs + delta specs" },
-  { slash: "/specx:design", file: "design", desc: "Technical design from spec" },
-  { slash: "/specx:tasks", file: "tasks", desc: "Checkbox implementation plan" },
-  { slash: "/specx:build", file: "build", desc: "Implement one task, fresh context" },
-  { slash: "/specx:verify", file: "verify", desc: "Verifier pass vs spec" },
-  { slash: "/specx:archive", file: "archive", desc: "Merge deltas and archive" },
-  { slash: "/specx:status", file: "discover", desc: "Registry status (run CLI)" },
-  { slash: "/specx:diff", file: "spec", desc: "Show pending deltas" },
-  { slash: "/specx:drift", file: "discover", desc: "Spec/code drift report" },
-  { slash: "/specx:health", file: "discover", desc: "Spec health report" },
-  { slash: "/specx:onboard", file: "discover", desc: "Full context bundle" },
-  { slash: "/specx:changelog", file: "archive", desc: "Regenerate changelog" },
-  { slash: "/specx:review", file: "archive", desc: "Enterprise review gate" },
-];
+/** Maps skill folder name → .specx/commands filename (without .md) */
+const SKILL_TO_COMMAND: Record<string, string> = {
+  "specx-discover": "discover",
+  "specx-propose": "propose",
+  "specx-spec": "spec",
+  "specx-design": "design",
+  "specx-tasks": "tasks",
+  "specx-build": "build",
+  "specx-verify": "verify",
+  "specx-archive": "archive",
+  "specx-specialist": "specialist",
+  "specx-critic": "critic",
+  "specx-approve": "approve",
+  "specx-revise": "revise",
+};
+
+export const COMMANDS = Object.entries(SKILL_TO_COMMAND).map(([skill, cmd]) => ({
+  slash: `/specx:${cmd === "discover" ? "discover" : cmd}`,
+  skill,
+  cli: `specx ${cmd}`,
+  file: cmd,
+}));
+
+function stripFrontmatter(content: string): string {
+  if (!content.startsWith("---")) return content;
+  const end = content.indexOf("---", 3);
+  if (end === -1) return content;
+  return content.slice(end + 3).trim();
+}
 
 function copyDirRecursive(src: string, dest: string, vars?: TemplateVars): void {
   if (!fs.existsSync(src)) return;
@@ -57,6 +64,65 @@ function writeFromTemplateFile(
   fs.writeFileSync(dest, content, "utf8");
 }
 
+function syncCommandsFromSkills(projectRoot: string, skillsDest: string): void {
+  const commandsDest = path.join(projectRoot, ".specx", "commands");
+  fs.mkdirSync(commandsDest, { recursive: true });
+
+  for (const [skillName, cmdName] of Object.entries(SKILL_TO_COMMAND)) {
+    const skillPath = path.join(skillsDest, skillName, "SKILL.md");
+    if (!fs.existsSync(skillPath)) continue;
+    const body = stripFrontmatter(fs.readFileSync(skillPath, "utf8"));
+    const descMatch = fs.readFileSync(skillPath, "utf8").match(/description:\s*>?-\s*\n([\s\S]*?)(?=\n\w|\n---)/);
+    const desc = descMatch
+      ? descMatch[1].replace(/\n\s+/g, " ").trim()
+      : `specX ${cmdName} workflow`;
+
+    const cmdFile = `---
+description: ${desc}
+---
+
+${body}
+`;
+    fs.writeFileSync(path.join(commandsDest, `${cmdName}.md`), cmdFile, "utf8");
+  }
+}
+
+function generateCursorCommands(
+  projectRoot: string,
+  skillsDest: string
+): string[] {
+  const cursorCommandsDir = path.join(projectRoot, ".cursor", "commands");
+  fs.mkdirSync(cursorCommandsDir, { recursive: true });
+  const written: string[] = [];
+
+  for (const [skillName, cmdName] of Object.entries(SKILL_TO_COMMAND)) {
+    const skillPath = path.join(skillsDest, skillName, "SKILL.md");
+    if (!fs.existsSync(skillPath)) continue;
+    const body = stripFrontmatter(fs.readFileSync(skillPath, "utf8"));
+    const slash = `/specx:${cmdName}`;
+
+    const cursorCmd = `---
+description: ${slash} — follow specX skill ${skillName}
+---
+
+# ${slash}
+
+**Apply the full specX skill:** \`.cursor/skills/${skillName}/SKILL.md\`
+
+Read that skill completely and execute it step by step. Do not summarize or skip sections.
+
+---
+
+${body}
+`;
+    const out = path.join(cursorCommandsDir, `specx-${cmdName}.md`);
+    fs.writeFileSync(out, cursorCmd, "utf8");
+    written.push(out);
+  }
+
+  return written;
+}
+
 export function generateAgentIntegrations(
   projectRoot?: string,
   vars?: TemplateVars
@@ -71,67 +137,40 @@ export function generateAgentIntegrations(
     DATE: new Date().toISOString().slice(0, 10),
   };
 
-  // .specx/AGENTS.md — opencode-style project agent rules
-  const agentsMd = path.join(root, ".specx", "AGENTS.md");
-  writeFromTemplateFile(".specx/AGENTS.md", agentsMd, v);
-  written.push(agentsMd);
+  writeFromTemplateFile(".specx/AGENTS.md", path.join(root, ".specx", "AGENTS.md"), v);
+  written.push(path.join(root, ".specx", "AGENTS.md"));
 
-  // .specx/commands/*.md — full SDD playbooks per command
-  const commandsSrc = path.join(tpl, ".specx", "commands");
+  const skillsSrc = path.join(tpl, ".cursor", "skills");
+  const skillsDest = path.join(root, ".cursor", "skills");
+  copyDirRecursive(skillsSrc, skillsDest, v);
+  written.push(skillsDest);
+
+  syncCommandsFromSkills(root, skillsDest);
+
   const commandsDest = path.join(root, ".specx", "commands");
-  copyDirRecursive(commandsSrc, commandsDest, v);
-  if (fs.existsSync(commandsDest)) {
-    written.push(commandsDest);
-  }
+  if (fs.existsSync(commandsDest)) written.push(commandsDest);
 
-  // .cursor/rules/specx.mdc
   const cursorDir = path.join(root, ".cursor", "rules");
   fs.mkdirSync(cursorDir, { recursive: true });
   const rulePath = path.join(cursorDir, "specx.mdc");
   writeFromTemplateFile(".cursor/rules/specx.mdc", rulePath, v);
   written.push(rulePath);
 
-  // .cursor/skills/specx-*/
-  const skillsSrc = path.join(tpl, ".cursor", "skills");
-  const skillsDest = path.join(root, ".cursor", "skills");
-  copyDirRecursive(skillsSrc, skillsDest, v);
-  if (fs.existsSync(skillsDest)) {
-    written.push(skillsDest);
-  }
+  written.push(...generateCursorCommands(root, skillsDest));
 
-  // .cursor/commands/ — Cursor-native command files pointing to playbooks
-  const cursorCommandsDir = path.join(root, ".cursor", "commands");
-  fs.mkdirSync(cursorCommandsDir, { recursive: true });
-  const commandFiles = fs.existsSync(commandsSrc)
-    ? fs.readdirSync(commandsSrc).filter((f) => f.endsWith(".md"))
-    : [];
-
-  for (const file of commandFiles) {
-    const base = file.replace(/\.md$/, "");
-    const slash = `/specx:${base}`;
-    const body = fs.readFileSync(path.join(commandsSrc, file), "utf8");
-    const cursorCmd = `---\ndescription: specX ${base} — Spec-Driven Development\n---\n\nWhen the user runs **${slash}**, follow this playbook:\n\nRead and execute: \`.specx/commands/${file}\`\n\nAlso apply skill \`specx-sdd\` and domain skill \`specx-${base}\` if it exists.\n\n---\n\n${body}`;
-    const out = path.join(cursorCommandsDir, `specx-${base}.md`);
-    fs.writeFileSync(out, cursorCmd, "utf8");
-    written.push(out);
-  }
-
-  // Root AGENTS.md pointer (tools that read repo root)
   const rootAgents = path.join(root, "AGENTS.md");
-  if (!fs.existsSync(rootAgents)) {
-    fs.writeFileSync(
-      rootAgents,
-      `# AGENTS.md\n\nThis project uses **specX**. Read:\n\n- [.specx/AGENTS.md](.specx/AGENTS.md) — SDD workflow\n- [specx/SPECX.md](specx/SPECX.md) — constitution\n- [.specx/commands/](.specx/commands/) — slash command playbooks\n`,
-      "utf8"
-    );
-    written.push(rootAgents);
-  }
+  fs.writeFileSync(
+    rootAgents,
+    `# AGENTS.md\n\nThis project uses **specX**.\n\n- **Skills (primary):** \`.cursor/skills/specx-*/SKILL.md\` — full SDD playbooks\n- **Constitution:** [specx/SPECX.md](specx/SPECX.md)\n- **Rules:** [.specx/AGENTS.md](.specx/AGENTS.md)\n`,
+    "utf8"
+  );
+  written.push(rootAgents);
 
   const copilotPath = path.join(root, ".github", "copilot-instructions.md");
   fs.mkdirSync(path.dirname(copilotPath), { recursive: true });
   fs.writeFileSync(
     copilotPath,
-    `# Copilot — specX SDD\n\nFollow [.specx/AGENTS.md](.specx/AGENTS.md). Spec-driven: agree in \`specx/specs/\` before code. Slash commands map to \`.specx/commands/*.md\`.\n`,
+    `# Copilot — specX\n\nFollow skills in \`.cursor/skills/specx-sdd/SKILL.md\` and workflow skills (specx-propose, specx-spec, specx-build, …). Spec-driven: agree in specs before code.\n`,
     "utf8"
   );
   written.push(copilotPath);

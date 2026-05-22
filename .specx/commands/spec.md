@@ -1,22 +1,22 @@
 ---
-description: Generate behavior specs and delta specs from the proposal
+description: Write behavior specs and ADDED/MODIFIED/REMOVED delta specs from proposal Capabilities. Use for /specx:spec, requirements, scenarios, GIVEN WHEN THEN, or after propose.
 ---
 
-# /specx:spec — Behavior specification
+# specX spec — Behavior specification
 
-Translate the **proposal Capabilities** into testable requirements. This is the SDD contract for implementation.
+Translate **proposal Capabilities** into testable requirements. This is the **SDD contract** for all implementation.
 
 ## Prerequisites
 
-- `specx/changes/<change>/proposal.md` exists and Capabilities are filled.
-- Run **Specialist** pass on specs, then **Critic** pass (see `/specx:specialist` and `/specx:critic`).
+- `specx/changes/<change>/proposal.md` with Capabilities filled
+- After this pass: run **specx-critic** skill, then human review
 
 ## Steps
 
-1. Read `proposal.md` Capabilities section line by line.
-2. For each **new** capability: create `specx/changes/<change>/specs/<capability>/spec.md`.
-3. For each **modified** capability: open `specx/specs/<capability>/spec.md`, copy full requirement blocks being changed.
-4. Update root `specx/changes/<change>/spec.md` as index/summary if helpful.
+1. Read `proposal.md` Capabilities line by line.
+2. **New** capability → `specx/changes/<change>/specs/<capability>/spec.md`
+3. **Modified** capability → copy full blocks from `specx/specs/<capability>/spec.md`, edit under MODIFIED
+4. Optional index in `specx/changes/<change>/spec.md`
 
 ## Delta format (required)
 
@@ -34,7 +34,7 @@ The system SHALL <observable behavior>.
 ## MODIFIED Requirements
 
 ### Requirement: <existing name>
-<full updated requirement + all scenarios>
+<entire requirement + all scenarios, edited>
 
 ## REMOVED Requirements
 
@@ -45,20 +45,20 @@ The system SHALL <observable behavior>.
 
 ## SDD rules
 
-- Use **SHALL/MUST** for normative requirements.
-- **Product language**: user-visible outcomes, not internal class names.
-- Every `### Requirement:` has ≥1 `#### Scenario:`.
-- MODIFIED must include **complete** requirement blocks — partial deltas lose detail at archive.
-- If behavior is new and old requirement unchanged, use ADDED not MODIFIED.
-- Cross-check `specx/foundation/RULES.md` for conventions (auth, errors, i18n).
+- **SHALL/MUST** for normative requirements
+- **Product language** — user-visible outcomes, not class names
+- Every `### Requirement:` has ≥1 `#### Scenario:`
+- MODIFIED = **complete** blocks — partial deltas lose detail at archive
+- New behavior only → ADDED, not MODIFIED
+- Check `specx/foundation/RULES.md`
 
-## Critic must verify
+## Critic checklist (for specx-critic)
 
-- Orphan requirements with no scenario
-- Contradictions with `specx/specs/` living specs
+- Orphan requirements without scenarios
+- Contradictions with living specs
 - Missing REMOVED migration for breaking changes
-- Implementation leakage (SQL, framework) in requirements
+- Implementation leakage in requirements
 
-## After completion
+## After
 
-Human reviews spec + critique. Then: **`/specx:design`**.
+Human approves spec + critique → **specx-design** skill next.

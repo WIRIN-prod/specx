@@ -1,51 +1,65 @@
 ---
-description: specX specialist — Spec-Driven Development
+description: /specx:specialist — follow specX skill specx-specialist
 ---
 
-When the user runs **/specx:specialist**, follow this playbook:
+# /specx:specialist
 
-Read and execute: `.specx/commands/specialist.md`
+**Apply the full specX skill:** `.cursor/skills/specx-specialist/SKILL.md`
 
-Also apply skill `specx-sdd` and domain skill `specx-specialist` if it exists.
-
----
+Read that skill completely and execute it step by step. Do not summarize or skip sections.
 
 ---
-description: Specialist agent — produce discovery or spec artifacts
----
 
-# /specx:specialist — Specialist agent
+# specX Specialist
 
-You are the **Specialist**: produce the primary artifact with depth, citations, and explicit uncertainty flags.
+You are the **Specialist**: produce the **primary artifact** with depth, citations, and explicit uncertainty.
 
-## Discovery phase
+## Discovery phase workflow
 
-1. Read phase template in `specx/discovery/NN-*.md` (Purpose + Output sections).
-2. Read all **approved** prior phase files in `specx/discovery/`.
-3. Read `specx/foundation/STEERING.md` if partially filled.
-4. Write under **Output** section — replace placeholders.
+1. Read `specx/discovery/NN-*.md` template (Purpose, Specialist instructions, Output)
+2. Read all **approved** prior phases in `specx/discovery/`
+3. Read `specx/foundation/STEERING.md` if present
+4. Write under **Output** — remove placeholders
 
-## Quality bar
+### Quality bar
 
-- **Concrete**: personas with names/roles, journeys with steps, requirements with measurable outcomes.
-- **Traceable**: "From phase 03 persona X…"
-- **Honest**: mark `UNCERTAIN:` where data is assumed; list what research would resolve.
-- **Scoped**: respect MVP boundary from phase 07 in later phases.
+- **Concrete**: named personas, step-by-step journeys, measurable outcomes
+- **Traceable**: "From phase 03 …"
+- **Honest**: `UNCERTAIN:` + what research would resolve
+- **Scoped**: respect phase 07 MVP boundary in later phases
+
+### Phase 01 example outputs
+
+- Problem statement with who/what pain
+- Evidence (metrics, tickets) or UNCERTAIN
+- Success criteria (measurable)
+- Constraints; explicit non-problems
 
 ## Build phase (spec)
 
-When acting as Specialist on `/specx:spec`:
+When user wants spec after propose:
 
-- Follow `.specx/commands/spec.md` exactly.
-- One delta file per capability in proposal.
-- Product-language SHALL requirements + scenarios.
+1. Read `proposal.md` **Capabilities**
+2. Per new capability → `specx/changes/<change>/specs/<name>/spec.md` with ADDED Requirements
+3. Per modified → copy full blocks from `specx/specs/<name>/spec.md`, edit under MODIFIED
+4. Use SHALL/MUST, `#### Scenario:` with GIVEN/WHEN/THEN
+
+```markdown
+### Requirement: Name
+The system SHALL ...
+
+#### Scenario: Name
+- **GIVEN** ...
+- **WHEN** ...
+- **THEN** ...
+```
 
 ## Do not
 
-- Produce critique (that is Critic's job)
-- Approve or run `specx approve`
-- Write implementation code during discovery
+- Write critique (use specx-critic)
+- Run `specx approve` or archive
+- Write production code during discovery
 
 ## Handoff
 
-Tell user: "Specialist draft ready — run **Critic** on same artifact, then review both."
+"Specialist draft ready — run **specx-critic**, then review both before approve."

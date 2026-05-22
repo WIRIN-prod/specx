@@ -1,50 +1,79 @@
 ---
 name: specx-sdd
 description: >-
-  Spec-Driven Development discipline for specX projects. Use when planning features,
-  writing specs, implementing from specx/changes, or when user mentions specX, SDD,
-  living specs, or delta requirements.
+  Spec-Driven Development for specX projects. Use when planning features, writing specs,
+  implementing from specx/changes, discovery phases, delta requirements, /specx commands,
+  or when the user mentions specX, SDD, living specs, or agree-before-build.
 ---
 
-# specX SDD discipline
+# specX — Spec-Driven Development
 
-## When to apply
+You work in a **specX** project. **Agree on behavior in specs before writing code.** Specs live in git; chat is not the source of truth.
 
-- User invokes `/specx:*` or mentions spec-driven, specX, living specs
-- Work touches `specx/specs/`, `specx/changes/`, or `specx/discovery/`
-- Planning before coding on a specX-initialized repo
+## Read first (every session)
 
-## Read order
+1. `specx/SPECX.md` — lifecycle and principles
+2. `specx/foundation/STEERING.md` — product constitution (if present)
+3. `.specx/registry.yaml` — active discovery phase / change
+4. `specx/foundation/RULES.md` and `ARCHITECTURE.md` — constraints
 
-1. `specx/SPECX.md`
-2. `specx/foundation/STEERING.md`
-3. `.specx/registry.yaml`
-4. `.specx/AGENTS.md`
-5. Active `specx/changes/<name>/` if build in progress
+## Non-negotiables
 
-## Core loop
+1. **Specs are the contract** — code implements `specx/specs/` and change deltas
+2. **Human gates** — never `specx approve` or `specx archive` without explicit user consent
+3. **Dual-agent** — Specialist produces → Critic challenges → human approves
+4. **Fresh context** — one `tasks.md` checkbox per build session when possible
+5. **Product language in specs** — observable behavior; implementation detail in `design.md` / `tasks.md`
+
+## Full lifecycle
 
 ```
-propose → spec → design → tasks → build (per task) → verify → archive
+Discovery (01–11) → Foundation → propose → spec → design → tasks → build → verify → archive → Evolution
 ```
 
-Agree on **behavior in specs** before code. After archive, living specs in `specx/specs/` are truth.
+| Phase | Skill / command | Output |
+|-------|-----------------|--------|
+| Discovery | `specx-discover`, `specx-specialist`, `specx-critic` | `specx/discovery/` |
+| Build | `specx-propose` → `specx-spec` → `specx-design` → `specx-tasks` → `specx-build` | `specx/changes/<name>/` |
+| Verify | `specx-verify` | report |
+| Merge | `specx-archive` | `specx/specs/` living truth |
 
-## Delta requirements
+## Delta spec format (required for build)
 
-Use ADDED / MODIFIED / REMOVED sections. MODIFIED = full requirement block copied then edited. Scenarios use `####` headers.
+```markdown
+## ADDED Requirements
+### Requirement: Name
+The system SHALL ...
+#### Scenario: Name
+- **GIVEN** ...
+- **WHEN** ...
+- **THEN** ...
 
-## Dual-agent
+## MODIFIED Requirements
+### Requirement: Name
+<full block copied from living spec, then edited>
 
-Specialist produces → Critic critiques → Human approves. See skills `specx-specialist` and `specx-critic`.
+## REMOVED Requirements
+### Requirement: Name
+**Reason**: ...
+**Migration**: ...
+```
 
-## Command details
+**CRITICAL**: Scenarios use `####` (four hashes). MODIFIED = complete requirement blocks, not fragments.
 
-Read `.specx/commands/<name>.md` for the exact workflow when user runs a slash command.
+## Before any feature
+
+1. `specx status`
+2. Search `specx/specs/**/spec.md` for related domains
+3. Use the matching **skill** for the user's intent (propose, spec, build, …)
 
 ## Anti-patterns
 
-- Coding before proposal/spec exists
-- Editing `specx/specs/` directly during a change (use change deltas)
+- Coding before proposal + spec exist
+- Editing `specx/specs/` directly during a change (use deltas in `changes/<name>/specs/`)
 - Skipping verify before archive
 - Vague requirements without scenarios
+
+## Enterprise
+
+If `.specx/specx.yaml` has `track: enterprise`: complete discovery 10–11 (security, compliance); respect `review_before_archive`.

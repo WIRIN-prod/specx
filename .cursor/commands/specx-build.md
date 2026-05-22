@@ -1,57 +1,53 @@
 ---
-description: specX build — Spec-Driven Development
+description: /specx:build — follow specX skill specx-build
 ---
 
-When the user runs **/specx:build**, follow this playbook:
+# /specx:build
 
-Read and execute: `.specx/commands/build.md`
+**Apply the full specX skill:** `.cursor/skills/specx-build/SKILL.md`
 
-Also apply skill `specx-sdd` and domain skill `specx-build` if it exists.
-
----
+Read that skill completely and execute it step by step. Do not summarize or skip sections.
 
 ---
-description: Execute implementation tasks against spec with fresh context
----
 
-# /specx:build — Implement from spec
+# specX build — Implement from spec
 
-You are in **SDD build mode**. The spec is the contract; tasks are the plan; code must match both.
+**SDD build mode**: spec = contract; tasks = plan; code must match both.
 
 ## Session setup (required)
 
-1. Run `specx build <change>` OR read `specx/changes/<change>/tasks.md` and focus **one** unchecked task.
+1. `specx build <change>` OR open `specx/changes/<change>/tasks.md` — pick **one** unchecked `- [ ]` task
 2. Read in order:
-   - `specx/changes/<change>/spec.md`
-   - Relevant `specx/changes/<change>/specs/**/spec.md`
+   - `spec.md` + `specs/**/spec.md` deltas
    - `design.md`
    - `specx/foundation/RULES.md`
-3. **Clear unrelated conversation context** when switching tasks (fresh context per task).
-4. Search codebase only for files needed for this task.
+3. **Clear unrelated chat context** when switching tasks
+4. Search codebase only for files this task needs
 
 ## Execution rules
 
-- Implement **only** the current task. Do not expand scope.
-- Satisfy **GIVEN/WHEN/THEN** scenarios in spec for code you touch.
-- Follow `RULES.md` and `ARCHITECTURE.md` decisions.
-- Mark task complete in `tasks.md`: `- [x] 1.1 ...` when done and verified.
-- If spec is ambiguous, **stop** and ask human — do not guess requirements.
+- Implement **only** the current task
+- Satisfy **GIVEN/WHEN/THEN** for touched scenarios
+- Follow RULES.md and ARCHITECTURE.md
+- Mark done: `- [x] 1.1 ...` after verify
+- Ambiguous spec → **stop and ask** — never guess requirements
 
 ## Forbidden
 
-- Skipping tests when spec implies testable behavior
-- Changing requirements in spec without a deliberate `/specx:spec` revision
-- Implementing tasks not in `tasks.md` without user approval
-- Bulk refactors unrelated to current task
+- Skip tests when spec implies testability
+- Change spec without specx-spec revision
+- Tasks not in tasks.md without user approval
+- Drive-by refactors
 
 ## After each task
 
 Report:
-- What was implemented vs which scenario
+
+- Implementation vs requirement/scenario
 - Files changed
-- Tests run and result
-- Next unchecked task number
+- Tests run
+- Next task number
 
-## When all tasks checked
+## When all `[x]`
 
-Tell user: run **`/specx:verify`** then human approval for **`/specx:archive`**.
+User runs **specx-verify**, then **specx-archive** after explicit approval.

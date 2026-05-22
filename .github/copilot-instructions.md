@@ -1,3 +1,3 @@
-# Copilot — specX SDD
+# Copilot — specX
 
-Follow [.specx/AGENTS.md](.specx/AGENTS.md). Spec-driven: agree in `specx/specs/` before code. Slash commands map to `.specx/commands/*.md`.
+Follow skills in `.cursor/skills/specx-sdd/SKILL.md` and workflow skills (specx-propose, specx-spec, specx-build, …). Spec-driven: agree in specs before code.

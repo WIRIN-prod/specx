@@ -1,22 +1,60 @@
 ---
 name: specx-discover
 description: >-
-  Run specX discovery phases (problem statement through technical spec). Use for
-  /specx:discover, /specx:phase, greenfield products, or enterprise security/compliance phases.
+  specX discovery layer — problem statement through PRD and technical spec (phases 01–11).
+  Use for /specx:discover, greenfield product, MVP, personas, PRD, pre-product design.
 ---
 
-# specX discover
+# specX discover — Discovery layer
 
-Follow `.specx/commands/discover.md` in full.
+Discovery = **committed product truth** before build. Answers **what to build and why**, not how to code.
 
-## Phase discipline
+Run `specx discover` for status. Read `.specx/registry.yaml` for current phase.
 
-Run `specx phase <n>` then Specialist → Critic → human → `specx approve`.
+## Tracks
 
-## Enterprise
+| Track | Phases |
+|-------|--------|
+| quick | 07–09 (feature inventory, PRD, technical spec) |
+| standard | 01–09 |
+| enterprise | 01–11 (+ 10 security, 11 compliance) |
 
-Phases 10 (security) and 11 (compliance) are mandatory before large build loops.
+## Phase files
 
-## Outputs feed foundation
+| # | File | Focus |
+|---|------|-------|
+| 01 | `01-problem-statement.md` | Problem, evidence, success criteria |
+| 02 | `02-market-research.md` | Market, competitors |
+| 03 | `03-personas.md` | Personas, JTBD |
+| 04 | `04-user-journeys.md` | Journeys, edge cases |
+| 05 | `05-information-architecture.md` | IA |
+| 06 | `06-user-flows.md` | Flows, decision trees |
+| 07 | `07-feature-inventory.md` | Features, MVP boundary |
+| 08 | `08-prd.md` | PRD |
+| 09 | `09-technical-spec.md` | Technical spec |
+| 10 | `10-security.md` | Threat model, authn/z (enterprise) |
+| 11 | `11-compliance.md` | Regulatory, audit (enterprise) |
 
-After phase 09+, synthesize updates into `STEERING.md` and `BUILD-ORDER.md`.
+## Phase loop (every phase)
+
+1. `specx phase <n>` — scaffolds output + critique paths
+2. **specx-specialist** — fill `specx/discovery/NN-*.md`
+3. **specx-critic** — fill `specx/discovery/critiques/NN-*-critique.md`
+4. Human reads **both** → approve | revise
+5. **specx-approve** — only after human says approve
+6. Git commit approved artifacts
+
+## Rules
+
+- No skipping phases on standard/enterprise without user OK
+- Each phase references prior **approved** phases only
+- Cite sources in research phases; mark `UNCERTAIN:` when assuming
+- Phase 07 MVP boundary binds BUILD-ORDER until changed via propose
+
+## Quick track
+
+`specx discover quick` or phases 07–09 only for brownfield features.
+
+## After discovery
+
+Synthesize `specx/foundation/STEERING.md` and `BUILD-ORDER.md` from outputs → **specx-propose** for features.

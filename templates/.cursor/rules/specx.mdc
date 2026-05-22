@@ -1,76 +1,45 @@
 ---
-description: specX Spec-Driven Development — always apply on specX projects
+description: specX Spec-Driven Development — apply on all specX projects; use bundled skills for full workflows
 globs:
 alwaysApply: true
 ---
 
-# specX — Spec-Driven Development (SDD)
+# specX — Spec-Driven Development
 
-You work in a **specX** repository. Treat specs as the **contract** and code as the **implementation of that contract**.
+Specs are the **contract**; code is the implementation. Use **Cursor skills** in `.cursor/skills/specx-*` — each contains the full OpenCode-style playbook (not a one-line pointer).
 
-## Read first (every session)
+## Read first
 
-1. `specx/SPECX.md` — lifecycle and principles
-2. `.specx/AGENTS.md` — SDD rules and workflow map
-3. `specx/foundation/STEERING.md` — product constitution (if present)
-4. `.specx/registry.yaml` — active discovery phase / change
-5. Active `specx/changes/<name>/` when building
+1. `specx/SPECX.md`
+2. `.specx/AGENTS.md`
+3. `specx/foundation/STEERING.md`
+4. `.specx/registry.yaml`
 
-## SDD in one paragraph
+## Skills map (invoke these — they contain full instructions)
 
-Agree on **what** to build in specs (requirements + GIVEN/WHEN/THEN scenarios) **before** coding. Track work in `specx/changes/<name>/` using deltas (ADDED/MODIFIED/REMOVED). Merge into `specx/specs/` on archive. Keep specs alive with drift/health/evolution.
+| User intent | Skill | Slash |
+|-------------|-------|-------|
+| SDD discipline | `specx-sdd` | — |
+| Discovery | `specx-discover` | `/specx:discover` |
+| Draft phase/spec | `specx-specialist` | `/specx:specialist` |
+| Challenge draft | `specx-critic` | `/specx:critic` |
+| Approve phase | `specx-approve` | `/specx:approve` |
+| Revise phase | `specx-revise` | `/specx:revise` |
+| New change | `specx-propose` | `/specx:propose` |
+| Requirements | `specx-spec` | `/specx:spec` |
+| Technical design | `specx-design` | `/specx:design` |
+| Task list | `specx-tasks` | `/specx:tasks` |
+| Implement task | `specx-build` | `/specx:build` |
+| Verify vs spec | `specx-verify` | `/specx:verify` |
+| Archive change | `specx-archive` | `/specx:archive` |
 
-## Slash commands → read `.specx/commands/<name>.md`
+When the user runs a slash command or asks for a specX workflow, **load and follow the matching skill's SKILL.md in full**.
 
-| Command | SDD purpose |
-|---------|-------------|
-| `/specx:discover` | Pre-product discovery (phases 01–11) |
-| `/specx:phase` | Scaffold + run one discovery phase |
-| `/specx:specialist` | Produce phase/spec artifact |
-| `/specx:critic` | Challenge artifact before human gate |
-| `/specx:approve` | Human already approved — update registry only with consent |
-| `/specx:propose` | Start change — proposal + **Capabilities** |
-| `/specx:spec` | Behavior specs + domain deltas |
-| `/specx:design` | Technical design from spec |
-| `/specx:tasks` | Checkbox task list for build |
-| `/specx:build` | Implement **one task**, fresh context |
-| `/specx:verify` | Verifier pass vs spec |
-| `/specx:archive` | Merge to living specs (human must approve) |
-| `/specx:drift` | Spec/code alignment report |
-| `/specx:onboard` | Load full project context |
+## Gates
 
-**When user types a slash command, open the matching `.specx/commands/*.md` and execute that playbook.**
+- Specialist → Critic → **human** → approve (discovery) or archive (build)
+- Never archive or approve without explicit user consent
 
-## Skills (auto-invoke when relevant)
+## Delta format
 
-- `specx-sdd` — general SDD discipline
-- `specx-discover` — discovery phases
-- `specx-propose` — new changes
-- `specx-build` — task execution
-- `specx-specialist` / `specx-critic` — dual-agent passes
-
-## Gates (never bypass)
-
-- Discovery: Specialist + Critic → **human** → then `specx approve`
-- Build: spec → design → tasks → build → verify → **human** → archive
-- Never archive without explicit user request
-
-## Delta spec format
-
-```markdown
-### Requirement: Name
-The system SHALL ...
-
-#### Scenario: Name
-- **GIVEN** ...
-- **WHEN** ...
-- **THEN** ...
-```
-
-MODIFIED = copy full requirement from living spec, then edit. REMOVED needs Reason + Migration.
-
-## Context hygiene
-
-- One build task per session when possible
-- Put decisions in markdown files, not only chat
-- Run `specx status` when unsure what is active
+`## ADDED|MODIFIED|REMOVED Requirements` — MODIFIED = full requirement blocks; scenarios use `####` and GIVEN/WHEN/THEN.

@@ -1,30 +1,33 @@
 ---
-description: specX approve — Spec-Driven Development
----
-
-When the user runs **/specx:approve**, follow this playbook:
-
-Read and execute: `.specx/commands/approve.md`
-
-Also apply skill `specx-sdd` and domain skill `specx-approve` if it exists.
-
----
-
----
-description: Human has approved — update registry (do not skip human gate)
+description: /specx:approve — follow specX skill specx-approve
 ---
 
 # /specx:approve
 
-**Only run when the user explicitly says they approve** the current discovery phase.
+**Apply the full specX skill:** `.cursor/skills/specx-approve/SKILL.md`
 
-## Checklist before `specx approve`
+Read that skill completely and execute it step by step. Do not summarize or skip sections.
 
-- [ ] Specialist output in `specx/discovery/NN-*.md` is complete (not placeholder)
-- [ ] Critic file in `specx/discovery/critiques/` exists
-- [ ] Human reviewed both
-- [ ] User said "approve" or equivalent
+---
 
-Then run CLI: `specx approve` and suggest git commit for discovery files + `.specx/registry.yaml`.
+# specX approve — Discovery gate
 
-Do not approve on your own initiative.
+**Only when the user explicitly approves** the current discovery phase.
+
+## Checklist
+
+- [ ] Specialist output in `specx/discovery/NN-*.md` is complete (no placeholders)
+- [ ] Critic file exists in `specx/discovery/critiques/`
+- [ ] User said "approve" or equivalent in chat
+
+## Then
+
+1. Run `specx approve` (updates `.specx/registry.yaml`)
+2. Suggest git add: discovery files + registry
+3. Tell user next phase: `specx phase <n+1>` or discovery complete → update STEERING
+
+## Never
+
+- Approve without user consent
+- Skip critic pass
+- Approve empty/template-only outputs

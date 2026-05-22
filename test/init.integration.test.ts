@@ -27,7 +27,13 @@ describe("init integration", () => {
     expect(fs.readFileSync(path.join(tmp, ".specx", "commands", "build.md"), "utf8")).toContain(
       "fresh context"
     );
-    expect(fs.existsSync(path.join(tmp, ".cursor", "skills", "specx-sdd", "SKILL.md"))).toBe(
+    const proposeSkill = fs.readFileSync(
+      path.join(tmp, ".cursor", "skills", "specx-propose", "SKILL.md"),
+      "utf8"
+    );
+    expect(proposeSkill).toContain("Capabilities (CRITICAL");
+    expect(proposeSkill).not.toMatch(/Follow `\.specx\/commands\/propose\.md` in full/);
+    expect(fs.existsSync(path.join(tmp, ".cursor", "skills", "specx-spec", "SKILL.md"))).toBe(
       true
     );
   });

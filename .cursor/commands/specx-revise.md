@@ -1,26 +1,27 @@
 ---
-description: specX revise — Spec-Driven Development
----
-
-When the user runs **/specx:revise**, follow this playbook:
-
-Read and execute: `.specx/commands/revise.md`
-
-Also apply skill `specx-sdd` and domain skill `specx-revise` if it exists.
-
----
-
----
-description: Mark discovery phase for revision after critic findings
+description: /specx:revise — follow specX skill specx-revise
 ---
 
 # /specx:revise
 
-User wants changes to the **current** discovery phase before approval.
+**Apply the full specX skill:** `.cursor/skills/specx-revise/SKILL.md`
 
-1. Run `specx revise` to update registry.
-2. Specialist revises `specx/discovery/NN-*.md` addressing critic items.
-3. Critic re-runs on updated output.
-4. Human reviews again → `/specx:approve` when ready.
+Read that skill completely and execute it step by step. Do not summarize or skip sections.
 
-Do not proceed to next phase until approve.
+---
+
+# specX revise — Discovery revision
+
+User wants changes before approving the current discovery phase.
+
+## Steps
+
+1. Run `specx revise` (registry → revision status)
+2. **specx-specialist** revises `specx/discovery/NN-*.md` addressing critic recommendations
+3. **specx-critic** re-runs on updated output
+4. Human reviews again → **specx-approve** when ready
+
+## Do not
+
+- Advance to next phase until approve
+- Approve while status is revision

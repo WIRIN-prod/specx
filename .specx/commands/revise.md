@@ -1,14 +1,19 @@
 ---
-description: Mark discovery phase for revision after critic findings
+description: Mark discovery phase for revision after critic REVISE_REQUIRED. Use for /specx:revise when user wants changes before approval.
 ---
 
-# /specx:revise
+# specX revise — Discovery revision
 
-User wants changes to the **current** discovery phase before approval.
+User wants changes before approving the current discovery phase.
 
-1. Run `specx revise` to update registry.
-2. Specialist revises `specx/discovery/NN-*.md` addressing critic items.
-3. Critic re-runs on updated output.
-4. Human reviews again → `/specx:approve` when ready.
+## Steps
 
-Do not proceed to next phase until approve.
+1. Run `specx revise` (registry → revision status)
+2. **specx-specialist** revises `specx/discovery/NN-*.md` addressing critic recommendations
+3. **specx-critic** re-runs on updated output
+4. Human reviews again → **specx-approve** when ready
+
+## Do not
+
+- Advance to next phase until approve
+- Approve while status is revision

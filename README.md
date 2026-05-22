@@ -51,7 +51,7 @@ Read [`specx/SPECX.md`](specx/SPECX.md) after init — every agent session start
 | Team | `review`, `assign`, `gate` |
 | Headless | `run -p "..."`, `run --phase 1`, `run --propose name` |
 
-Slash commands in Cursor: `/specx:propose`, `/specx:build`, etc. Each command has a full **SDD playbook** in `.specx/commands/` (OpenCode-style). Cursor skills in `.cursor/skills/specx-*` and rules in `.cursor/rules/specx.mdc` guide agents on spec-driven development—not just command names.
+Slash commands map to **OpenCode-style skills** in `.cursor/skills/specx-*/SKILL.md` — each skill contains the full SDD playbook (propose, spec, design, tasks, build, verify, archive, discover, specialist, critic). `.specx/commands/` is synced from skills on `specx init` / `specx update`.
 
 ## vs OpenSpec
 

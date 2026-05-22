@@ -1,60 +1,53 @@
 ---
-description: specX propose — Spec-Driven Development
+description: /specx:propose — follow specX skill specx-propose
 ---
 
-When the user runs **/specx:propose**, follow this playbook:
+# /specx:propose
 
-Read and execute: `.specx/commands/propose.md`
+**Apply the full specX skill:** `.cursor/skills/specx-propose/SKILL.md`
 
-Also apply skill `specx-sdd` and domain skill `specx-propose` if it exists.
-
----
+Read that skill completely and execute it step by step. Do not summarize or skip sections.
 
 ---
-description: Start a spec-driven change — proposal with capabilities and scope
----
 
-# /specx:propose — Start a change
+# specX propose — Start a change
 
-You are starting a **spec-driven change**. Do not write production code until the proposal is reviewed.
+You are starting a **spec-driven change**. **Do not write production code** until the proposal is reviewed and the user moves to spec.
 
 ## Steps
 
 1. Run `specx status` and read `.specx/registry.yaml`.
 2. Search `specx/specs/**/spec.md` for domains this feature touches.
-3. Read `specx/foundation/STEERING.md` and `BUILD-ORDER.md` — confirm feature aligns with product direction.
-4. If the change folder does not exist, run `specx propose <kebab-name> -m "<summary>"` or create under `specx/changes/<name>/`.
+3. Read `specx/foundation/STEERING.md` and `BUILD-ORDER.md` — confirm alignment.
+4. Create folder: `specx propose <kebab-name> -m "<summary>"` or `specx/changes/<name>/`.
 
-## Write `proposal.md`
-
-Use this structure:
+## Write `specx/changes/<name>/proposal.md`
 
 ### Why
 1–2 sentences: problem, opportunity, why now.
 
 ### What changes
-Bullet list of concrete changes. Mark **BREAKING** items.
+Bullet list. Mark **BREAKING** items.
 
-### Capabilities (CRITICAL)
-This section drives the spec phase.
+### Capabilities (CRITICAL — drives `/specx:spec`)
 
-- **New capabilities**: kebab-case names → each becomes `specx/changes/<change>/specs/<name>/spec.md` and eventually `specx/specs/<name>/spec.md`.
-- **Modified capabilities**: existing folders under `specx/specs/` whose **requirements** change (not refactors alone).
+- **New capabilities**: kebab-case → `specx/changes/<change>/specs/<name>/spec.md` → later `specx/specs/<name>/spec.md`
+- **Modified capabilities**: existing `specx/specs/<domain>/` whose **requirements** change (not refactors alone)
 
-Research existing specs before listing. Empty modified list if only new code paths with no requirement change.
+Research existing specs first. Empty modified list if no requirement changes.
 
 ### Impact
 APIs, data models, dependencies, security, migrations.
 
 ### Out of scope
-Explicitly list what this change will **not** do.
+What this change will **not** do.
 
 ## Rules
 
-- Keep proposal 1–2 pages. "How" belongs in `design.md`.
-- Kebab-case change names: `add-user-auth`, not `Add User Auth`.
-- Present proposal to human before `/specx:spec`.
+- 1–2 pages max; "how" belongs in `design.md`
+- Kebab-case names: `add-oauth-login`
+- Present to human; wait before spec phase
 
-## After completion
+## After
 
-Tell the user: **Next: `/specx:spec`** to generate behavior contracts from Capabilities.
+Tell user: **Next — run specX spec skill** (`/specx:spec` or `specx spec`).

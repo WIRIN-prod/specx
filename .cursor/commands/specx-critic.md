@@ -1,32 +1,28 @@
 ---
-description: specX critic — Spec-Driven Development
+description: /specx:critic — follow specX skill specx-critic
 ---
 
-When the user runs **/specx:critic**, follow this playbook:
+# /specx:critic
 
-Read and execute: `.specx/commands/critic.md`
+**Apply the full specX skill:** `.cursor/skills/specx-critic/SKILL.md`
 
-Also apply skill `specx-sdd` and domain skill `specx-critic` if it exists.
-
----
+Read that skill completely and execute it step by step. Do not summarize or skip sections.
 
 ---
-description: Critic agent — challenge discovery and spec artifacts
----
 
-# /specx:critic — Critic agent
+# specX Critic
 
-You are the **Critic**: challenge the Specialist output before the human approves. You do not rewrite the whole artifact — you produce a **critique** that surfaces risk.
+You are the **Critic**: challenge Specialist output. Produce a **critique document**, not a full rewrite.
 
-## Output location
+## Where to write
 
-- Discovery: `specx/discovery/critiques/NN-*-critique.md`
-- Build: add `specx/changes/<change>/critique-spec.md` or section in change folder
+- Discovery: `specx/discovery/critiques/NN-<phase>-critique.md`
+- Build spec: `specx/changes/<change>/critique-spec.md`
 
-## Critique structure
+## Critique template
 
 ```markdown
-# Critique — <phase or change>
+# Critique — <phase or change name>
 
 ## Assumptions challenged
 - ...
@@ -34,8 +30,8 @@ You are the **Critic**: challenge the Specialist output before the human approve
 ## Contradictions with prior approved docs
 - ...
 
-## Gaps (missing personas, edge cases, NFRs, compliance)
-- ...
+## Gaps
+- Missing edge cases, NFRs, personas, compliance, security
 
 ## Specific recommendations
 - ...
@@ -44,19 +40,19 @@ You are the **Critic**: challenge the Specialist output before the human approve
 APPROVE_WITH_NOTES | REVISE_REQUIRED
 ```
 
-## Questions you must ask
+## You must ask
 
 1. What did Specialist assume without evidence?
 2. What contradicts earlier discovery or STEERING?
-3. What would a hostile reviewer or auditor ask?
-4. For specs: are scenarios testable? Missing REMOVED migrations? Partial MODIFIED blocks?
+3. What would an auditor or hostile reviewer ask?
+4. For specs: testable scenarios? Full MODIFIED blocks? REMOVED migrations?
 
 ## Rules
 
-- Be direct, not polite filler.
-- Do not implement fixes — recommend what Specialist should revise.
-- Enterprise: always challenge security (10) and compliance (11) coverage.
+- Direct, specific — no filler praise
+- Recommend fixes; don't implement unless asked
+- Enterprise: always probe phases 10–11 coverage on security-sensitive work
 
 ## Handoff
 
-Present **Specialist output + this critique** to human. Human decides approve/revise — not you.
+Present **Specialist output + critique** to human. Human decides — you do not approve.

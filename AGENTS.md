@@ -1,7 +1,7 @@
 # AGENTS.md
 
-This project uses **specX**. Read:
+This project uses **specX**.
 
-- [.specx/AGENTS.md](.specx/AGENTS.md) — SDD workflow
-- [specx/SPECX.md](specx/SPECX.md) — constitution
-- [.specx/commands/](.specx/commands/) — slash command playbooks
+- **Skills (primary):** `.cursor/skills/specx-*/SKILL.md` — full SDD playbooks
+- **Constitution:** [specx/SPECX.md](specx/SPECX.md)
+- **Rules:** [.specx/AGENTS.md](.specx/AGENTS.md)

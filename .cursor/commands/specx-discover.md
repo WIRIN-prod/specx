@@ -1,57 +1,65 @@
 ---
-description: specX discover — Spec-Driven Development
+description: /specx:discover — follow specX skill specx-discover
 ---
 
-When the user runs **/specx:discover**, follow this playbook:
+# /specx:discover
 
-Read and execute: `.specx/commands/discover.md`
+**Apply the full specX skill:** `.cursor/skills/specx-discover/SKILL.md`
 
-Also apply skill `specx-sdd` and domain skill `specx-discover` if it exists.
-
----
+Read that skill completely and execute it step by step. Do not summarize or skip sections.
 
 ---
-description: Discovery layer — pre-product SDD from idea to PRD and technical spec
----
 
-# /specx:discover — Discovery layer
+# specX discover — Discovery layer
 
-Discovery produces **committed product truth** before build loops. Run `specx discover` for status.
+Discovery = **committed product truth** before build. Answers **what to build and why**, not how to code.
 
-## SDD role
-
-Discovery answers: **what to build and why** — not how to code it. Outputs feed `specx/foundation/STEERING.md` and `BUILD-ORDER.md`.
+Run `specx discover` for status. Read `.specx/registry.yaml` for current phase.
 
 ## Tracks
 
 | Track | Phases |
 |-------|--------|
-| quick | 07–09 |
+| quick | 07–09 (feature inventory, PRD, technical spec) |
 | standard | 01–09 |
-| enterprise | 01–11 (+ security, compliance) |
+| enterprise | 01–11 (+ 10 security, 11 compliance) |
+
+## Phase files
+
+| # | File | Focus |
+|---|------|-------|
+| 01 | `01-problem-statement.md` | Problem, evidence, success criteria |
+| 02 | `02-market-research.md` | Market, competitors |
+| 03 | `03-personas.md` | Personas, JTBD |
+| 04 | `04-user-journeys.md` | Journeys, edge cases |
+| 05 | `05-information-architecture.md` | IA |
+| 06 | `06-user-flows.md` | Flows, decision trees |
+| 07 | `07-feature-inventory.md` | Features, MVP boundary |
+| 08 | `08-prd.md` | PRD |
+| 09 | `09-technical-spec.md` | Technical spec |
+| 10 | `10-security.md` | Threat model, authn/z (enterprise) |
+| 11 | `11-compliance.md` | Regulatory, audit (enterprise) |
 
 ## Phase loop (every phase)
 
-1. `specx phase <n>` — scaffold output + critique files
-2. **Specialist** fills `specx/discovery/NN-*.md` (see `/specx:specialist`)
-3. **Critic** fills `specx/discovery/critiques/NN-*-critique.md` (see `/specx:critic`)
+1. `specx phase <n>` — scaffolds output + critique paths
+2. **specx-specialist** — fill `specx/discovery/NN-*.md`
+3. **specx-critic** — fill `specx/discovery/critiques/NN-*-critique.md`
 4. Human reads **both** → approve | revise
-5. `specx approve` — only after human consent
+5. **specx-approve** — only after human says approve
 6. Git commit approved artifacts
 
 ## Rules
 
-- Never skip phases on standard/enterprise without user approval.
-- Each phase must reference prior **approved** phases — no contradictions.
-- Cite research sources in market/competitor phases.
-- MVP boundary (phase 07) is binding for BUILD-ORDER unless later revised via change.
+- No skipping phases on standard/enterprise without user OK
+- Each phase references prior **approved** phases only
+- Cite sources in research phases; mark `UNCERTAIN:` when assuming
+- Phase 07 MVP boundary binds BUILD-ORDER until changed via propose
 
-## Commands
+## Quick track
 
-- `/specx:discover quick` — phases 07–09 only
-- `/specx:phase <n>` — scaffold specific phase
-- `/specx:approve` / `/specx:revise` — gate control
+`specx discover quick` or phases 07–09 only for brownfield features.
 
-## After discovery complete
+## After discovery
 
-Regenerate or update `STEERING.md` from discovery outputs. Then begin **Build** with `/specx:propose`.
+Synthesize `specx/foundation/STEERING.md` and `BUILD-ORDER.md` from outputs → **specx-propose** for features.

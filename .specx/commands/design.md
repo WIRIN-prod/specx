@@ -1,58 +1,57 @@
 ---
-description: Technical design from approved spec — decisions before code
+description: Write technical design.md from approved spec — architecture decisions before code. Use for /specx:design, how to implement, ADR, migration plan, after spec phase.
 ---
 
-# /specx:design — Technical design
+# specX design — Technical design
 
-Explain **HOW** to satisfy the spec. Design does not replace requirements — it implements them.
+Explain **HOW** to satisfy the spec. Design implements requirements; it does not replace them.
 
-## When design is required
+## When required
 
-Create or update `design.md` if any apply:
+Create `design.md` if any apply:
 
-- Multiple modules/services or new architectural pattern
-- New dependency, schema migration, or external API
-- Security, performance, or compliance constraints (enterprise)
-- Ambiguity that needs decisions before tasks
+- Multiple modules/services or new pattern
+- New dependency, schema migration, external API
+- Security, performance, compliance (enterprise)
+- Ambiguity needing decisions before tasks
 
-Skip only for trivial, single-file changes with obvious implementation.
+Skip only trivial single-file changes.
 
 ## Steps
 
-1. Read `proposal.md`, `spec.md`, and all `specs/**/spec.md` deltas.
-2. Read `specx/foundation/ARCHITECTURE.md` — align or add ADR entries.
-3. Search codebase for current implementation of touched domains.
-4. Write `design.md` sections below.
+1. Read `proposal.md`, `spec.md`, all `specs/**/spec.md` deltas
+2. Read `specx/foundation/ARCHITECTURE.md` — align or add ADRs
+3. Search codebase for current implementation
+4. Write `specx/changes/<change>/design.md`
 
 ## Required sections
 
 ### Context
-Current state, constraints, links to discovery/PRD if relevant.
+Current state, constraints, discovery/PRD links.
 
 ### Goals / Non-Goals
-What this design achieves; explicit exclusions.
 
 ### Decisions
-For each decision: **Choice**, **Rationale**, **Alternatives considered**.
+Per decision: **Choice**, **Rationale**, **Alternatives considered**.
 
 ### Data & API
-Schemas, endpoints, events — only what spec requires.
+Only what spec requires.
 
 ### Risks / Trade-offs
-`[Risk] → Mitigation` format.
+`[Risk] → Mitigation`
 
 ### Migration plan
-Deploy order, rollback, feature flags.
+Deploy, rollback, feature flags.
 
 ### Open questions
-Blockers needing human input before `/specx:tasks`.
+Blockers before tasks.
 
 ## Rules
 
-- Every design decision must trace to a **Requirement** in spec.
-- Do not contradict approved discovery or STEERING non-negotiables.
-- Prefer extending existing patterns from `ARCHITECTURE.md` and codebase.
+- Every decision traces to a **Requirement** in spec
+- No contradiction with STEERING or approved discovery
+- Prefer existing `ARCHITECTURE.md` patterns
 
-## After completion
+## After
 
-Human approves design. Then: **`/specx:tasks`**.
+Human approves → **specx-tasks** skill.
