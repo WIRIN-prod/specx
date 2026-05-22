@@ -14,6 +14,7 @@ import { archiveChange } from "../lib/archive.js";
 import { appendAudit } from "../lib/audit.js";
 import { printGitHint } from "../lib/git.js";
 import { writeFromTemplate, defaultVars } from "../lib/template.js";
+import { formatBuildTasksSection, parseTasksMarkdown } from "../lib/tasks.js";
 
 function resolveChange(name?: string): string {
   const registry = loadRegistry();
@@ -137,7 +138,10 @@ export function runTasks(changeName?: string): void {
   console.log(chalk.green(`Tasks ready: ${tasksPath}`));
 }
 
-export function runBuild(changeName?: string, taskId?: string): void {
+export function runBuild(
+  changeName?: string,
+  options?: { task?: string; one?: boolean }
+): void {
   const name = resolveChange(changeName);
   const { specxDir } = getRoots();
   const tasksPath = path.join(specxDir, "changes", name, "tasks.md");
@@ -146,13 +150,37 @@ export function runBuild(changeName?: string, taskId?: string): void {
 
   updateChangeStatus(name, "building");
 
+  const progress = fs.existsSync(tasksPath)
+    ? parseTasksMarkdown(fs.readFileSync(tasksPath, "utf8"))
+    : null;
+
+  if (options?.one && !options?.task) {
+    console.error(
+      chalk.red("Use --task X.Y with --one, or omit both to build all open tasks.")
+    );
+    process.exit(1);
+  }
+  const singleTask = !!options?.task;
+  const mode = singleTask ? "single" : "all";
+  const taskSection = progress
+    ? formatBuildTasksSection(progress, mode, options?.task)
+    : "_missing tasks.md — run specx tasks_";
+
+  const instruction = singleTask
+    ? "Clear prior chat context. Implement only the focus task below against the spec."
+    : [
+        "Clear prior chat context. Implement **all** open tasks below against the spec and design.",
+        "Work through the list in order; mark each checkbox in tasks.md when verified.",
+        "Use `specx build --one` or `specx build --task X.Y` only when the user wants a single task.",
+      ].join(" ");
+
   const brief = [
     `# Build brief — ${name}`,
     "",
-    "## Fresh context instruction",
-    "Clear prior chat context. Implement only the task below against the spec.",
+    "## Instruction",
+    instruction,
     "",
-    taskId ? `## Focus task: ${taskId}` : "## All tasks",
+    taskSection,
     "",
     "## Spec",
     fs.existsSync(specPath) ? fs.readFileSync(specPath, "utf8") : "_missing_",
@@ -160,7 +188,7 @@ export function runBuild(changeName?: string, taskId?: string): void {
     "## Design",
     fs.existsSync(designPath) ? fs.readFileSync(designPath, "utf8") : "_missing_",
     "",
-    "## Tasks",
+    "## Full tasks.md",
     fs.existsSync(tasksPath) ? fs.readFileSync(tasksPath, "utf8") : "_missing_",
   ].join("\n");
 

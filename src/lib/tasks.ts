@@ -87,6 +87,45 @@ export function taskCountsFromItem(
   return { completed: 0, total: 0, source: "none" };
 }
 
+export function formatBuildTasksSection(
+  progress: TaskProgress,
+  mode: "all" | "single",
+  taskId?: string
+): string {
+  const lines: string[] = [];
+
+  if (mode === "single" && taskId) {
+    const match = progress.incomplete.find((t) => t.id === taskId);
+    const done = progress.completedItems.find((t) => t.id === taskId);
+    const item = match ?? done;
+    lines.push(`## Focus task: ${taskId}`);
+    if (item) {
+      lines.push(`- [ ] ${taskId} ${item.summary}`);
+    } else {
+      lines.push(`_Task ${taskId} not found in tasks.md_`);
+    }
+    return lines.join("\n");
+  }
+
+  lines.push(
+    `## Build scope: ALL open tasks (${progress.incomplete.length} remaining)`
+  );
+  lines.push(
+    "",
+    "Implement every unchecked task below in order. Mark each `- [x]` when verified.",
+    "Do not stop after one task unless the user explicitly asked for a single task.",
+    ""
+  );
+  for (const t of progress.incomplete) {
+    const id = t.id ? `${t.id} ` : "";
+    lines.push(`- [ ] ${id}${t.summary}`);
+  }
+  if (progress.incomplete.length === 0) {
+    lines.push("_All tasks complete — run specx verify then specx archive._");
+  }
+  return lines.join("\n");
+}
+
 export function formatTaskBar(completed: number, total: number): string {
   if (total <= 0) return "";
   const pct = Math.round((completed / total) * 100);

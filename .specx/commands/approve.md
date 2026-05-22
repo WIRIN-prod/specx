@@ -1,38 +1,55 @@
 ---
-description: specX approve discovery phase — human gate only after specialist and critic reviewed. Updates registry and recommends git commit. Never self-approve.
+description: specX approve — human gate for discovery phases and build artifacts (proposal, spec, design, tasks). Updates registry. Never self-approve.
 ---
 
-# specX approve — Human gate (discovery)
+# specX approve — Human gate (discovery + build)
 
-**Humans decide.** You run this only when the user **explicitly approves** the current discovery phase after reading Specialist + Critic outputs.
+**Humans decide.** Run only when the user **explicitly approves** after reviewing Specialist + Critic (discovery) or change artifacts (build).
 
-## Preconditions
+## Targets
 
-- [ ] `specx/discovery/NN-*.md` complete (no `<!-- Specialist writes below -->`)
-- [ ] `specx/discovery/critiques/NN-*-critique.md` exists
-- [ ] Critic verdict not `REVISE_REQUIRED` unless human overrides with documented risk
-- [ ] Verifier: no contradiction with prior **approved** phases
-- [ ] User said "approve" / "approved" / equivalent in chat
+| Command | Approves |
+|---------|----------|
+| `specx approve` | Next unapproved artifact on **active change**, or current **discovery** phase if no change work pending |
+| `specx approve discovery` | Current discovery phase |
+| `specx approve 9` | Discovery phase 09 |
+| `specx approve proposal` | `proposal.md` on active change |
+| `specx approve spec` | `spec.md` |
+| `specx approve design` | `design.md` |
+| `specx approve tasks` | `tasks.md` (task list gate) |
+| `specx approve change` | All artifacts on active change |
+| `specx approve <change-name>` | Whole change |
+| `specx approve spec --change foo` | Artifact on named change |
+
+## Preconditions (discovery)
+
+- [ ] `specx/discovery/NN-*.md` complete (no placeholder comments)
+- [ ] Critic reviewed; user said "approve"
+- [ ] No contradiction with prior **approved** phases
+
+## Preconditions (build)
+
+- [ ] Artifact file exists and is complete
+- [ ] User said "approve" for that artifact (spec / design / tasks / proposal)
+- [ ] Do not approve implementation code — approve **documents** only
 
 ## Actions
 
-1. `specx approve` — updates `.specx/registry.yaml`, may advance `current_phase`
-2. Append audit log if enterprise `evolution.audit: true`
-3. Recommend commit:
+1. Run the appropriate `specx approve …` — updates `.specx/registry.yaml`
+2. Recommend commit (Ralph: approved truth in git):
 
 ```bash
-git add specx/discovery/ .specx/registry.yaml
-git commit -m "specx: approve discovery phase NN"
+git add specx/ .specx/registry.yaml
+git commit -m "specx: approve <phase or artifact>"
 ```
 
-**Ralph Loop:** Approved truth must be in git — not only in chat.
+## After approve (build)
 
-## After approve
-
-Tell user next phase from track (read `.specx/specx.yaml` track + `specx-discover/phases.md`).
+- Next artifact hint printed by CLI (e.g. `spec` → `design` → `tasks`)
+- When all artifacts approved: `specx build` (implements **all** open tasks by default)
 
 ## Never
 
 - Self-approve
-- Approve without critic file
-- Skip to build without foundation synthesis when discovery complete
+- Skip critic on discovery
+- Approve build while artifacts still in `revision` without human sign-off

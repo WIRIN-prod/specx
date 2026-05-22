@@ -1,27 +1,33 @@
 ---
-description: specX revise discovery phase after critic REVISE_REQUIRED. Specialist fixes then critic re-runs before human approve.
+description: specX revise — mark discovery phase or change artifact (proposal|spec|design|tasks) for revision after critic REVISE_REQUIRED or human rejection.
 ---
 
-# specX revise — Discovery revision loop
+# specX revise — Revision loop (discovery + build)
 
-Triggered when Critic verdict is **REVISE_REQUIRED** or human rejects draft.
+Triggered when Critic verdict is **REVISE_REQUIRED** or human rejects a draft.
+
+## Targets
+
+| Command | Marks |
+|---------|--------|
+| `specx revise` | Active change artifact in revision, or current discovery phase |
+| `specx revise discovery` | Current discovery phase |
+| `specx revise 5` | Discovery phase 05 |
+| `specx revise spec` | `spec.md` on active change |
+| `specx revise design` | `design.md` |
+| `specx revise tasks` | `tasks.md` |
+| `specx revise change` | Whole active change |
+| `specx revise spec -m "reason"` | Spec with reason in registry + `revision.md` |
+| `specx revise --change foo spec` | Named change |
 
 ## Loop
 
-1. `specx revise` — registry status → revision
-2. **specx-specialist** — address every numbered item in critique
-3. **specx-critic** — re-run on updated output
-4. Human reviews both again
-5. **specx-approve** only when human satisfied
-
-## Specialist must
-
-- Quote critique items and show how each was resolved
-- Mark unresolved items as UNCERTAIN with question for human
-- Not delete critic file — add addendum `## Revision N` in critique if helpful
+1. `specx revise [target]` — registry → `revision`, writes/updates `specx/changes/<change>/revision.md` when build
+2. **specx-specialist** or author — fix artifact
+3. **specx-critic** — re-run on discovery; for build, human reviews diff
+4. **specx-approve** the same artifact when human satisfied
 
 ## Do not
 
-- Advance `current_phase` in registry
-- Start next phase until approve
-- Jump to build to "fix" product disagreements — fix discovery artifact
+- Advance `current_phase` on discovery until re-approved
+- Start `specx build` to bypass spec disagreements — revise the spec

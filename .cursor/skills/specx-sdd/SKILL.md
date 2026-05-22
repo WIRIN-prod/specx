@@ -51,13 +51,13 @@ RAW IDEA
 | Discovery / phase / PRD | `specx-discover` (+ `phases.md` in that folder) |
 | Draft artifact | `specx-specialist` |
 | Challenge artifact | `specx-critic` |
-| Approve discovery phase | `specx-approve` (human said yes first) |
-| Revise phase | `specx-revise` |
+| Approve discovery / build artifact | `specx approve` / `specx approve spec` (human said yes first) |
+| Revise discovery / build artifact | `specx revise` / `specx revise design` |
 | New feature | `specx-propose` |
 | Requirements / deltas | `specx-spec` |
 | Technical how | `specx-design` |
 | Task breakdown | `specx-tasks` |
-| Code one task | `specx-build` |
+| Implement change | `specx build` (all tasks; `--task` for one) |
 | Verify vs spec | `specx-verify` (Ralph loop until READY) |
 | Merge living specs | `specx-archive` |
 
@@ -76,7 +76,7 @@ Never show only Specialist output to the human. Never approve without user expli
 ## Build loop (OpenSpec + GSD + Kiro)
 
 ```
-propose (Capabilities) → spec (deltas) → design → tasks → build (1 task/session) → verify → archive
+propose → spec → design → tasks → approve each → build (all tasks) → verify → archive
 ```
 
 - **No code** until proposal + spec reviewed (Kiro gate).
@@ -124,7 +124,7 @@ Read `six-elements.md`. Summary: (1) outcome statements in requirements, (2) exp
 - Partial MODIFIED blocks (loses detail at archive)
 - Skipping Critic pass
 - Trusting chat history over committed files
-- One giant build session for all tasks (context rot)
+- Use `specx build --task X.Y` only when the user wants one task; default is all open tasks
 - Archive without verify READY + human approval
 
 ## Enterprise (`track: enterprise`)

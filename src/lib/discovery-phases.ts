@@ -82,6 +82,10 @@ export function getDiscoveryPhaseMeta(n: number): DiscoveryPhaseMeta | undefined
   return DISCOVERY_PHASES[n];
 }
 
+export function phaseFile(n: number): string {
+  return DISCOVERY_PHASES[n]?.file ?? `${String(n).padStart(2, "0")}.md`;
+}
+
 export function formatPhaseLabel(n: number): string {
   const meta = getDiscoveryPhaseMeta(n);
   const key = discoveryPhaseKey(n);

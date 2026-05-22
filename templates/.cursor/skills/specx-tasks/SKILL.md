@@ -9,7 +9,7 @@ description: >-
 
 **Element 5:** One of the biggest agent failure modes is too much in one shot. Break work into discrete sub-tasks so agents verify as they go and parallelize when files don't overlap.
 
-Break design into **verifiable** checkboxes. `specx build` executes **one unchecked task per session** with fresh context.
+Break design into **verifiable** checkboxes. `specx build` implements **all open tasks** by default; use `specx build --task X.Y` only for single-task mode.
 
 ## Inputs
 

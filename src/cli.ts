@@ -17,9 +17,8 @@ import {
   runDiscoverQuick,
   runDiscoverResume,
   runPhase,
-  runApprove,
-  runRevise,
 } from "./commands/discovery.js";
+import { runApprove, runRevise } from "./commands/gates.js";
 import {
   runPropose,
   runSpec,
@@ -78,8 +77,22 @@ discover.action(runDiscover);
 
 program.command("phase <n>").description("Scaffold discovery phase").action((n) => runPhase(parseInt(n, 10)));
 
-program.command("approve").description("Approve current discovery phase").action(runApprove);
-program.command("revise").description("Revise current discovery phase").action(runRevise);
+program
+  .command("approve [target]")
+  .description(
+    "Approve discovery phase, change artifact (proposal|spec|design|tasks), or whole change"
+  )
+  .option("--change <name>", "Change name (default: active)")
+  .action((target, opts) => runApprove(target, { change: opts.change }));
+
+program
+  .command("revise [target]")
+  .description("Mark discovery phase or change artifact for revision")
+  .option("--change <name>", "Change name (default: active)")
+  .option("-m, --message <reason>", "Revision reason")
+  .action((target, opts) =>
+    runRevise(target, { change: opts.change, message: opts.message })
+  );
 
 program
   .command("propose <name>")
@@ -93,9 +106,12 @@ program.command("tasks [change]").description("Scaffold change tasks").action(ru
 
 program
   .command("build [change]")
-  .description("Print build brief for agents")
-  .option("--task <id>", "Focus task id")
-  .action((change, opts) => runBuild(change, opts.task));
+  .description("Print build brief — all open tasks by default")
+  .option("--task <id>", "Single task only (e.g. 1.2)")
+  .option("--one", "Same as --task: build one task only")
+  .action((change, opts) =>
+    runBuild(change, { task: opts.task, one: opts.one })
+  );
 
 program.command("verify [change]").description("Verifier checklist").action(runVerify);
 program.command("archive <change>").description("Archive change and merge specs").action(runArchive);

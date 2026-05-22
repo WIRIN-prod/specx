@@ -4,17 +4,12 @@ import chalk from "chalk";
 import { getPhasesForTrack, loadConfig } from "../lib/config.js";
 import { loadRegistry, saveRegistry, phaseKey } from "../lib/registry.js";
 import { getRoots } from "../lib/paths.js";
-import { appendAudit } from "../lib/audit.js";
-import { printGitHint } from "../lib/git.js";
 import { writeFromTemplate, defaultVars } from "../lib/template.js";
 import {
   DISCOVERY_PHASES,
   formatPhaseLabel,
+  phaseFile,
 } from "../lib/discovery-phases.js";
-
-function phaseFile(n: number): string {
-  return DISCOVERY_PHASES[n]?.file ?? `${String(n).padStart(2, "0")}.md`;
-}
 
 export function runDiscover(): void {
   const config = loadConfig();
@@ -133,83 +128,4 @@ export function runPhase(phaseNum: number): void {
   console.log(chalk.dim("\nRun Specialist then Critic agents. Human approves with: specx approve"));
 }
 
-export function runApprove(): void {
-  const registry = loadRegistry();
-  const phase = registry.discovery?.current_phase;
-  if (!phase) {
-    console.error(chalk.red("No active discovery phase."));
-    process.exit(1);
-  }
-
-  const key = phaseKey(phase);
-  const { specxDir } = getRoots();
-  const file = phaseFile(phase);
-  const outPath = path.join(specxDir, "discovery", file!);
-
-  if (!fs.existsSync(outPath)) {
-    console.error(chalk.red(`Phase output missing: ${outPath}`));
-    process.exit(1);
-  }
-
-  const content = fs.readFileSync(outPath, "utf8");
-  if (content.includes("<!-- Complete specialist output here -->")) {
-    console.error(chalk.red("Phase output appears empty. Complete before approve."));
-    process.exit(1);
-  }
-
-  const updated = {
-    ...registry,
-    discovery: {
-      ...registry.discovery,
-      phases: {
-        ...registry.discovery?.phases,
-        [key]: {
-          status: "approved" as const,
-          approved_at: new Date().toISOString(),
-        },
-      },
-    },
-  };
-  saveRegistry(updated);
-  appendAudit("discovery.approve", { phase, key });
-
-  const config = loadConfig();
-  const phases = getPhasesForTrack(config.track);
-  const idx = phases.indexOf(phase);
-  if (idx >= 0 && idx < phases.length - 1) {
-    const next = phases[idx + 1];
-    saveRegistry({
-      ...updated,
-      discovery: { ...updated.discovery, current_phase: next },
-    });
-    console.log(chalk.green(`Phase ${phase} approved. Next: phase ${next}`));
-  } else {
-    console.log(chalk.green(`Phase ${phase} approved. Discovery complete for track.`));
-  }
-
-  printGitHint([
-    path.join("specx", "discovery", file!),
-    ".specx/registry.yaml",
-  ]);
-}
-
-export function runRevise(): void {
-  const registry = loadRegistry();
-  const phase = registry.discovery?.current_phase;
-  if (!phase) {
-    console.error(chalk.red("No active discovery phase."));
-    process.exit(1);
-  }
-  const key = phaseKey(phase);
-  saveRegistry({
-    ...registry,
-    discovery: {
-      ...registry.discovery,
-      phases: {
-        ...registry.discovery?.phases,
-        [key]: { status: "revision" },
-      },
-    },
-  });
-  console.log(chalk.yellow(`Phase ${phase} marked for revision.`));
-}
+export { runApprove, runRevise } from "./gates.js";
