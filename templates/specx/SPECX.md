@@ -33,7 +33,7 @@ Every agent spec must answer: **outcomes**, **in/out scope**, **constraints**, *
 1. **Pre-product discovery** — phases 01–09 (+10–11 enterprise) before technical build
 2. **Dual-agent** — Specialist + Critic; human sees both before approve
 3. **Three-layer handoff** — specs folder + STEERING + BUILD-ORDER
-4. **Product memory** — living specs via deltas; evolution (drift, health, retro)
+4. **Product memory** — living discovery, foundation, and feature leaves; evolution (drift, health, retro)
 
 ## Agent instructions (where detail lives)
 

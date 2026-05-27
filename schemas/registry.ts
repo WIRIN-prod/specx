@@ -79,6 +79,26 @@ export const RegistrySchema = z.object({
 
 export type Registry = z.infer<typeof RegistrySchema>;
 
+/** Legacy discovery phase status → current enum */
+const PHASE_STATUS_ALIASES: Record<string, z.infer<typeof PhaseStatusSchema>> = {
+  awaiting_human: "awaiting_approval",
+  awaiting_gate: "awaiting_approval",
+  awaiting_review: "awaiting_approval",
+  in_review: "awaiting_approval",
+  blocked: "awaiting_approval",
+  draft: "in_progress",
+  complete: "approved",
+  done: "approved",
+};
+
+/** Legacy feature status → current enum */
+const FEATURE_STATUS_ALIASES: Record<string, z.infer<typeof FeatureStatusSchema>> = {
+  draft: "proposed",
+  ready: "ready_to_ship",
+  archived: "approved",
+  ready_to_archive: "approved",
+};
+
 export function normalizeRegistryRaw(raw: unknown): {
   value: unknown;
   changed: boolean;
@@ -109,17 +129,34 @@ export function normalizeRegistryRaw(raw: unknown): {
         else i.created_at = new Date().toISOString();
         changed = true;
       }
-      if (i.status === "ready") {
-        i.status = "ready_to_ship";
-        changed = true;
-      }
-      if (i.status === "archived" || i.status === "ready_to_archive") {
-        i.status = "approved";
-        changed = true;
+      if (typeof i.status === "string") {
+        const mapped = FEATURE_STATUS_ALIASES[i.status];
+        if (mapped) {
+          i.status = mapped;
+          changed = true;
+        }
       }
       items[name] = i;
     }
     r.features = { ...feat, items };
+  }
+
+  const discovery = r.discovery as Record<string, unknown> | undefined;
+  if (discovery?.phases && typeof discovery.phases === "object") {
+    const phases = { ...(discovery.phases as Record<string, unknown>) };
+    for (const [key, phase] of Object.entries(phases)) {
+      if (!phase || typeof phase !== "object") continue;
+      const p = { ...(phase as Record<string, unknown>) };
+      if (typeof p.status === "string") {
+        const mapped = PHASE_STATUS_ALIASES[p.status];
+        if (mapped) {
+          p.status = mapped;
+          changed = true;
+        }
+      }
+      phases[key] = p;
+    }
+    r.discovery = { ...discovery, phases };
   }
 
   return { value: r, changed };

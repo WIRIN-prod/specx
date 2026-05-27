@@ -14,7 +14,7 @@ You implement **specX**, not generic agile docs. Read this skill fully, then **`
 
 | Principle | You must |
 |-----------|----------|
-| Product before code | Complete discovery/foundation (per track) before feature build on greenfield |
+| Product before code | Discovery + foundation complete before greenfield build; **keep discovery updated** when features change product truth |
 | Decisions before documents | Agree on requirements in specs before coding |
 | Humans decide, agents execute | Draft, critique, implement — never self-approve or self-archive |
 | Context is architecture | Specs and STEERING are the prompt; quality in → quality out |
@@ -48,7 +48,8 @@ RAW IDEA
 
 | User intent | Skill |
 |-------------|-------|
-| Discovery / phase / PRD | `specx-discover` (+ `phases.md` in that folder) |
+| Discovery / phase / PRD | `specx-discover` (+ `phases.md`, `MAINTENANCE.md`) |
+| Discovery drift on new feature | `specx discover impact <path>` |
 | Draft artifact | `specx-specialist` |
 | Challenge artifact | `specx-critic` |
 | Approve discovery / build artifact | `specx approve` / `specx approve spec` (human said yes first) |

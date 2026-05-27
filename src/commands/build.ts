@@ -26,6 +26,10 @@ import {
   templateDir,
 } from "../lib/features.js";
 import { getDependencies, validateDependenciesExist } from "../lib/feature-deps.js";
+import {
+  analyzeFeatureImpact,
+  formatDiscoveryImpactReport,
+} from "../lib/discovery-impact.js";
 
 export function runPropose(name: string, message?: string): void {
   const id = validateFeaturePath(name);
@@ -120,6 +124,13 @@ export function runPropose(name: string, message?: string): void {
   );
   console.log(`  ${featureDir}`);
   console.log(chalk.cyan("Next: specx spec"));
+  console.log(chalk.dim("\nDiscovery golden truth — review required phases:"));
+  const impacts = analyzeFeatureImpact(id, loadConfig().track);
+  const required = impacts.filter((i) => i.priority === "required");
+  for (const i of required) {
+    console.log(chalk.yellow(`  • Phase ${String(i.phase).padStart(2, "0")}: ${i.reason}`));
+  }
+  console.log(chalk.dim(`  Full checklist: specx discover impact ${id}`));
 }
 
 export function runSpec(featureName?: string): void {

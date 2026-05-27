@@ -16,6 +16,7 @@ import {
   runDiscover,
   runDiscoverQuick,
   runDiscoverResume,
+  runDiscoverImpact,
   runPhase,
 } from "./commands/discovery.js";
 import { runApprove, runRevise } from "./commands/gates.js";
@@ -38,6 +39,11 @@ import {
   runFeatureStructure,
 } from "./commands/features.js";
 import { runDepAdd, runDepRemove, runDepList } from "./commands/deps.js";
+import {
+  runMigrate,
+  runMigrateMapTemplate,
+  parseMigrateMapPairs,
+} from "./commands/migrate.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pkgPath = path.join(here, here.endsWith("dist") ? ".." : "../..", "package.json");
@@ -80,6 +86,10 @@ const discover = program.command("discover").description("Discovery layer");
 
 discover.command("quick").description("Quick track phases 07-09").action(runDiscoverQuick);
 discover.command("resume").description("Resume discovery").action(runDiscoverResume);
+discover
+  .command("impact [feature]")
+  .description("Which discovery phases to update for a feature (living golden truth)")
+  .action((feature) => runDiscoverImpact(feature));
 discover.action(runDiscover);
 
 program.command("phase <n>").description("Scaffold discovery phase").action((n) => runPhase(parseInt(n, 10)));
@@ -124,6 +134,32 @@ const dep = program.command("dep").alias("deps").description("Feature dependenci
 dep.command("add <from> <to>").description("from depends on to").action(runDepAdd);
 dep.command("remove <from> <to>").description("Remove dependency edge").action(runDepRemove);
 dep.command("list", { isDefault: true }).description("Show dependency graph").action(runDepList);
+
+const migrate = program
+  .command("migrate")
+  .description("Move legacy specx/changes/ (and specx/features/) into segmented feature tree");
+
+migrate
+  .option("--dry-run", "Print planned moves without writing")
+  .option("--keep-legacy", "Copy instead of move (keep specx/changes/)")
+  .option(
+    "--map <pair>",
+    "Map legacy folder name to path (repeatable), e.g. --map slice-1:resumex/slice-1",
+    (val: string, prev: string[]) => [...(prev ?? []), val],
+    [] as string[]
+  )
+  .action((opts) =>
+    runMigrate({
+      dryRun: opts.dryRun,
+      keepLegacyDirs: opts.keepLegacy,
+      map: parseMigrateMapPairs(opts.map as string[] | undefined),
+    })
+  );
+
+migrate
+  .command("map")
+  .description("Write .specx/migrate-map.yaml from current specx/changes/ folders")
+  .action(runMigrateMapTemplate);
 
 program
   .command("propose <id>")

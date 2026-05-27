@@ -56,8 +56,19 @@ Drives `specx/<path>/specs/<capability>/spec.md` under the **same leaf**.
 
 List in FEATURE.md and in `specx/features.yaml` via `specx dep add`.
 
+## Discovery maintenance (same PR)
+
+After FEATURE.md / spec are drafted, run **`specx discover impact <path>`**.
+
+- Update phases **07–08** at minimum (feature inventory + PRD).
+- Update other phases the impact report lists.
+- Re-approve changed phases; refresh foundation files.
+
+**Never** ship a feature whose discovery/PRD still describes the old product.
+
 ## Never
 
 - Create `specx/features/...` (legacy only)
 - Put `FEATURE.md` at `specx/auth/` — only at the **leaf**
 - Flat ids like `slice-1` unless truly a single-segment feature
+- Feature-only commits that skip discovery when product truth changed

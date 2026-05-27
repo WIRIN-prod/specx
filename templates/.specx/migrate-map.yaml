@@ -1,0 +1,6 @@
+# Optional mapping for: specx migrate
+# Legacy folder name under specx/changes/ → new path under specx/ (no features/ prefix)
+
+map:
+  # slice-1-shell: resumex/slice-1-shell
+  # demo-feature: platform/demo-feature

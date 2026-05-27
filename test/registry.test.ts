@@ -56,6 +56,34 @@ describe("registry", () => {
     );
   });
 
+  it("normalizeRegistryRaw maps awaiting_human to awaiting_approval", () => {
+    const { value, changed } = normalizeRegistryRaw({
+      version: 1,
+      discovery: {
+        phases: {
+          "01": { status: "awaiting_human" },
+        },
+      },
+    });
+    expect(changed).toBe(true);
+    const parsed = RegistrySchema.parse(value);
+    expect(parsed.discovery?.phases?.["01"]?.status).toBe("awaiting_approval");
+  });
+
+  it("normalizeRegistryRaw maps draft feature status to proposed", () => {
+    const { value, changed } = normalizeRegistryRaw({
+      version: 1,
+      features: {
+        items: {
+          "demo-feature": { status: "draft" },
+        },
+      },
+    });
+    expect(changed).toBe(true);
+    const parsed = RegistrySchema.parse(value);
+    expect(parsed.features?.items?.["demo-feature"]?.status).toBe("proposed");
+  });
+
   it("normalizeRegistryRaw adds created_at and keeps approved status", () => {
     const { value } = normalizeRegistryRaw({
       version: 1,

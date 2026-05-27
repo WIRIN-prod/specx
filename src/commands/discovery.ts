@@ -10,6 +10,11 @@ import {
   formatPhaseLabel,
   phaseFile,
 } from "../lib/discovery-phases.js";
+import {
+  analyzeFeatureImpact,
+  formatDiscoveryImpactReport,
+} from "../lib/discovery-impact.js";
+import { resolveFeature } from "../lib/features.js";
 
 export function runDiscover(): void {
   const config = loadConfig();
@@ -126,6 +131,15 @@ export function runPhase(phaseNum: number): void {
   console.log(`  ${outPath}`);
   console.log(`  ${critiquePath}`);
   console.log(chalk.dim("\nRun Specialist then Critic agents. Human approves with: specx approve"));
+}
+
+export function runDiscoverImpact(featurePath?: string): void {
+  const config = loadConfig();
+  const path = featurePath ? resolveFeature(featurePath) : resolveFeature();
+  const impacts = analyzeFeatureImpact(path, config.track);
+  console.log(
+    formatDiscoveryImpactReport(path, impacts, config.track)
+  );
 }
 
 export { runApprove, runRevise } from "./gates.js";

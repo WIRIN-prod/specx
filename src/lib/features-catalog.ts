@@ -40,10 +40,11 @@ export function validateFeatureId(id: string): string {
 
 export function ensureCatalogEntry(
   featurePath: string,
-  opts?: { title?: string; description?: string }
+  opts?: { title?: string; description?: string },
+  projectRoot?: string
 ): FeaturesCatalog {
   const id = validateFeaturePath(featurePath);
-  const catalog = loadFeaturesCatalog();
+  const catalog = loadFeaturesCatalog(projectRoot);
   const existing = catalog.features[id];
   catalog.features[id] = {
     depends_on: existing?.depends_on ?? [],
@@ -53,7 +54,7 @@ export function ensureCatalogEntry(
     ...existing,
     ...opts,
   };
-  saveFeaturesCatalog(catalog);
+  saveFeaturesCatalog(catalog, projectRoot);
   return catalog;
 }
 

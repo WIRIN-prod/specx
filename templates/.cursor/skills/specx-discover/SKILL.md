@@ -80,9 +80,32 @@ After discovery (per track), synthesize **Foundation**:
 
 Then feature work: **specx-propose** — never jump to code from discovery alone.
 
+## Living discovery (after initial setup)
+
+Discovery is **golden truth** and must stay current when features change the product.
+
+**Every new or materially changed feature:**
+
+1. Run **`specx discover impact <feature-path>`** — which phases to update (07–08 always).
+2. Edit affected `specx/discovery/NN-*.md` (add dated addendum sections).
+3. Specialist → Critic → human **`specx approve <n>`** per changed phase.
+4. Refresh **foundation** (`STEERING.md`, `BUILD-ORDER.md`, `ARCHITECTURE.md`).
+5. Commit **discovery + foundation + feature leaf** together.
+
+Read `specx/discovery/MAINTENANCE.md` for the full matrix.
+
+| Trigger | Phases |
+|---------|--------|
+| Any feature | **07**, **08** (required); **09** (recommended) |
+| New persona / journey | 03, 04, 06 |
+| New screens / IA | 05, 06 |
+| Auth / security | 10 |
+| Compliance | 11 |
+
 ## Commands
 
 - `specx discover` — status
+- `specx discover impact [path]` — maintenance checklist for a feature
 - `specx discover quick` — track 07–09
 - `specx phase <n>` — scaffold
 - `/specx:specialist` `/specx:critic` `/specx:approve` `/specx:revise`
