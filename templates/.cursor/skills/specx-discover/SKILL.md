@@ -12,6 +12,8 @@ Discovery answers **what to build and why** — not how to code. This is specX's
 
 **Read:** `phases.md` in this folder for **per-phase specialist lens, deliverables, critic focus, and gate criteria.**
 
+**Graph:** Every phase output is Obsidian-native wikilinks + `specx/GRAPH.md`. Maintain `specx/Home.md` as the hub. Skill: **`specx-graph`**.
+
 ## BMAD influence: tracks + personas
 
 | Track | Phases | When |
@@ -38,7 +40,8 @@ For phase `N`:
 4. Present **both files** to human
 5. Human: approve | revise
 6. **specx-approve** only after human explicitly approves
-7. **Git commit** — Ralph Loop: git is memory; registry + discovery files committed
+7. Set `specx.status: approved` in phase frontmatter; update **[[Home]]** discovery table
+8. **Git commit** — Ralph Loop: git is memory; registry + discovery + Home committed
 
 If REVISE_REQUIRED → **specx-revise** → Specialist fixes → Critic re-runs.
 

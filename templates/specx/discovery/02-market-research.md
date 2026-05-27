@@ -1,3 +1,12 @@
+---
+specx:
+  layer: discovery
+  phase: "02"
+  artifact: market-research
+  status: pending
+tags: [specx, discovery]
+---
+
 # Phase 2 — Market + competitor research
 
 > Project: {{PROJECT_NAME}} | Track: {{TRACK}}
@@ -14,7 +23,23 @@ Define Market + competitor research for {{PROJECT_NAME}}.
 
 ## Output
 
+
+## Graph links (Specialist: complete in Output + final ## Graph table)
+
+- Hub: [[Home]] · Rules: [[GRAPH]]
+- Previous: [[discovery/01-problem-statement]]
+- Next: [[discovery/03-personas]]
+
 <!-- Specialist writes below -->
+
+## Graph
+
+| Role | Links |
+|------|-------|
+| Hub | [[Home]] |
+| Previous | [[discovery/01-problem-statement]] |
+| Next | [[discovery/03-personas]] |
+| Feeds | <!-- foundation + feature wikilinks --> |
 
 ## Critic instructions (separate file in critiques/)
 

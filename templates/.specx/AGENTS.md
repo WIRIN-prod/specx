@@ -9,6 +9,7 @@ Full workflows live in **Cursor skills** — read the entire `SKILL.md`:
 ```
 .cursor/skills/
   specx-sdd/           # Master SDD discipline
+  specx-graph/         # Wikilinks, frontmatter, Home hub (Obsidian + agent nav)
   specx-discover/      # Discovery phases 01–11
   specx-specialist/    # Produce artifacts
   specx-critic/        # Challenge artifacts
@@ -27,11 +28,12 @@ Mirrors also copied to `.specx/commands/` for non-Cursor tools.
 
 ## Non-negotiables
 
-1. Read `specx/SPECX.md` → `STEERING.md` → `.specx/registry.yaml` → active change
-2. Specs in `specx/specs/` are truth; changes use deltas in `specx/changes/<name>/specs/`
-3. Human gates on approve and archive
-4. Dual-agent: Specialist then Critic before human review
-5. Fresh context per build task
+1. Read `specx/SPECX.md` → `specx/GRAPH.md` → `specx/Home.md` → follow wikilinks to active artifact
+2. Specs in `specx/specs/` are living truth; feature deltas in `specx/<path>/specs/`
+3. Every Specialist output: frontmatter + wikilinks + `## Graph`; update [[Home]] on approve
+4. Human gates on approve (features are persistent — no archive)
+5. Dual-agent: Specialist then Critic before human review
+6. Navigate via link graph; fresh context per build task
 
 ## Delta spec rules
 

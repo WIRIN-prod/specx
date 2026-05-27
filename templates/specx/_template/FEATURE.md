@@ -1,8 +1,19 @@
+---
+specx:
+  layer: feature
+  feature: "{{FEATURE_NAME}}"
+  status: proposed
+  artifact: feature
+tags: [specx, feature]
+---
+
 # Feature: {{FEATURE_NAME}}
 
-> Persistent capability — update this folder in place. No archive step.
+> Persistent capability — update this folder in place. No archive step. Hub: [[Home]] · Rules: [[GRAPH]]
 
 ## Why
+
+<!-- Link evidence: [[discovery/08-prd#…]], [[discovery/01-problem-statement]] -->
 
 ## In scope
 
@@ -15,8 +26,17 @@
 
 ## Dependencies
 
-<!-- Link to specx/features.yaml depends_on; implementation must respect upstream features -->
+<!-- Wikilinks + specx dep add — same edges in features.yaml -->
 
 - 
 
 ## Risks
+
+## Graph
+
+| Role | Links |
+|------|-------|
+| Hub | [[Home]] |
+| Upstream | [[foundation/STEERING]], [[foundation/BUILD-ORDER]], [[discovery/08-prd]] |
+| Artifacts | [[spec]], [[design]], [[tasks]] |
+| Related | <!-- [[other/feature/FEATURE]], [[specs/domain/spec]] --> |

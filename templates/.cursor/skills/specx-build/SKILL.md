@@ -13,13 +13,11 @@ description: >-
 
 ## Session setup (mandatory)
 
-1. Identify change: `specx status` or user name
-2. Run `specx build` (or `specx build <change>`) — brief lists **every** open `- [ ]` task
-3. Load:
-   - Build brief output (spec + design + open task list)
-   - Relevant `specs/**/spec.md` sections per task
-   - `RULES.md` / `STEERING.md` as needed
-4. Implement **all** open tasks unless user explicitly asked for one task
+1. Start at **[[Home]]** → active feature `[[.../FEATURE]]` (or `specx status`)
+2. Follow **`## Graph`** upstream: [[spec]], [[design]], [[foundation/STEERING]], linked discovery phases
+3. Run `specx build` — brief lists **every** open `- [ ]` task
+4. Load each linked artifact via wikilinks (not chat memory)
+5. Implement **all** open tasks unless user explicitly asked for one task
 
 ### Single-task mode (only when user asks)
 

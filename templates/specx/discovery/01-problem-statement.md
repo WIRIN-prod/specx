@@ -1,3 +1,12 @@
+---
+specx:
+  layer: discovery
+  phase: "01"
+  artifact: problem-statement
+  status: pending
+tags: [specx, discovery]
+---
+
 # Phase 1 — Problem definition
 
 > Project: {{PROJECT_NAME}} | Track: {{TRACK}}
@@ -18,7 +27,23 @@ Run as **Specialist** (`.specx/commands/specialist.md`). Produce:
 
 ## Output
 
+
+## Graph links (Specialist: complete in Output + final ## Graph table)
+
+- Hub: [[Home]] · Rules: [[GRAPH]]
+- Previous: (none)
+- Next: [[discovery/02-market-research]]
+
 <!-- Specialist writes below. Replace this comment. -->
+
+## Graph
+
+| Role | Links |
+|------|-------|
+| Hub | [[Home]] |
+| Previous | (none) |
+| Next | [[discovery/02-market-research]] |
+| Feeds | <!-- foundation + feature wikilinks --> |
 
 ## Critic
 

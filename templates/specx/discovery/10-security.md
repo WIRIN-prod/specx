@@ -1,3 +1,12 @@
+---
+specx:
+  layer: discovery
+  phase: "10"
+  artifact: security
+  status: pending
+tags: [specx, discovery]
+---
+
 # Phase 10 — Security
 
 > Project: {{PROJECT_NAME}} | Track: {{TRACK}}
@@ -14,7 +23,23 @@ Define Security for {{PROJECT_NAME}}.
 
 ## Output
 
+
+## Graph links (Specialist: complete in Output + final ## Graph table)
+
+- Hub: [[Home]] · Rules: [[GRAPH]]
+- Previous: [[discovery/09-technical-spec]]
+- Next: [[discovery/11-compliance]]
+
 <!-- Specialist writes below -->
+
+## Graph
+
+| Role | Links |
+|------|-------|
+| Hub | [[Home]] |
+| Previous | [[discovery/09-technical-spec]] |
+| Next | [[discovery/11-compliance]] |
+| Feeds | <!-- foundation + feature wikilinks --> |
 
 ## Critic instructions (separate file in critiques/)
 

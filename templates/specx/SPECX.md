@@ -61,13 +61,22 @@ RAW IDEA → Discovery → Foundation → Build → Evolution → SHIPPED PRODUC
 | 3 Build | `specx/<segment>/…/<leaf>/` (see `STRUCTURE.md`) + `features.yaml` catalog |
 | 4 Evolution | `specx/evolution/` |
 
+## Knowledge graph (Obsidian-native)
+
+Markdown wikilinks connect discovery → foundation → features → living specs. **Agents navigate the same graph as humans** (Obsidian vault = `specx/`).
+
+- Rules: `GRAPH.md`
+- Hub: `Home.md`
+- Skill: `specx-graph`
+
 ## Bootstrap order
 
 1. This file
 2. `.cursor/skills/specx-sdd/SKILL.md` + `reference.md`
-3. `foundation/STEERING.md`
-4. `.specx/specx.yaml`, `.specx/registry.yaml`
-5. Active feature leaf (`specx/auth/…/registration/`) or discovery phase file
+3. `.cursor/skills/specx-graph/SKILL.md` + `GRAPH.md` + `Home.md`
+4. `foundation/STEERING.md` (follow wikilinks in `## Graph`)
+5. `.specx/specx.yaml`, `.specx/registry.yaml`
+6. Active feature leaf or discovery phase — traverse **upstream links** only
 
 ## Tracks
 

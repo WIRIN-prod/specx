@@ -12,16 +12,19 @@ This project uses **specX Spec-Driven Development**. Generic agile or "write a s
 
 1. `.cursor/skills/specx-sdd/SKILL.md`
 2. `.cursor/skills/specx-sdd/reference.md` — OpenSpec, BMAD, Kiro, GSD, Ralph, Spec Kit DNA
-3. `specx/SPECX.md`
-4. `specx/foundation/STEERING.md`
-5. `.specx/registry.yaml`
+3. `.cursor/skills/specx-graph/SKILL.md` — wikilinks, frontmatter, `## Graph` (Obsidian + agent navigation)
+4. `specx/SPECX.md`
+5. `specx/GRAPH.md` + `specx/Home.md`
+6. `specx/foundation/STEERING.md`
+7. `.specx/registry.yaml`
 
 ## Workflow skills (full process — read entire SKILL.md)
 
 | Intent | Skill | Extra detail |
 |--------|-------|----------------|
 | Discovery | `specx-discover` | `phases.md` — lens per phase |
-| Draft | `specx-specialist` | Named persona |
+| Graph / links | `specx-graph` | Wikilinks on every artifact |
+| Draft | `specx-specialist` | Named persona + `## Graph` |
 | Challenge | `specx-critic` | Verdict required |
 | Approve phase | `specx-approve` | Human said yes only |
 | Revise | `specx-revise` | |
@@ -38,6 +41,7 @@ Slash commands and `.specx/commands/` mirror these skills — **skills are autho
 ## Non-negotiables
 
 - Dual-agent: Specialist + Critic before human gate
+- **Linked markdown:** wikilinks + `## Graph` + frontmatter (`specx-graph`); maintain [[Home]]
 - Git commits after approvals (git is memory)
 - No code before spec reviewed (Kiro)
 - Delta specs only during changes (OpenSpec)

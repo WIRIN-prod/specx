@@ -39,10 +39,11 @@ description: >-
 ## Actions
 
 1. Run the appropriate `specx approve …` — updates `.specx/registry.yaml`
-2. Recommend commit (Ralph: approved truth in git):
+2. **Graph:** set `specx.status: approved` in artifact YAML frontmatter; update [[Home]] table
+3. Recommend commit (Ralph: approved truth in git):
 
 ```bash
-git add specx/ .specx/registry.yaml
+git add specx/ .specx/registry.yaml specx/Home.md
 git commit -m "specx: approve <phase or artifact>"
 ```
 

@@ -2,6 +2,17 @@
 
 Use with **specx-specialist** (write) and **specx-critic** (challenge). One phase per session when possible (GSD context).
 
+## Graph (every phase)
+
+Read **`specx-graph`**. Each phase file must have:
+
+1. YAML frontmatter (`specx.layer: discovery`, `specx.phase`, `specx.status`)
+2. Wikilinks in **Output** to all approved prior phases cited
+3. Trailing **`## Graph`** table (Hub → [[Home]], Upstream, Downstream, Related)
+4. **07 / 08:** wikilink each feature to `[[segment/.../leaf/FEATURE]]` (stub leaf OK before propose)
+
+After approve: update [[Home]] status row + commit with phase file.
+
 ## Phase 01 — Problem definition
 
 **Specialist lens:** Product Strategist  

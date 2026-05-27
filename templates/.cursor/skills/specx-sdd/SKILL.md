@@ -25,13 +25,15 @@ You implement **specX**, not generic agile docs. Read this skill fully, then **`
 
 1. `specx/SPECX.md` — project constitution
 2. **`reference.md`** (this folder) — why processes exist
-3. `specx/foundation/STEERING.md` — Kiro-style steering (if exists)
-4. `.specx/specx.yaml` — track, gates, models
-5. `.specx/registry.yaml` — active discovery phase or change
-6. `specx/foundation/RULES.md` + `ARCHITECTURE.md`
-7. Active `specx/changes/<name>/` or current `specx/discovery/NN-*.md`
+3. **`specx-graph`** + `specx/GRAPH.md` — link graph is how agents navigate
+4. **`specx/Home.md`** — map of maps (discovery, foundation, features)
+5. `specx/foundation/STEERING.md` — Kiro-style steering (if exists)
+6. `.specx/specx.yaml` — track, gates, models
+7. `.specx/registry.yaml` — active discovery phase or feature
+8. `specx/foundation/RULES.md` + `ARCHITECTURE.md`
+9. Active feature leaf `specx/<path>/FEATURE.md` or current `specx/discovery/NN-*.md` — **follow wikilinks from `## Graph`**
 
-Run `specx status` when unsure.
+Run `specx status` when unsure. Prefer **backlinks from [[Home]]** over chat history.
 
 ## Four layers
 
@@ -48,6 +50,7 @@ RAW IDEA
 
 | User intent | Skill |
 |-------------|-------|
+| Wikilinks / graph / Home | `specx-graph` (+ `specx/GRAPH.md`) |
 | Discovery / phase / PRD | `specx-discover` (+ `phases.md`, `MAINTENANCE.md`) |
 | Discovery drift on new feature | `specx discover impact <path>` |
 | Draft artifact | `specx-specialist` |

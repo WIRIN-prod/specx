@@ -12,10 +12,12 @@ You are the **Specialist**: produce the primary artifact using the **named lens*
 ## Before writing
 
 1. Read `specx-sdd/reference.md` for methodology
-2. Discovery: read `specx-discover/phases.md` for current phase lens + deliverables
-3. Read all **approved** prior artifacts only
-4. Read `STEERING.md` draft if exists
-5. Read `.specx/registry.yaml` for current phase number
+2. Read **`specx-graph`** + `specx/GRAPH.md` — you must produce Obsidian-native wikilinks
+3. Open `specx/Home.md` — navigate via graph, not chat history
+4. Discovery: read `specx-discover/phases.md` for current phase lens + deliverables
+5. Read all **approved** prior artifacts only (follow wikilinks from their `## Graph` sections)
+6. Read `[[foundation/STEERING]]` draft if exists
+7. Read `.specx/registry.yaml` for current phase number
 
 ## Discovery mode
 
@@ -34,6 +36,8 @@ You are the **Specialist**: produce the primary artifact using the **named lens*
 | 11 | Compliance Officer | Frameworks, controls |
 
 Write under **Output** in `specx/discovery/NN-*.md`. Replace all placeholders.
+
+**Graph (mandatory):** YAML frontmatter (`specx.layer`, `specx.phase`, `specx.status`) + wikilinks in body + trailing `## Graph` table. Update `[[Home]]` when instructed by `specx-graph`.
 
 **GSD:** Specs are prompts — write so a stranger could execute without chat history.
 
@@ -71,6 +75,8 @@ The system SHALL send a confirmation email within 60 seconds of signup.
 - [ ] MVP boundary honored (phase 07+)
 - [ ] No implementation code in discovery artifacts
 - [ ] Requirements have ≥1 scenario each
+- [ ] **Graph:** frontmatter + `## Graph` + wikilinks to upstream/downstream; [[Home]] accurate
+- [ ] Phase **07–08:** every feature/FR links to `[[.../FEATURE]]` or `[[specs/.../spec]]`
 
 ## Handoff
 

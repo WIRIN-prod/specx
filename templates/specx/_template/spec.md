@@ -1,4 +1,15 @@
+---
+specx:
+  layer: feature
+  feature: "{{FEATURE_NAME}}"
+  status: pending
+  artifact: spec
+tags: [specx, feature, spec]
+---
+
 # Spec: {{FEATURE_NAME}}
+
+> Parent: [[FEATURE]] · Hub: [[Home]] · Rules: [[GRAPH]]
 
 <!-- Six elements: complete all sections before domain deltas -->
 
@@ -44,3 +55,12 @@ The system SHALL ...
 - **GIVEN**
 - **WHEN**
 - **THEN**
+
+## Graph
+
+| Role | Links |
+|------|-------|
+| Hub | [[Home]] |
+| Parent | [[FEATURE]], [[discovery/08-prd]] |
+| Downstream | [[design]], [[tasks]] |
+| Living specs | <!-- [[specs/domain/spec]] --> |

@@ -1,3 +1,12 @@
+---
+specx:
+  layer: discovery
+  phase: "09"
+  artifact: technical-spec
+  status: pending
+tags: [specx, discovery]
+---
+
 # Phase 9 — Technical spec
 
 > Project: {{PROJECT_NAME}} | Track: {{TRACK}}
@@ -14,7 +23,23 @@ Define Technical spec for {{PROJECT_NAME}}.
 
 ## Output
 
+
+## Graph links (Specialist: complete in Output + final ## Graph table)
+
+- Hub: [[Home]] · Rules: [[GRAPH]]
+- Previous: [[discovery/08-prd]]
+- Next: [[discovery/10-security]]
+
 <!-- Specialist writes below -->
+
+## Graph
+
+| Role | Links |
+|------|-------|
+| Hub | [[Home]] |
+| Previous | [[discovery/08-prd]] |
+| Next | [[discovery/10-security]] |
+| Feeds | <!-- foundation + feature wikilinks --> |
 
 ## Critic instructions (separate file in critiques/)
 

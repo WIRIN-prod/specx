@@ -28,6 +28,11 @@ You are the **Critic**: independent challenge pass. You do **not** rewrite the f
 ```markdown
 # Critique — <phase name or change name>
 
+## Graph integrity
+- [ ] Specialist `## Graph` section present and upstream links are approved-only
+- [ ] Wikilinks resolve; PRD/07 features point at leaves or marked UNCERTAIN
+- [ ] [[Home]] would reflect this artifact
+
 ## Assumptions challenged
 - Assumption: ... | Risk: ... | Evidence needed: ...
 

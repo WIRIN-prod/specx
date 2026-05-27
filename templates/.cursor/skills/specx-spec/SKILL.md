@@ -7,7 +7,9 @@ description: >-
 
 # specX spec — Behavior specification (OpenSpec delta model)
 
-Translate **Capabilities** into testable requirements. Living truth path: `specx/specs/<domain>/spec.md`. Work path: `specx/changes/<change>/specs/<domain>/spec.md`.
+Translate **Capabilities** into testable requirements. Living truth: `[[specs/<domain>/spec]]`. Feature delta: `<leaf>/specs/<domain>/spec.md` (wikilink from [[spec]]).
+
+**Graph:** Read **`specx-graph`**. Link each requirement to [[FEATURE]], PRD `[[discovery/08-prd#FR-…]]`, and living specs. End `spec.md` with `## Graph`.
 
 **GSD:** Write each spec as the **only** instructions an implementer will receive for that domain.
 

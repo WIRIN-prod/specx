@@ -1,3 +1,12 @@
+---
+specx:
+  layer: discovery
+  phase: "06"
+  artifact: user-flows
+  status: pending
+tags: [specx, discovery]
+---
+
 # Phase 6 — User flows + decision trees
 
 > Project: {{PROJECT_NAME}} | Track: {{TRACK}}
@@ -14,7 +23,23 @@ Define User flows + decision trees for {{PROJECT_NAME}}.
 
 ## Output
 
+
+## Graph links (Specialist: complete in Output + final ## Graph table)
+
+- Hub: [[Home]] · Rules: [[GRAPH]]
+- Previous: [[discovery/05-information-architecture]]
+- Next: [[discovery/07-feature-inventory]]
+
 <!-- Specialist writes below -->
+
+## Graph
+
+| Role | Links |
+|------|-------|
+| Hub | [[Home]] |
+| Previous | [[discovery/05-information-architecture]] |
+| Next | [[discovery/07-feature-inventory]] |
+| Feeds | <!-- foundation + feature wikilinks --> |
 
 ## Critic instructions (separate file in critiques/)
 

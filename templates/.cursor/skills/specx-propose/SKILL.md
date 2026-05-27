@@ -27,7 +27,7 @@ specx/
 
 Same idea as Next.js `app/auth/email/...` — folders are segments until the leaf holds the “page” (here: `FEATURE.md`).
 
-**Read:** `specx/STRUCTURE.md` or `specx feature structure`.
+**Read:** `specx/STRUCTURE.md`, `specx/GRAPH.md`, `specx-graph` skill.
 
 ## CLI
 
@@ -47,6 +47,15 @@ Re-run `specx propose` on the **same path** to continue work — do not invent a
 4. Upstream deps: read `specx/<dep-path>/spec.md` first
 
 ## Write `specx/<segment>/.../<leaf>/FEATURE.md`
+
+Frontmatter: `specx.layer: feature`, `specx.feature: <full-path>`, `specx.status: proposed`.
+
+**Graph:**
+
+- Link to PRD / inventory: `[[discovery/08-prd#FR-…]]`, `[[discovery/07-feature-inventory]]`
+- Dependencies as wikilinks: `[[auth/core-session/FEATURE]]`
+- Trailing `## Graph` table; add leaf to **[[Home]]** Features list
+- Add row to **[[foundation/BUILD-ORDER]]** as wikilink when sequenced
 
 ### Capabilities (OpenSpec)
 

@@ -1,3 +1,12 @@
+---
+specx:
+  layer: discovery
+  phase: "08"
+  artifact: prd
+  status: pending
+tags: [specx, discovery]
+---
+
 # Phase 8 — PRD
 
 > Project: {{PROJECT_NAME}} | Track: {{TRACK}}
@@ -14,7 +23,23 @@ Define PRD for {{PROJECT_NAME}}.
 
 ## Output
 
+
+## Graph links (Specialist: complete in Output + final ## Graph table)
+
+- Hub: [[Home]] · Rules: [[GRAPH]]
+- Previous: [[discovery/07-feature-inventory]]
+- Next: [[discovery/09-technical-spec]]
+
 <!-- Specialist writes below -->
+
+## Graph
+
+| Role | Links |
+|------|-------|
+| Hub | [[Home]] |
+| Previous | [[discovery/07-feature-inventory]] |
+| Next | [[discovery/09-technical-spec]] |
+| Feeds | <!-- foundation + feature wikilinks --> |
 
 ## Critic instructions (separate file in critiques/)
 

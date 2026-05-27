@@ -1,4 +1,6 @@
-# Discovery maintenance (living golden truth)
+# Discovery maintenance
+
+> When updating phases, preserve and extend **wikilinks** per `[[GRAPH]]`. Update [[Home]] in the same commit. (living golden truth)
 
 Discovery is **not** write-once. Whenever a **feature** changes the product, update the discovery phases and foundation that it touches — in the **same change** as the feature leaf.
 

@@ -14,6 +14,7 @@ Every agent-facing spec must answer six questions (outcomes, scope boundaries, c
 - **Context is architecture** — what you put in specs and steering is what you get out
 - **Specs are alive, not archives** — delta updates for the lifetime of the product
 - **Works everywhere, locks you in nowhere** — markdown in git; any agent that reads files
+- **Knowledge graph in markdown** — Obsidian wikilinks + `## Graph` sections (`specx-graph`); agents traverse [[Home]] → discovery → foundation → feature leaves instead of chat memory
 
 ## What specX takes from each framework — precisely
 
