@@ -3,112 +3,109 @@ import path from "node:path";
 import chalk from "chalk";
 import type { Registry } from "../../schemas/registry.js";
 import { getPhasesForTrack, loadConfig } from "../lib/config.js";
-import { loadRegistry, saveRegistry, phaseKey, getActiveChange } from "../lib/registry.js";
+import {
+  loadRegistry,
+  saveRegistry,
+  phaseKey,
+  getActiveFeature,
+  patchFeatureItem,
+} from "../lib/registry.js";
 import { getRoots } from "../lib/paths.js";
 import { appendAudit } from "../lib/audit.js";
 import { printGitHint } from "../lib/git.js";
 import { phaseFile, formatPhaseLabel } from "../lib/discovery-phases.js";
 import { loadTaskProgress } from "../lib/tasks.js";
+import {
+  type FeatureArtifact,
+  artifactPath,
+  featureBriefPath,
+  parseArtifactArg,
+  getFeatureDir,
+} from "../lib/features.js";
 
-export type BuildArtifact = "proposal" | "spec" | "design" | "tasks";
-
-const ARTIFACT_FILES: Record<BuildArtifact, string> = {
-  proposal: "proposal.md",
-  spec: "spec.md",
-  design: "design.md",
-  tasks: "tasks.md",
-};
-
-const ARTIFACT_STATUS_KEYS: Record<BuildArtifact, string> = {
-  proposal: "proposal_status",
+const ARTIFACT_STATUS_KEYS: Record<FeatureArtifact, string> = {
+  feature: "feature_status",
   spec: "spec_status",
   design: "design_status",
   tasks: "tasks_status",
 };
 
-const ARTIFACT_APPROVED_AT: Record<BuildArtifact, string> = {
-  proposal: "proposal_approved_at",
+const ARTIFACT_APPROVED_AT: Record<FeatureArtifact, string> = {
+  feature: "feature_approved_at",
   spec: "spec_approved_at",
   design: "design_approved_at",
   tasks: "tasks_approved_at",
 };
 
-function isArtifact(s: string): s is BuildArtifact {
-  return s in ARTIFACT_FILES;
-}
+const APPROVE_ORDER: FeatureArtifact[] = ["feature", "spec", "design", "tasks"];
 
-function resolveChangeName(name?: string): string | null {
-  if (name) return name;
-  return getActiveChange(loadRegistry());
-}
-
-function patchChangeItem(
-  registry: Registry,
-  changeName: string,
-  patch: Record<string, unknown>
-): Registry {
-  const item = registry.changes?.items?.[changeName];
-  if (!item) {
-    console.error(chalk.red(`Unknown change: ${changeName}`));
-    process.exit(1);
+function resolveFeatureName(name?: string, optionName?: string): string | null {
+  if (optionName) return optionName;
+  if (name && !["discovery", "change", "feature"].includes(name)) {
+    const reg = loadRegistry();
+    if (reg.features?.items?.[name]) return name;
   }
-  return {
-    ...registry,
-    changes: {
-      ...registry.changes,
-      items: {
-        ...registry.changes?.items,
-        [changeName]: { ...item, ...patch },
-      },
-    },
-  };
+  return getActiveFeature(loadRegistry());
 }
 
-function artifactPath(changeName: string, artifact: BuildArtifact): string {
-  const { specxDir } = getRoots();
-  return path.join(specxDir, "changes", changeName, ARTIFACT_FILES[artifact]);
-}
-
-function assertArtifactReady(
-  changeName: string,
-  artifact: BuildArtifact
-): void {
-  const p = artifactPath(changeName, artifact);
-  if (!fs.existsSync(p)) {
+function assertArtifactReady(featureId: string, artifact: FeatureArtifact): void {
+  let p = artifactPath(featureId, artifact);
+  if (artifact === "feature") {
+    const brief = featureBriefPath(featureId);
+    if (!brief) {
+      console.error(chalk.red(`Missing FEATURE.md for feature ${featureId}`));
+      process.exit(1);
+    }
+    p = brief;
+  } else if (!fs.existsSync(p)) {
     console.error(chalk.red(`Missing: ${p}`));
     process.exit(1);
   }
   const content = fs.readFileSync(p, "utf8");
   if (content.includes("<!-- Complete specialist output here -->")) {
-    console.error(
-      chalk.red(`${ARTIFACT_FILES[artifact]} appears incomplete. Finish before approve.`)
-    );
+    console.error(chalk.red(`${path.basename(p)} appears incomplete.`));
     process.exit(1);
   }
 }
 
+function getArtifactStatus(
+  item: Record<string, unknown>,
+  artifact: FeatureArtifact
+): string | undefined {
+  const key = ARTIFACT_STATUS_KEYS[artifact];
+  if (artifact === "feature") {
+    return (
+      (item[key] as string | undefined) ??
+      (item.proposal_status as string | undefined)
+    );
+  }
+  return item[key] as string | undefined;
+}
+
 function nextArtifactToApprove(
-  changeName: string,
+  featureId: string,
   item: Record<string, unknown>
-): BuildArtifact | null {
-  const order: BuildArtifact[] = ["proposal", "spec", "design", "tasks"];
-  for (const a of order) {
-    const p = artifactPath(changeName, a);
-    if (!fs.existsSync(p)) continue;
-    const statusKey = ARTIFACT_STATUS_KEYS[a];
-    const st = item[statusKey];
-    if (st !== "approved") return a;
-    if (a === "proposal" && !item.proposal_approved_at) return a;
+): FeatureArtifact | null {
+  for (const a of APPROVE_ORDER) {
+    if (a === "feature") {
+      if (!featureBriefPath(featureId)) continue;
+    } else if (!fs.existsSync(artifactPath(featureId, a))) continue;
+    if (getArtifactStatus(item, a) !== "approved") return a;
+    const atKey = ARTIFACT_APPROVED_AT[a];
+    const legacyAt =
+      a === "feature" ? item.proposal_approved_at : undefined;
+    if (!item[atKey] && !legacyAt) return a;
   }
   return null;
 }
 
 export function runApprove(
   target?: string,
-  options?: { change?: string }
+  options?: { change?: string; feature?: string }
 ): void {
   const registry = loadRegistry();
   const config = loadConfig();
+  const featureOpt = options?.feature ?? options?.change;
 
   if (target === "discovery") {
     approveDiscoveryPhase(registry, config);
@@ -116,55 +113,47 @@ export function runApprove(
   }
 
   if (target === undefined) {
-    const change = resolveChangeName(options?.change);
-    if (change) {
-      const item = registry.changes?.items?.[change] as
+    const featureId = resolveFeatureName(undefined, featureOpt);
+    if (featureId) {
+      const item = registry.features?.items?.[featureId] as
         | Record<string, unknown>
         | undefined;
-      const next = nextArtifactToApprove(change, item ?? {});
+      const next = nextArtifactToApprove(featureId, item ?? {});
       if (next) {
-        approveChangeArtifact(change, next);
+        approveFeatureArtifact(featureId, next);
         return;
       }
       console.log(
         chalk.yellow(
-          `Change ${change}: all artifacts already approved. Use specx approve change or specx build.`
+          `Feature ${featureId}: all artifacts approved. Run specx build or specx approve change.`
         )
       );
       return;
-    }
-    const active = getActiveChange(registry);
-    if (active) {
-      const item = registry.changes?.items?.[active] as
-        | Record<string, unknown>
-        | undefined;
-      const next = nextArtifactToApprove(active, item ?? {});
-      if (next) {
-        approveChangeArtifact(active, next);
-        return;
-      }
     }
     approveDiscoveryPhase(registry, config);
     return;
   }
 
-  if (isArtifact(target)) {
-    const change = resolveChangeName(options?.change);
-    if (!change) {
-      console.error(chalk.red("No active change. Use: specx approve <artifact> --change <name>"));
+  try {
+    const artifact = parseArtifactArg(target);
+    const featureId = resolveFeatureName(undefined, featureOpt);
+    if (!featureId) {
+      console.error(chalk.red("No active feature."));
       process.exit(1);
     }
-    approveChangeArtifact(change, target);
+    approveFeatureArtifact(featureId, artifact);
     return;
+  } catch {
+    /* not an artifact name */
   }
 
-  if (target === "change") {
-    const change = resolveChangeName(options?.change);
-    if (!change) {
-      console.error(chalk.red("No active change."));
+  if (target === "change" || target === "feature") {
+    const featureId = resolveFeatureName(undefined, featureOpt);
+    if (!featureId) {
+      console.error(chalk.red("No active feature."));
       process.exit(1);
     }
-    approveWholeChange(change);
+    approveWholeFeature(featureId);
     return;
   }
 
@@ -174,15 +163,14 @@ export function runApprove(
     return;
   }
 
-  const items = registry.changes?.items ?? {};
-  if (items[target]) {
-    approveWholeChange(target);
+  if (registry.features?.items?.[target]) {
+    approveWholeFeature(target);
     return;
   }
 
   console.error(
     chalk.red(
-      `Unknown target "${target}". Use: discovery | proposal | spec | design | tasks | change | <phase 1-11> | <change-name>`
+      `Unknown target "${target}". Use: discovery | feature | spec | design | tasks | <phase> | <feature-id>`
     )
   );
   process.exit(1);
@@ -195,7 +183,7 @@ function approveDiscoveryPhase(
 ): void {
   const phase = phaseOverride ?? registry.discovery?.current_phase;
   if (!phase) {
-    console.error(chalk.red("No active discovery phase. Use: specx approve <1-11>"));
+    console.error(chalk.red("No active discovery phase."));
     process.exit(1);
   }
 
@@ -217,7 +205,7 @@ function approveDiscoveryPhase(
 
   const content = fs.readFileSync(outPath, "utf8");
   if (content.includes("<!-- Complete specialist output here -->")) {
-    console.error(chalk.red("Phase output appears empty. Complete before approve."));
+    console.error(chalk.red("Phase output appears empty."));
     process.exit(1);
   }
 
@@ -246,175 +234,159 @@ function approveDiscoveryPhase(
       discovery: { ...updated.discovery, current_phase: next },
     });
     console.log(
-      chalk.green(
-        `${formatPhaseLabel(phase)} approved. Next: ${formatPhaseLabel(next)}`
-      )
+      chalk.green(`${formatPhaseLabel(phase)} approved. Next: ${formatPhaseLabel(next)}`)
     );
   } else {
     console.log(chalk.green(`${formatPhaseLabel(phase)} approved.`));
-    if (idx === phases.length - 1) {
-      console.log(chalk.dim("Discovery complete for track."));
-    }
   }
 
-  printGitHint([
-    path.join("specx", "discovery", file),
-    ".specx/registry.yaml",
-  ]);
+  printGitHint([path.join("specx", "discovery", file), ".specx/registry.yaml"]);
 }
 
-function approveChangeArtifact(changeName: string, artifact: BuildArtifact): void {
-  assertArtifactReady(changeName, artifact);
+function approveFeatureArtifact(
+  featureId: string,
+  artifact: FeatureArtifact
+): void {
+  assertArtifactReady(featureId, artifact);
   let registry = loadRegistry();
   const now = new Date().toISOString().slice(0, 10);
-  const statusKey = ARTIFACT_STATUS_KEYS[artifact];
-  const atKey = ARTIFACT_APPROVED_AT[artifact];
-
   const patch: Record<string, unknown> = {
-    [statusKey]: "approved",
-    [atKey]: now,
+    [ARTIFACT_STATUS_KEYS[artifact]]: "approved",
+    [ARTIFACT_APPROVED_AT[artifact]]: now,
     phase: artifact,
   };
-
+  if (artifact === "feature") {
+    patch.proposal_status = "approved";
+    patch.proposal_approved_at = now;
+  }
   if (artifact === "tasks") {
-    const progress = loadTaskProgress(changeName);
+    const progress = loadTaskProgress(featureId);
     if (progress) {
       patch.tasks_total = progress.total;
       patch.tasks_completed = progress.completed;
     }
   }
-
-  const lifecycleAfter: Record<BuildArtifact, string> = {
-    proposal: "proposed",
+  const lifecycle: Record<FeatureArtifact, string> = {
+    feature: "proposed",
     spec: "spec",
     design: "design",
     tasks: "tasks",
   };
-  patch.status = lifecycleAfter[artifact];
+  patch.status = lifecycle[artifact];
 
-  registry = patchChangeItem(registry, changeName, patch);
+  registry = patchFeatureItem(registry, featureId, patch);
   saveRegistry(registry);
-  appendAudit("build.approve", { change: changeName, artifact });
+  appendAudit("feature.approve", { feature: featureId, artifact });
 
-  console.log(
-    chalk.green(`Approved ${artifact} for change ${changeName}`)
-  );
-  printGitHint([
-    path.join("specx", "changes", changeName, ARTIFACT_FILES[artifact]),
-    ".specx/registry.yaml",
-  ]);
+  const rel =
+    artifact === "feature"
+      ? featureBriefPath(featureId)!
+      : artifactPath(featureId, artifact);
+  console.log(chalk.green(`Approved ${artifact} for feature ${featureId}`));
+  printGitHint([rel.replace(process.cwd() + path.sep, ""), ".specx/registry.yaml"]);
 
-  const item = registry.changes?.items?.[changeName] as Record<string, unknown>;
-  const next = nextArtifactToApprove(changeName, item ?? {});
+  const item = registry.features?.items?.[featureId] as Record<string, unknown>;
+  const next = nextArtifactToApprove(featureId, item ?? {});
   if (next) {
-    console.log(chalk.dim(`Next to approve: ${next} (specx approve ${next})`));
-  } else {
-    console.log(chalk.dim("All artifacts approved. Run specx build when ready."));
+    console.log(chalk.dim(`Next: specx approve ${next}`));
   }
 }
 
-function approveWholeChange(changeName: string): void {
+function approveWholeFeature(featureId: string): void {
   const now = new Date().toISOString().slice(0, 10);
   const patch: Record<string, unknown> = {
     status: "approved",
     phase: "build",
   };
-  for (const a of ["proposal", "spec", "design", "tasks"] as BuildArtifact[]) {
-    if (!fs.existsSync(artifactPath(changeName, a))) continue;
-    assertArtifactReady(changeName, a);
+  for (const a of APPROVE_ORDER) {
+    if (a === "feature" && !featureBriefPath(featureId)) continue;
+    if (a !== "feature" && !fs.existsSync(artifactPath(featureId, a))) continue;
+    assertArtifactReady(featureId, a);
     patch[ARTIFACT_STATUS_KEYS[a]] = "approved";
     patch[ARTIFACT_APPROVED_AT[a]] = now;
   }
-  const progress = loadTaskProgress(changeName);
+  const progress = loadTaskProgress(featureId);
   if (progress) {
     patch.tasks_total = progress.total;
     patch.tasks_completed = progress.completed;
   }
-  let registry = patchChangeItem(loadRegistry(), changeName, patch);
-  saveRegistry(registry);
-  appendAudit("build.approve", { change: changeName, artifact: "change" });
-  console.log(chalk.green(`Change ${changeName} approved for build.`));
-  printGitHint([
-    path.join("specx", "changes", changeName),
-    ".specx/registry.yaml",
-  ]);
+  saveRegistry(patchFeatureItem(loadRegistry(), featureId, patch));
+  console.log(chalk.green(`Feature ${featureId} approved for build.`));
+  printGitHint([`specx/${featureId}`, ".specx/registry.yaml"]);
 }
 
 export function runRevise(
   target?: string,
-  options?: { change?: string; message?: string }
+  options?: { change?: string; feature?: string; message?: string }
 ): void {
   const registry = loadRegistry();
   const reason = options?.message ?? "Human requested revision";
+  const featureOpt = options?.feature ?? options?.change;
 
-  if (target === "discovery" || target === undefined) {
-    if (target === undefined && !options?.change) {
-      const active = getActiveChange(registry);
-      const item = active
-        ? (registry.changes?.items?.[active] as Record<string, unknown> | undefined)
-        : undefined;
-      const hasRevisionGate =
-        item &&
-        (item.spec_status === "revision" ||
-          item.design_status === "revision" ||
-          item.tasks_status === "revision" ||
-          item.status === "revision");
-      if (active && hasRevisionGate) {
-        reviseChangeArtifact(active, inferRevisionArtifact(item), reason);
-        return;
-      }
+  if (target === "discovery") {
+    reviseDiscoveryPhase(registry);
+    return;
+  }
+
+  if (target === undefined) {
+    const active = resolveFeatureName(undefined, featureOpt);
+    const item = active
+      ? (registry.features?.items?.[active] as Record<string, unknown> | undefined)
+      : undefined;
+    if (
+      active &&
+      item &&
+      (item.status === "revision" ||
+        getArtifactStatus(item, "spec") === "revision" ||
+        getArtifactStatus(item, "design") === "revision")
+    ) {
+      reviseFeatureArtifact(
+        active,
+        getArtifactStatus(item, "spec") === "revision" ? "spec" : "design",
+        reason
+      );
+      return;
     }
     reviseDiscoveryPhase(registry);
     return;
   }
 
-  if (isArtifact(target)) {
-    const change = resolveChangeName(options?.change);
-    if (!change) {
-      console.error(chalk.red("No active change."));
+  try {
+    const artifact = parseArtifactArg(target);
+    const featureId = resolveFeatureName(undefined, featureOpt);
+    if (!featureId) {
+      console.error(chalk.red("No active feature."));
       process.exit(1);
     }
-    reviseChangeArtifact(change, target, reason);
+    reviseFeatureArtifact(featureId, artifact, reason);
     return;
+  } catch {
+    /* continue */
   }
 
-  if (target === "change") {
-    const change = resolveChangeName(options?.change);
-    if (!change) {
-      console.error(chalk.red("No active change."));
+  if (target === "change" || target === "feature") {
+    const featureId = resolveFeatureName(undefined, featureOpt);
+    if (!featureId) {
+      console.error(chalk.red("No active feature."));
       process.exit(1);
     }
-    reviseWholeChange(change, reason);
+    reviseFeatureArtifact(featureId, "spec", reason);
     return;
   }
 
   const phaseNum = parseInt(target, 10);
-  if (!Number.isNaN(phaseNum) && phaseNum >= 1 && phaseNum <= 11) {
+  if (!Number.isNaN(phaseNum)) {
     reviseDiscoveryPhase(registry, phaseNum);
     return;
   }
 
-  const items = registry.changes?.items ?? {};
-  if (items[target]) {
-    reviseWholeChange(target, reason);
+  if (registry.features?.items?.[target]) {
+    reviseFeatureArtifact(target, "spec", reason);
     return;
   }
 
-  console.error(
-    chalk.red(
-      `Unknown target "${target}". Use: discovery | proposal | spec | design | tasks | change | <phase> | <change-name>`
-    )
-  );
+  console.error(chalk.red(`Unknown revise target: ${target}`));
   process.exit(1);
-}
-
-function inferRevisionArtifact(
-  item: Record<string, unknown>
-): BuildArtifact {
-  if (item.spec_status === "revision") return "spec";
-  if (item.design_status === "revision") return "design";
-  if (item.tasks_status === "revision") return "tasks";
-  return "spec";
 }
 
 function reviseDiscoveryPhase(registry: Registry, phaseOverride?: number): void {
@@ -430,55 +402,38 @@ function reviseDiscoveryPhase(registry: Registry, phaseOverride?: number): void 
       ...registry.discovery,
       phases: {
         ...registry.discovery?.phases,
-        [key]: {
-          ...registry.discovery?.phases?.[key],
-          status: "revision",
-        },
+        [key]: { ...registry.discovery?.phases?.[key], status: "revision" },
       },
     },
   });
   console.log(chalk.yellow(`${formatPhaseLabel(phase)} marked for revision.`));
-  appendAudit("discovery.revise", { phase, key });
 }
 
-function reviseChangeArtifact(
-  changeName: string,
-  artifact: BuildArtifact,
+function reviseFeatureArtifact(
+  featureId: string,
+  artifact: FeatureArtifact,
   reason: string
 ): void {
   const { specxDir } = getRoots();
-  const changeDir = path.join(specxDir, "changes", changeName);
-  const revisionPath = path.join(changeDir, "revision.md");
+  const featureDir = getFeatureDir(specxDir, featureId);
+  const revisionPath = path.join(featureDir, "revision.md");
   if (!fs.existsSync(revisionPath)) {
     fs.writeFileSync(
       revisionPath,
-      `# Revision — ${changeName}\n\n## Reason\n\n${reason}\n\n## Artifact\n\n${artifact}\n`,
+      `# Revision — ${featureId}\n\n## Reason\n\n${reason}\n\n## Artifact\n\n${artifact}\n`,
       "utf8"
     );
   }
 
-  const statusKey = ARTIFACT_STATUS_KEYS[artifact];
-  let registry = patchChangeItem(loadRegistry(), changeName, {
+  const patch: Record<string, unknown> = {
     status: "revision",
     phase: "revision",
-    [statusKey]: "revision",
+    [ARTIFACT_STATUS_KEYS[artifact]]: "revision",
     revision_reason: reason,
-    revision_artifact: `specx/changes/${changeName}/revision.md`,
-  });
-  saveRegistry(registry);
-  appendAudit("build.revise", { change: changeName, artifact, reason });
+    revision_artifact: `specx/${featureId}/revision.md`,
+  };
+  saveRegistry(patchFeatureItem(loadRegistry(), featureId, patch));
   console.log(
-    chalk.yellow(`Change ${changeName}: ${artifact} marked for revision.`)
+    chalk.yellow(`Feature ${featureId}: ${artifact} marked for revision.`)
   );
-  console.log(chalk.dim(`  ${revisionPath}`));
-}
-
-function reviseWholeChange(changeName: string, reason: string): void {
-  for (const a of ["spec", "design", "tasks"] as BuildArtifact[]) {
-    if (fs.existsSync(artifactPath(changeName, a))) {
-      reviseChangeArtifact(changeName, a, reason);
-      return;
-    }
-  }
-  reviseChangeArtifact(changeName, "spec", reason);
 }

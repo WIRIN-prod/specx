@@ -1,0 +1,15 @@
+# specX feature catalog — golden list of application capabilities
+# Each feature is a leaf folder: specx/<segment>/.../<leaf>/
+# Dependencies are many-to-many via depends_on (reverse: required by)
+
+version: 1
+
+features: {}
+  # auth/email/registration:
+  #   title: Email registration
+  #   path: auth/email/registration
+  #   depends_on:
+  #     - auth/core-session
+  # auth/email/forgot-password:
+  #   title: Forgot password
+  #   depends_on: [auth/core-session]

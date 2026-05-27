@@ -7,9 +7,10 @@ import { defaultRegistry } from "../../schemas/registry.js";
 import { loadConfig, saveConfig } from "../lib/config.js";
 import { loadRegistry, saveRegistry } from "../lib/registry.js";
 import { getRoots } from "../lib/paths.js";
+import { getFeatureDir } from "../lib/features.js";
 import { generateAgentIntegrations } from "../lib/agents.js";
 import {
-  printChangesStatus,
+  printFeaturesStatus,
   printDiscoveryStatus,
   printFoundationStatus,
 } from "../lib/status-display.js";
@@ -27,7 +28,7 @@ export function runStatus(): void {
 
   printDiscoveryStatus(config, registry, specxDir);
   printFoundationStatus(config, specxDir);
-  printChangesStatus(registry, specxDir);
+  printFeaturesStatus(registry, specxDir);
   console.log();
 }
 
@@ -78,11 +79,11 @@ export function runOnboard(): void {
   }
 
   const registry = loadRegistry();
-  const active = registry.changes?.active;
+  const active = registry.features?.active ?? registry.changes?.active;
   if (active) {
-    const changeDir = path.join(specxDir, "changes", active);
-    for (const f of ["proposal.md", "spec.md", "tasks.md"]) {
-      const p = path.join(changeDir, f);
+    const featureDir = getFeatureDir(specxDir, active);
+    for (const f of ["FEATURE.md", "proposal.md", "spec.md", "tasks.md"]) {
+      const p = path.join(featureDir, f);
       if (fs.existsSync(p)) {
         parts.push(`\n## ${active}/${f}\n`, fs.readFileSync(p, "utf8").slice(0, 3000));
       }

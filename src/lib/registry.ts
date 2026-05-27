@@ -40,20 +40,47 @@ export function phaseKey(n: number): string {
   return String(n).padStart(2, "0");
 }
 
-export function getActiveChange(registry: Registry): string | null {
-  return registry.changes?.active ?? null;
+export function getActiveFeature(registry: Registry): string | null {
+  return registry.features?.active ?? registry.changes?.active ?? null;
 }
 
-export function setActiveChange(
+/** @deprecated Use getActiveFeature */
+export const getActiveChange = getActiveFeature;
+
+export function setActiveFeature(
   registry: Registry,
   name: string | null
 ): Registry {
   return {
     ...registry,
-    changes: {
-      ...registry.changes,
+    features: {
+      ...registry.features,
       active: name,
-      items: registry.changes?.items ?? {},
+      items: registry.features?.items ?? {},
+    },
+  };
+}
+
+/** @deprecated Use setActiveFeature */
+export const setActiveChange = setActiveFeature;
+
+export function patchFeatureItem(
+  registry: Registry,
+  featureId: string,
+  patch: Record<string, unknown>
+): Registry {
+  const item = registry.features?.items?.[featureId];
+  if (!item) {
+    throw new Error(`Unknown feature in registry: ${featureId}`);
+  }
+  return {
+    ...registry,
+    features: {
+      ...registry.features,
+      items: {
+        ...registry.features?.items,
+        [featureId]: { ...item, ...patch, updated_at: new Date().toISOString() },
+      },
     },
   };
 }

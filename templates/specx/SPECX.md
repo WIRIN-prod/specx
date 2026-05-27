@@ -17,7 +17,7 @@ specX is the only framework you need from **raw idea** to **shipped, maintained 
 
 | Source | What we take |
 |--------|----------------|
-| **OpenSpec** | Delta specs (ADDED/MODIFIED/REMOVED), `specs/` + `changes/`, archive merge |
+| **OpenSpec** | Delta specs (ADDED/MODIFIED/REMOVED) per feature under `features/<id>/specs/` |
 | **BMAD** | Three tracks; named specialist lens per discovery phase |
 | **Kiro** | `STEERING.md` every session; no build before spec review |
 | **GSD** | Fresh context per phase/task; verifier before gate; specs are prompts |
@@ -43,7 +43,7 @@ Every agent spec must answer: **outcomes**, **in/out scope**, **constraints**, *
 |------------|-------|
 | Methodology | `specx-sdd` + `reference.md` |
 | Discovery | `specx-discover` + `phases.md` |
-| Features | `specx-propose` → `specx-spec` → `specx-design` → `specx-tasks` → `specx-build` |
+| Features | `specx propose <id>` → spec → design → tasks → build (persistent folders) |
 | Quality | `specx-specialist`, `specx-critic`, `specx-verify` |
 
 Also: `.specx/AGENTS.md`, `.specx/commands/` (synced from skills)
@@ -58,7 +58,7 @@ RAW IDEA → Discovery → Foundation → Build → Evolution → SHIPPED PRODUC
 |-------|------|
 | 1 Discovery | `specx/discovery/` |
 | 2 Foundation | `specx/foundation/` |
-| 3 Build | `specx/specs/`, `specx/changes/` |
+| 3 Build | `specx/<segment>/…/<leaf>/` (see `STRUCTURE.md`) + `features.yaml` catalog |
 | 4 Evolution | `specx/evolution/` |
 
 ## Bootstrap order
@@ -67,7 +67,7 @@ RAW IDEA → Discovery → Foundation → Build → Evolution → SHIPPED PRODUC
 2. `.cursor/skills/specx-sdd/SKILL.md` + `reference.md`
 3. `foundation/STEERING.md`
 4. `.specx/specx.yaml`, `.specx/registry.yaml`
-5. Active change or discovery phase file
+5. Active feature leaf (`specx/auth/…/registration/`) or discovery phase file
 
 ## Tracks
 

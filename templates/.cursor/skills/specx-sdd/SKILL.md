@@ -57,7 +57,8 @@ RAW IDEA
 | Requirements / deltas | `specx-spec` |
 | Technical how | `specx-design` |
 | Task breakdown | `specx-tasks` |
-| Implement change | `specx build` (all tasks; `--task` for one) |
+| Implement feature | `specx build` (all tasks; path e.g. `auth/email/registration`) |
+| Feature tree rules | `specx/STRUCTURE.md` — segments + leaf (no `features/` folder) |
 | Verify vs spec | `specx-verify` (Ralph loop until READY) |
 | Merge living specs | `specx-archive` |
 

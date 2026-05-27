@@ -26,14 +26,18 @@ describe("init integration", () => {
     expect(fs.existsSync(path.join(tmp, ".cursor", "skills", "specx-discover", "phases.md"))).toBe(true);
     expect(fs.existsSync(path.join(tmp, ".specx", "AGENTS.md"))).toBe(true);
     expect(fs.existsSync(path.join(tmp, ".specx", "commands", "propose.md"))).toBe(true);
+    expect(fs.existsSync(path.join(tmp, "specx", "_template", "FEATURE.md"))).toBe(true);
+    expect(fs.existsSync(path.join(tmp, "specx", "STRUCTURE.md"))).toBe(true);
+    expect(fs.existsSync(path.join(tmp, "specx", "features.yaml"))).toBe(true);
     expect(fs.readFileSync(path.join(tmp, ".specx", "commands", "build.md"), "utf8")).toContain(
-      "fresh context"
+      "all open tasks"
     );
     const proposeSkill = fs.readFileSync(
       path.join(tmp, ".cursor", "skills", "specx-propose", "SKILL.md"),
       "utf8"
     );
-    expect(proposeSkill).toContain("Capabilities (CRITICAL");
+    expect(proposeSkill).toContain("Capabilities");
+    expect(proposeSkill).toMatch(/specx\/auth|no.*features\/ folder|specx\/STRUCTURE/i);
     expect(proposeSkill).not.toMatch(/Follow `\.specx\/commands\/propose\.md` in full/);
     expect(fs.existsSync(path.join(tmp, ".cursor", "skills", "specx-spec", "SKILL.md"))).toBe(
       true

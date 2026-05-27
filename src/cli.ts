@@ -31,6 +31,13 @@ import {
 } from "./commands/build.js";
 import { runDrift, runHealth, runChangelog, runRetro } from "./commands/evolution.js";
 import { runReview, runAssign, runGate } from "./commands/team.js";
+import {
+  runFeatureList,
+  runFeatureUse,
+  runFeatureGraph,
+  runFeatureStructure,
+} from "./commands/features.js";
+import { runDepAdd, runDepRemove, runDepList } from "./commands/deps.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pkgPath = path.join(here, here.endsWith("dist") ? ".." : "../..", "package.json");
@@ -80,32 +87,56 @@ program.command("phase <n>").description("Scaffold discovery phase").action((n) 
 program
   .command("approve [target]")
   .description(
-    "Approve discovery phase, change artifact (proposal|spec|design|tasks), or whole change"
+    "Approve discovery phase or feature artifact (feature|spec|design|tasks)"
   )
-  .option("--change <name>", "Change name (default: active)")
-  .action((target, opts) => runApprove(target, { change: opts.change }));
-
-program
-  .command("revise [target]")
-  .description("Mark discovery phase or change artifact for revision")
-  .option("--change <name>", "Change name (default: active)")
-  .option("-m, --message <reason>", "Revision reason")
+  .option("--feature <id>", "Feature id (default: active)")
+  .option("--change <id>", "Alias for --feature")
   .action((target, opts) =>
-    runRevise(target, { change: opts.change, message: opts.message })
+    runApprove(target, { feature: opts.feature, change: opts.change })
   );
 
 program
-  .command("propose <name>")
-  .description("Create a new change")
-  .option("-m, --message <msg>", "proposal summary")
-  .action((name, opts) => runPropose(name, opts.message));
+  .command("revise [target]")
+  .description("Mark discovery phase or feature artifact for revision")
+  .option("--feature <id>", "Feature id (default: active)")
+  .option("--change <id>", "Alias for --feature")
+  .option("-m, --message <reason>", "Revision reason")
+  .action((target, opts) =>
+    runRevise(target, {
+      feature: opts.feature,
+      change: opts.change,
+      message: opts.message,
+    })
+  );
 
-program.command("spec [change]").description("Scaffold change spec").action(runSpec);
-program.command("design [change]").description("Scaffold change design").action(runDesign);
-program.command("tasks [change]").description("Scaffold change tasks").action(runTasks);
+const feature = program.command("feature").description("Feature catalog (golden truth)");
+
+feature.command("list", { isDefault: true }).description("List all features").action(runFeatureList);
+feature.command("use <id>").description("Set active feature").action(runFeatureUse);
+feature.command("graph").description("Show dependency graph").action(runFeatureGraph);
+feature
+  .command("structure")
+  .description("Print segment naming conventions (Next.js-style)")
+  .action(runFeatureStructure);
+
+const dep = program.command("dep").alias("deps").description("Feature dependencies (M→M)");
+
+dep.command("add <from> <to>").description("from depends on to").action(runDepAdd);
+dep.command("remove <from> <to>").description("Remove dependency edge").action(runDepRemove);
+dep.command("list", { isDefault: true }).description("Show dependency graph").action(runDepList);
 
 program
-  .command("build [change]")
+  .command("propose <id>")
+  .description("Create or open a segmented feature (e.g. auth/email/registration)")
+  .option("-m, --message <msg>", "FEATURE.md summary")
+  .action((name, opts) => runPropose(name, opts.message));
+
+program.command("spec [feature]").description("Scaffold feature spec").action(runSpec);
+program.command("design [feature]").description("Scaffold feature design").action(runDesign);
+program.command("tasks [feature]").description("Scaffold feature tasks").action(runTasks);
+
+program
+  .command("build [feature]")
   .description("Print build brief — all open tasks by default")
   .option("--task <id>", "Single task only (e.g. 1.2)")
   .option("--one", "Same as --task: build one task only")
@@ -114,8 +145,11 @@ program
   );
 
 program.command("verify [change]").description("Verifier checklist").action(runVerify);
-program.command("archive <change>").description("Archive change and merge specs").action(runArchive);
-program.command("diff [change]").description("Show delta summary").action(runDiff);
+program
+  .command("archive [feature]")
+  .description("(Deprecated) Features are persistent — no archive")
+  .action(runArchive);
+program.command("diff [feature]").description("Show capability spec deltas").action(runDiff);
 
 program.command("drift").description("Generate drift report").action(runDrift);
 program.command("health").description("Generate spec health report").action(runHealth);

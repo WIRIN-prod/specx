@@ -183,6 +183,19 @@
       "bases:Create new base": false
     }
   },
-  "active": "1ed3f355c532d183",
-  "lastOpenFiles": []
+  "active": "07486308d71627c4",
+  "lastOpenFiles": [
+    "features.yaml",
+    "features/auth/email/registration/tasks.md",
+    "features/auth/email/registration/specs",
+    "features/auth/email/registration/spec.md",
+    "features/auth/email/registration/design.md",
+    "features/auth/email/registration/FEATURE.md",
+    "features/auth/email/registration",
+    "features/auth/email/SEGMENT.md",
+    "features/auth/email",
+    "features/auth/SEGMENT.md",
+    "features/auth",
+    "features"
+  ]
 }

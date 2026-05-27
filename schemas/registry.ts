@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { FeaturePathSchema } from "./features-catalog.js";
 
 export const PhaseStatusSchema = z.enum([
   "pending",
@@ -8,7 +9,7 @@ export const PhaseStatusSchema = z.enum([
   "revision",
 ]);
 
-export const ChangeStatusSchema = z.enum([
+export const FeatureStatusSchema = z.enum([
   "proposed",
   "spec",
   "design",
@@ -18,9 +19,11 @@ export const ChangeStatusSchema = z.enum([
   "review",
   "approved",
   "revision",
-  "ready_to_archive",
-  "archived",
+  "ready_to_ship",
 ]);
+
+/** @deprecated Use FeatureStatusSchema — kept for registry migration */
+export const ChangeStatusSchema = FeatureStatusSchema;
 
 const PhaseItemSchema = z
   .object({
@@ -31,13 +34,15 @@ const PhaseItemSchema = z
   })
   .passthrough();
 
-const ChangeItemSchema = z
+const FeatureItemSchema = z
   .object({
-    status: ChangeStatusSchema,
+    status: FeatureStatusSchema,
     created_at: z.string().optional(),
+    updated_at: z.string().optional(),
     review_required: z.boolean().optional(),
     assignees: z.array(z.string()).optional(),
     phase: z.string().optional(),
+    feature_status: z.string().optional(),
     spec_status: z.string().optional(),
     design_status: z.string().optional(),
     tasks_status: z.string().optional(),
@@ -55,10 +60,18 @@ export const RegistrySchema = z.object({
     })
     .passthrough()
     .optional(),
+  features: z
+    .object({
+      active: z.string().nullable().optional(),
+      items: z.record(FeaturePathSchema, FeatureItemSchema).optional(),
+    })
+    .passthrough()
+    .optional(),
+  /** @deprecated Migrated to features on load */
   changes: z
     .object({
       active: z.string().nullable().optional(),
-      items: z.record(z.string(), ChangeItemSchema).optional(),
+      items: z.record(z.string(), FeatureItemSchema).optional(),
     })
     .passthrough()
     .optional(),
@@ -66,38 +79,49 @@ export const RegistrySchema = z.object({
 
 export type Registry = z.infer<typeof RegistrySchema>;
 
-/** Normalize hand-edited or agent-written registry before validation */
 export function normalizeRegistryRaw(raw: unknown): {
   value: unknown;
   changed: boolean;
 } {
   if (!raw || typeof raw !== "object") return { value: raw, changed: false };
   const r = { ...(raw as Record<string, unknown>) };
+  let changed = false;
+
   const changes = r.changes as Record<string, unknown> | undefined;
-  if (!changes?.items || typeof changes.items !== "object") {
-    return { value: r, changed: false };
+  const features = r.features as Record<string, unknown> | undefined;
+
+  if (changes?.items && !features?.items) {
+    r.features = {
+      active: changes.active ?? null,
+      items: { ...(changes.items as Record<string, unknown>) },
+    };
+    changed = true;
   }
 
-  let changed = false;
-  const items = { ...(changes.items as Record<string, unknown>) };
-  for (const [name, item] of Object.entries(items)) {
-    if (!item || typeof item !== "object") continue;
-    const i = { ...(item as Record<string, unknown>) };
-    if (typeof i.created_at !== "string") {
-      if (typeof i.created === "string") {
-        i.created_at = i.created;
-      } else {
-        i.created_at = new Date().toISOString();
+  const feat = r.features as Record<string, unknown> | undefined;
+  if (feat?.items && typeof feat.items === "object") {
+    const items = { ...(feat.items as Record<string, unknown>) };
+    for (const [name, item] of Object.entries(items)) {
+      if (!item || typeof item !== "object") continue;
+      const i = { ...(item as Record<string, unknown>) };
+      if (typeof i.created_at !== "string") {
+        if (typeof i.created === "string") i.created_at = i.created;
+        else i.created_at = new Date().toISOString();
+        changed = true;
       }
-      changed = true;
+      if (i.status === "ready") {
+        i.status = "ready_to_ship";
+        changed = true;
+      }
+      if (i.status === "archived" || i.status === "ready_to_archive") {
+        i.status = "approved";
+        changed = true;
+      }
+      items[name] = i;
     }
-    if (i.status === "ready") {
-      i.status = "ready_to_archive";
-      changed = true;
-    }
-    items[name] = i;
+    r.features = { ...feat, items };
   }
-  r.changes = { ...changes, items };
+
   return { value: r, changed };
 }
 
@@ -123,7 +147,7 @@ export function defaultRegistry(phases: number[]): Registry {
         ? P
         : undefined,
     },
-    changes: {
+    features: {
       active: null,
       items: {},
     },

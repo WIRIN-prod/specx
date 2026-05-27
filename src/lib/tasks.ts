@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { getRoots } from "./paths.js";
+import { getFeatureDir } from "./features.js";
 
 export interface TaskItem {
   id?: string;
@@ -50,7 +51,7 @@ export function loadTaskProgress(
   projectRoot?: string
 ): TaskProgress | null {
   const { specxDir } = getRoots(projectRoot);
-  const tasksPath = path.join(specxDir, "changes", changeName, "tasks.md");
+  const tasksPath = path.join(getFeatureDir(specxDir, changeName), "tasks.md");
   if (!fs.existsSync(tasksPath)) return null;
   return parseTasksMarkdown(fs.readFileSync(tasksPath, "utf8"));
 }

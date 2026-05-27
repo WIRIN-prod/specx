@@ -5,150 +5,169 @@ import { loadConfig } from "../lib/config.js";
 import {
   loadRegistry,
   saveRegistry,
-  getActiveChange,
-  setActiveChange,
+  setActiveFeature,
+  patchFeatureItem,
 } from "../lib/registry.js";
 import { getRoots } from "../lib/paths.js";
 import { formatDiffSummary } from "../lib/delta.js";
-import { archiveChange } from "../lib/archive.js";
-import { appendAudit } from "../lib/audit.js";
-import { printGitHint } from "../lib/git.js";
-import { writeFromTemplate, defaultVars } from "../lib/template.js";
+import { defaultVars, copyTemplateTree } from "../lib/template.js";
 import { formatBuildTasksSection, parseTasksMarkdown } from "../lib/tasks.js";
-
-function resolveChange(name?: string): string {
-  const registry = loadRegistry();
-  const change = name ?? getActiveChange(registry);
-  if (!change) {
-    console.error(chalk.red("No active change. Use: specx propose <name>"));
-    process.exit(1);
-  }
-  return change;
-}
+import {
+  resolveFeature,
+  getFeatureDir,
+  artifactPath,
+  featureBriefPath,
+  FEATURE_ARTIFACT_FILES,
+} from "../lib/features.js";
+import { ensureCatalogEntry } from "../lib/features-catalog.js";
+import {
+  validateFeaturePath,
+  scaffoldFeatureTree,
+  templateDir,
+} from "../lib/features.js";
+import { getDependencies, validateDependenciesExist } from "../lib/feature-deps.js";
 
 export function runPropose(name: string, message?: string): void {
+  const id = validateFeaturePath(name);
   const { specxDir, projectRoot } = getRoots();
-  const changeDir = path.join(specxDir, "changes", name);
+  const featureDir = scaffoldFeatureTree(specxDir, id);
+  const exists = fs.existsSync(path.join(featureDir, "FEATURE.md")) ||
+    fs.existsSync(path.join(featureDir, "spec.md"));
 
-  if (fs.existsSync(changeDir)) {
-    console.error(chalk.red(`Change already exists: ${name}`));
-    process.exit(1);
-  }
-
-  const templateDir = path.join(specxDir, "changes", "_template");
   const vars = defaultVars(
     loadConfig().project?.name ?? path.basename(projectRoot),
-    loadConfig().track
+    loadConfig().track,
+    id
   );
 
-  if (fs.existsSync(templateDir)) {
-    fs.cpSync(templateDir, changeDir, { recursive: true });
-    const proposalPath = path.join(changeDir, "proposal.md");
-    if (message) {
+  if (!exists) {
+    const tpl = templateDir(specxDir);
+    if (fs.existsSync(tpl)) {
+      copyTemplateTree(tpl, featureDir, vars);
+    } else {
+      fs.mkdirSync(featureDir, { recursive: true });
+      fs.mkdirSync(path.join(featureDir, "specs"), { recursive: true });
       fs.writeFileSync(
-        proposalPath,
-        `# Proposal: ${name}\n\n${message}\n`,
+        path.join(featureDir, "FEATURE.md"),
+        `# Feature: ${id}\n\n## Why\n\n${message ?? "TBD"}\n`,
+        "utf8"
+      );
+      for (const [key, file] of Object.entries(FEATURE_ARTIFACT_FILES)) {
+        if (key === "feature") continue;
+        fs.writeFileSync(
+          path.join(featureDir, file),
+          `# ${key}: ${id}\n\n`,
+          "utf8"
+        );
+      }
+    }
+    if (message) {
+      const brief = path.join(featureDir, "FEATURE.md");
+      fs.writeFileSync(
+        brief,
+        `# Feature: ${id}\n\n## Why\n\n${message}\n\n## In scope\n\n- \n\n## Out of scope\n\n- \n`,
         "utf8"
       );
     }
-  } else {
-    fs.mkdirSync(changeDir, { recursive: true });
-    fs.mkdirSync(path.join(changeDir, "specs"), { recursive: true });
-    fs.writeFileSync(
-      path.join(changeDir, "proposal.md"),
-      `# Proposal: ${name}\n\n## Why\n\n${message ?? "TBD"}\n\n## Scope\n\n## Out of scope\n`,
-      "utf8"
-    );
-    fs.writeFileSync(
-      path.join(changeDir, "spec.md"),
-      `# Spec: ${name}\n\n## ADDED Requirements\n\n### Requirement: TBD\n\n#### Scenario: TBD\n\n- GIVEN\n- WHEN\n- THEN\n`,
-      "utf8"
-    );
-    fs.writeFileSync(
-      path.join(changeDir, "design.md"),
-      `# Design: ${name}\n\n## Approach\n\n`,
-      "utf8"
-    );
-    fs.writeFileSync(
-      path.join(changeDir, "tasks.md"),
-      `# Tasks: ${name}\n\n- [ ] 1.1 TBD\n`,
-      "utf8"
+  } else if (message) {
+    console.log(
+      chalk.yellow(
+        `Feature ${id} exists — update FEATURE.md in place (no new folder).`
+      )
     );
   }
 
-  let registry = setActiveChange(loadRegistry(), name);
-  registry = {
-    ...registry,
-    changes: {
-      ...registry.changes,
-      active: name,
+  ensureCatalogEntry(id, { title: id });
+
+  const registry = loadRegistry();
+  const existing = registry.features?.items?.[id];
+  let reg = setActiveFeature(registry, id);
+  reg = {
+    ...reg,
+    features: {
+      ...reg.features,
       items: {
-        ...registry.changes?.items,
-        [name]: {
-          status: "proposed",
-          created_at: new Date().toISOString(),
+        ...reg.features?.items,
+        [id]: {
+          ...existing,
+          status: existing?.status ?? "proposed",
+          created_at: existing?.created_at ?? new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
       },
     },
   };
-  saveRegistry(registry);
+  saveRegistry(reg);
 
-  console.log(chalk.green(`Created change: ${name}`));
-  console.log(`  ${changeDir}`);
-  console.log(chalk.cyan("Next: specx spec"));
-}
-
-export function runSpec(changeName?: string): void {
-  const name = resolveChange(changeName);
-  const { specxDir } = getRoots();
-  const changeDir = path.join(specxDir, "changes", name);
-  const specPath = path.join(changeDir, "spec.md");
-
-  if (!fs.existsSync(specPath)) {
-    fs.writeFileSync(
-      specPath,
-      `# Spec: ${name}\n\n## ADDED Requirements\n\n### Requirement: TBD\n`,
-      "utf8"
+  const missingDeps = validateDependenciesExist(id);
+  if (missingDeps.length) {
+    console.log(
+      chalk.yellow(
+        `Warning: depends_on references missing catalog entries: ${missingDeps.join(", ")}`
+      )
     );
   }
 
-  updateChangeStatus(name, "spec");
+  const deps = getDependencies(id);
+  if (deps.length) {
+    console.log(chalk.dim(`Depends on: ${deps.join(", ")}`));
+  }
+
+  console.log(
+    exists
+      ? chalk.green(`Active feature: ${id}`)
+      : chalk.green(`Created feature: ${id}`)
+  );
+  console.log(`  ${featureDir}`);
+  console.log(chalk.cyan("Next: specx spec"));
+}
+
+export function runSpec(featureName?: string): void {
+  const id = resolveFeature(featureName);
+  const specPath = artifactPath(id, "spec");
+  if (!fs.existsSync(specPath)) {
+    fs.writeFileSync(
+      specPath,
+      `# Spec: ${id}\n\n## ADDED Requirements\n\n### Requirement: TBD\n`,
+      "utf8"
+    );
+  }
+  updateFeatureStatus(id, "spec");
   console.log(chalk.green(`Spec ready: ${specPath}`));
 }
 
-export function runDesign(changeName?: string): void {
-  const name = resolveChange(changeName);
-  const { specxDir } = getRoots();
-  const designPath = path.join(specxDir, "changes", name, "design.md");
+export function runDesign(featureName?: string): void {
+  const id = resolveFeature(featureName);
+  const designPath = artifactPath(id, "design");
   if (!fs.existsSync(designPath)) {
-    fs.writeFileSync(designPath, `# Design: ${name}\n\n## Approach\n\n`, "utf8");
+    fs.writeFileSync(designPath, `# Design: ${id}\n\n## Approach\n\n`, "utf8");
   }
-  updateChangeStatus(name, "design");
+  updateFeatureStatus(id, "design");
   console.log(chalk.green(`Design ready: ${designPath}`));
 }
 
-export function runTasks(changeName?: string): void {
-  const name = resolveChange(changeName);
-  const { specxDir } = getRoots();
-  const tasksPath = path.join(specxDir, "changes", name, "tasks.md");
+export function runTasks(featureName?: string): void {
+  const id = resolveFeature(featureName);
+  const tasksPath = artifactPath(id, "tasks");
   if (!fs.existsSync(tasksPath)) {
-    fs.writeFileSync(tasksPath, `# Tasks: ${name}\n\n- [ ] 1.1 TBD\n`, "utf8");
+    fs.writeFileSync(tasksPath, `# Tasks: ${id}\n\n- [ ] 1.1 TBD\n`, "utf8");
   }
-  updateChangeStatus(name, "tasks");
+  updateFeatureStatus(id, "tasks");
   console.log(chalk.green(`Tasks ready: ${tasksPath}`));
 }
 
 export function runBuild(
-  changeName?: string,
+  featureName?: string,
   options?: { task?: string; one?: boolean }
 ): void {
-  const name = resolveChange(changeName);
+  const id = resolveFeature(featureName);
   const { specxDir } = getRoots();
-  const tasksPath = path.join(specxDir, "changes", name, "tasks.md");
-  const specPath = path.join(specxDir, "changes", name, "spec.md");
-  const designPath = path.join(specxDir, "changes", name, "design.md");
+  const featureDir = getFeatureDir(specxDir, id);
+  const tasksPath = artifactPath(id, "tasks");
+  const specPath = artifactPath(id, "spec");
+  const designPath = artifactPath(id, "design");
 
-  updateChangeStatus(name, "building");
+  updateFeatureStatus(id, "building");
 
   const progress = fs.existsSync(tasksPath)
     ? parseTasksMarkdown(fs.readFileSync(tasksPath, "utf8"))
@@ -166,16 +185,24 @@ export function runBuild(
     ? formatBuildTasksSection(progress, mode, options?.task)
     : "_missing tasks.md — run specx tasks_";
 
+  const deps = getDependencies(id);
+  const depSection =
+    deps.length > 0
+      ? `Upstream features (read specs first): ${deps.map((d) => `specx/${d}/`).join(", ")}`
+      : "";
+
   const instruction = singleTask
     ? "Clear prior chat context. Implement only the focus task below against the spec."
     : [
-        "Clear prior chat context. Implement **all** open tasks below against the spec and design.",
-        "Work through the list in order; mark each checkbox in tasks.md when verified.",
-        "Use `specx build --one` or `specx build --task X.Y` only when the user wants a single task.",
+        "Clear prior chat context. Implement **all** open tasks below against this feature's spec and design.",
+        "Work in the codebase areas owned by this feature; respect upstream feature contracts.",
+        "Update tasks.md checkboxes in place when verified.",
       ].join(" ");
 
   const brief = [
-    `# Build brief — ${name}`,
+    `# Build brief — feature: ${id}`,
+    "",
+    depSection,
     "",
     "## Instruction",
     instruction,
@@ -188,88 +215,77 @@ export function runBuild(
     "## Design",
     fs.existsSync(designPath) ? fs.readFileSync(designPath, "utf8") : "_missing_",
     "",
+    "## FEATURE brief",
+    (() => {
+      const p = featureBriefPath(id);
+      return p ? fs.readFileSync(p, "utf8") : "_missing FEATURE.md_";
+    })(),
+    "",
     "## Full tasks.md",
     fs.existsSync(tasksPath) ? fs.readFileSync(tasksPath, "utf8") : "_missing_",
+    "",
+    `## Feature root`,
+    featureDir,
   ].join("\n");
 
   console.log(brief);
 }
 
-export function runVerify(changeName?: string): void {
-  const name = resolveChange(changeName);
-  const { specxDir } = getRoots();
-  const specPath = path.join(specxDir, "changes", name, "spec.md");
+export function runVerify(featureName?: string): void {
+  const id = resolveFeature(featureName);
+  const specPath = artifactPath(id, "spec");
 
-  console.log(chalk.bold(`Verifier checklist — ${name}`));
+  console.log(chalk.bold(`Verifier checklist — feature ${id}`));
   const checks = [
+    ["FEATURE.md", !!featureBriefPath(id)],
     ["Spec exists", fs.existsSync(specPath)],
-    ["Tasks exist", fs.existsSync(path.join(specxDir, "changes", name, "tasks.md"))],
-    ["Design exists", fs.existsSync(path.join(specxDir, "changes", name, "design.md"))],
+    ["Tasks exist", fs.existsSync(artifactPath(id, "tasks"))],
+    ["Design exists", fs.existsSync(artifactPath(id, "design"))],
   ];
   for (const [label, ok] of checks) {
     console.log(`  ${ok ? chalk.green("✓") : chalk.red("✗")} ${label}`);
   }
 
-  updateChangeStatus(name, "verifying");
-  console.log(chalk.dim("\nManually verify implementation matches spec scenarios."));
-}
-
-export function runArchive(changeName?: string): void {
-  const name = resolveChange(changeName);
-  const config = loadConfig();
-  const registry = loadRegistry();
-  const item = registry.changes?.items?.[name];
-
-  if (config.gates?.build?.review_before_archive && item?.review_required) {
-    console.error(
-      chalk.red("Review required before archive. Run: specx review " + name)
-    );
-    process.exit(1);
-  }
-
-  const { archivePath, updatedSpecs } = archiveChange(name);
-  appendAudit("build.archive", { change: name, archivePath });
-
-  let reg = loadRegistry();
-  const items = { ...reg.changes?.items };
-  if (items[name]) {
-    items[name] = { ...items[name], status: "archived" };
-  }
-  reg = setActiveChange(
-    { ...reg, changes: { ...reg.changes, items } },
-    null
+  updateFeatureStatus(id, "verifying");
+  console.log(
+    chalk.dim(
+      "\nFeature specs are golden truth under specx/<path>/ — no archive step."
+    )
   );
-  saveRegistry(reg);
-
-  console.log(chalk.green(`Archived: ${archivePath}`));
-  if (updatedSpecs.length) {
-    console.log(chalk.dim("Updated specs:"));
-    for (const s of updatedSpecs) console.log(`  ${s}`);
-  }
-  printGitHint(updatedSpecs);
 }
 
-export function runDiff(changeName?: string): void {
-  const name = resolveChange(changeName);
+export function runArchive(featureName?: string): void {
+  const id = featureName ?? resolveFeature();
+  console.log(
+    chalk.yellow(
+      `Archive is deprecated. Feature "${id}" stays at specx/${id}/ as the source of truth.`
+    )
+  );
+  console.log(
+    chalk.dim(
+      "Update spec.md / design.md / tasks.md in place. Use specx approve when gates pass."
+    )
+  );
+  process.exit(0);
+}
+
+export function runDiff(featureName?: string): void {
+  const id = resolveFeature(featureName);
   const { specxDir } = getRoots();
-  console.log(formatDiffSummary(specxDir, name));
+  console.log(formatDiffSummary(specxDir, id));
 }
 
-function updateChangeStatus(
-  name: string,
+function updateFeatureStatus(
+  id: string,
   status: "proposed" | "spec" | "design" | "tasks" | "building" | "verifying"
 ): void {
   const registry = loadRegistry();
-  const item = registry.changes?.items?.[name];
+  const item = registry.features?.items?.[id];
   if (!item) return;
-  saveRegistry({
-    ...registry,
-    changes: {
-      ...registry.changes,
-      items: {
-        ...registry.changes?.items,
-        [name]: { ...item, status },
-      },
-    },
-  });
+  saveRegistry(
+    patchFeatureItem(registry, id, {
+      status,
+      phase: status,
+    })
+  );
 }

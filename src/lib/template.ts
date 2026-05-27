@@ -7,14 +7,23 @@ export interface TemplateVars {
   TRACK: string;
   STACK: string;
   DATE: string;
+  FEATURE_NAME?: string;
+  CHANGE_NAME?: string;
 }
 
-export function defaultVars(projectName: string, track: string): TemplateVars {
+export function defaultVars(
+  projectName: string,
+  track: string,
+  featureName?: string
+): TemplateVars {
+  const name = featureName ?? "feature-id";
   return {
     PROJECT_NAME: projectName,
     TRACK: track,
     STACK: "TBD",
     DATE: new Date().toISOString().slice(0, 10),
+    FEATURE_NAME: name,
+    CHANGE_NAME: name,
   };
 }
 
@@ -41,7 +50,9 @@ export function copyTemplateTree(
     if (stat.isDirectory()) {
       fs.mkdirSync(dest, { recursive: true });
       for (const name of fs.readdirSync(src)) {
-        if (name === "_template") continue;
+        // Legacy OpenSpec scaffold only — use specx/_template for features
+        if (rel === "changes/_template" || rel.startsWith("changes/_template/"))
+          continue;
         walk(path.join(rel, name));
       }
       return;

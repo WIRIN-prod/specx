@@ -15,6 +15,11 @@ import {
   taskCountsFromItem,
   type ChangeItemExtras,
 } from "./tasks.js";
+import { getFeatureDir } from "./features.js";
+import { getDependencies, getDependents } from "./feature-deps.js";
+import { loadFeaturesCatalog } from "./features-catalog.js";
+import { getActiveFeature } from "./registry.js";
+import { listFeatureIds } from "./features.js";
 
 type PhaseStatus =
   | "pending"
@@ -132,37 +137,45 @@ export function printFoundationStatus(
   }
 }
 
-const CHANGE_FILES = [
-  { file: "proposal.md", label: "proposal" },
+const FEATURE_FILES = [
+  { file: "FEATURE.md", alt: "proposal.md", label: "feature" },
   { file: "spec.md", label: "spec" },
   { file: "design.md", label: "design" },
   { file: "tasks.md", label: "tasks" },
 ] as const;
 
-export function printChangesStatus(
+export function printFeaturesStatus(
   registry: Registry,
   specxDir: string
 ): void {
-  const active = registry.changes?.active;
-  const items = registry.changes?.items ?? {};
-  const names = Object.keys(items).filter(
+  const active = getActiveFeature(registry);
+  const items = registry.features?.items ?? {};
+  const diskIds = listFeatureIds(specxDir);
+  const catalog = loadFeaturesCatalog();
+  const names = [...new Set([...diskIds, ...Object.keys(items)])].filter(
     (n) => items[n]?.status !== "archived"
   );
 
-  console.log(chalk.bold("\nChanges"));
+  console.log(chalk.bold("\nFeatures"));
   console.log(`  Active: ${active ? chalk.cyan(active) : "—"}`);
+  console.log(chalk.dim(`  Catalog: specx/features.yaml (${Object.keys(catalog.features).length} entries)`));
   if (names.length === 0) {
-    console.log(chalk.dim("  No active changes"));
+    console.log(chalk.dim("  No features — run: specx propose <feature-id>"));
     return;
   }
 
-  for (const name of names) {
-    const item = items[name] as ChangeItemExtras & { status: string };
-    printChangeStatus(name, item, name === active, specxDir);
+  for (const name of names.sort()) {
+    const item = (items[name] ?? { status: "proposed" }) as ChangeItemExtras & {
+      status: string;
+    };
+    printFeatureStatus(name, item, name === active, specxDir, catalog);
   }
 }
 
-function printChangeStatus(
+/** @deprecated */
+export const printChangesStatus = printFeaturesStatus;
+
+function printFeatureStatus(
   name: string,
   item: ChangeItemExtras & { status: string },
   isActive: boolean,
@@ -187,12 +200,24 @@ function printChangeStatus(
     console.log(chalk.dim(`    revision doc: ${extras.revision_artifact}`));
   }
 
-  const changeDir = path.join(specxDir, "changes", name);
+  const featureDir = getFeatureDir(specxDir, name);
+  const deps = getDependencies(name);
+  const dependents = getDependents(name);
+  if (deps.length) console.log(chalk.dim(`    depends on: ${deps.join(", ")}`));
+  if (dependents.length)
+    console.log(chalk.dim(`    required by: ${dependents.join(", ")}`));
+
   const artifactParts: string[] = [];
-  for (const { file, label } of CHANGE_FILES) {
-    const exists = fs.existsSync(path.join(changeDir, file));
+  for (const entry of FEATURE_FILES) {
+    const file = entry.file;
+    const alt = "alt" in entry ? entry.alt : undefined;
+    const label = entry.label;
+    let exists = fs.existsSync(path.join(featureDir, file));
+    if (!exists && alt) exists = fs.existsSync(path.join(featureDir, alt));
     const statusKey = `${label}_status` as keyof ChangeItemExtras;
-    const gate = extras[statusKey];
+    let gate = extras[statusKey];
+    if (label === "feature" && !gate)
+      gate = extras.proposal_status as string | undefined;
     const gateStr =
       typeof gate === "string" ? ` ${statusColor(gate)(gate)}` : "";
     artifactParts.push(`${artifactMark(exists)} ${label}${gateStr}`);

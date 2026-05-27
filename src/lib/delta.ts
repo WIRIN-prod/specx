@@ -78,11 +78,22 @@ export function mergeDeltaIntoSpec(
   return base.trim() + "\n";
 }
 
+function featureSpecsDir(specxDir: string, featurePath: string): string {
+  const segments = featurePath.split("/");
+  const primary = path.join(specxDir, ...segments, "specs");
+  if (fs.existsSync(primary)) return primary;
+  const legacyBucket = path.join(specxDir, "features", ...segments, "specs");
+  if (fs.existsSync(legacyBucket)) return legacyBucket;
+  const legacyChange = path.join(specxDir, "changes", featurePath, "specs");
+  if (fs.existsSync(legacyChange)) return legacyChange;
+  return primary;
+}
+
 export function mergeChangeDeltas(
   specxDir: string,
   changeName: string
 ): string[] {
-  const deltaDir = path.join(specxDir, "changes", changeName, "specs");
+  const deltaDir = featureSpecsDir(specxDir, changeName);
   const livingDir = path.join(specxDir, "specs");
   const updated: string[] = [];
 
@@ -114,14 +125,14 @@ export function mergeChangeDeltas(
 
 export function formatDiffSummary(
   specxDir: string,
-  changeName: string
+  featureId: string
 ): string {
-  const deltaDir = path.join(specxDir, "changes", changeName, "specs");
+  const deltaDir = featureSpecsDir(specxDir, featureId);
   if (!fs.existsSync(deltaDir)) {
-    return "No delta specs in this change.";
+    return "No capability specs in specx/<path>/specs/.";
   }
 
-  const lines: string[] = [`Change: ${changeName}`, ""];
+  const lines: string[] = [`Feature: ${featureId}`, ""];
   for (const domain of fs.readdirSync(deltaDir)) {
     const p = path.join(deltaDir, domain, "spec.md");
     if (!fs.existsSync(p)) continue;

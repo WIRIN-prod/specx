@@ -9,6 +9,7 @@ import { TRACK_PHASES } from "../schemas/specx-config.js";
 describe("registry", () => {
   it("defaultRegistry includes enterprise phases", () => {
     const reg = defaultRegistry(TRACK_PHASES.enterprise);
+    expect(reg.features?.items).toEqual({});
     expect(reg.discovery?.phases?.["01"]?.status).toBe("pending");
     expect(reg.discovery?.phases?.["11"]?.status).toBe("pending");
   });
@@ -22,7 +23,7 @@ describe("registry", () => {
   it("parses revision change status and extra item fields", () => {
     const parsed = RegistrySchema.parse({
       version: 1,
-      changes: {
+      features: {
         items: {
           "slice-1": {
             status: "revision",
@@ -32,9 +33,9 @@ describe("registry", () => {
         },
       },
     });
-    expect(parsed.changes?.items?.["slice-1"]?.status).toBe("revision");
+    expect(parsed.features?.items?.["slice-1"]?.status).toBe("revision");
     expect(
-      (parsed.changes?.items?.["slice-1"] as { tasks_total?: number })
+      (parsed.features?.items?.["slice-1"] as { tasks_total?: number })
         ?.tasks_total
     ).toBe(45);
   });
@@ -50,7 +51,7 @@ describe("registry", () => {
     });
     expect(changed).toBe(true);
     const parsed = RegistrySchema.parse(value);
-    expect(parsed.changes?.items?.["slice-1-shell"]?.created_at).toBe(
+    expect(parsed.features?.items?.["slice-1-shell"]?.created_at).toBe(
       "2026-05-22"
     );
   });
@@ -58,14 +59,14 @@ describe("registry", () => {
   it("normalizeRegistryRaw adds created_at and keeps approved status", () => {
     const { value } = normalizeRegistryRaw({
       version: 1,
-      changes: {
+      features: {
         items: {
           "slice-1-shell": { status: "approved" },
         },
       },
     });
     const parsed = RegistrySchema.parse(value);
-    expect(parsed.changes?.items?.["slice-1-shell"]?.status).toBe("approved");
-    expect(parsed.changes?.items?.["slice-1-shell"]?.created_at).toBeDefined();
+    expect(parsed.features?.items?.["slice-1-shell"]?.status).toBe("approved");
+    expect(parsed.features?.items?.["slice-1-shell"]?.created_at).toBeDefined();
   });
 });

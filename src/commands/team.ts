@@ -1,25 +1,23 @@
 import chalk from "chalk";
 import { loadConfig, saveConfig } from "../lib/config.js";
-import { loadRegistry, saveRegistry } from "../lib/registry.js";
+import { loadRegistry, saveRegistry, patchFeatureItem } from "../lib/registry.js";
+import { validateFeatureId } from "../lib/features-catalog.js";
 
-export function runReview(changeName: string): void {
+export function runReview(featureId: string): void {
+  const id = validateFeatureId(featureId);
   const registry = loadRegistry();
-  const item = registry.changes?.items?.[changeName];
+  const item = registry.features?.items?.[id];
   if (!item) {
-    console.error(chalk.red(`Change not found: ${changeName}`));
+    console.error(chalk.red(`Feature not found: ${id}`));
     process.exit(1);
   }
-  saveRegistry({
-    ...registry,
-    changes: {
-      ...registry.changes,
-      items: {
-        ...registry.changes?.items,
-        [changeName]: { ...item, review_required: true, status: "review" },
-      },
-    },
-  });
-  console.log(chalk.green(`Change ${changeName} flagged for review.`));
+  saveRegistry(
+    patchFeatureItem(registry, id, {
+      review_required: true,
+      status: "review",
+    })
+  );
+  console.log(chalk.green(`Feature ${id} flagged for review.`));
 }
 
 export function runAssign(phase: string, who: string): void {

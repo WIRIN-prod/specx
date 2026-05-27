@@ -1,104 +1,63 @@
 ---
 name: specx-propose
 description: >-
-  specX propose — start OpenSpec-style change with proposal and Capabilities. Kiro gate:
-  no implementation until human reviews proposal. Use /specx:propose or new features.
+  specX propose — create a feature leaf under specx/<domain>/.../<leaf>/ (no features/ folder).
+  Read specx/STRUCTURE.md. Example: specx propose auth/email/registration.
 ---
 
-# specX propose — Start a change (OpenSpec + Kiro)
+# specX propose — Segmented feature leaf
 
-**Kiro gate:** No production code until proposal is reviewed and user proceeds to spec.
+## Mental model
 
-**OpenSpec:** Proposal **Capabilities** section creates the contract for the spec phase — one delta spec file per capability.
+- **No `specx/features/` directory.** The product tree lives directly under `specx/`.
+- **`auth`**, **`email`** = **segments** (organizational; optional `SEGMENT.md`).
+- **`registration`** = **feature leaf** — the folder that contains all spec artifacts.
+
+```text
+specx/
+  auth/                 ← segment (not a feature)
+    email/              ← segment
+      registration/     ← FEATURE (leaf)
+        FEATURE.md
+        spec.md
+        design.md
+        tasks.md
+        specs/...
+```
+
+Same idea as Next.js `app/auth/email/...` — folders are segments until the leaf holds the “page” (here: `FEATURE.md`).
+
+**Read:** `specx/STRUCTURE.md` or `specx feature structure`.
+
+## CLI
+
+```bash
+specx propose auth/email/registration -m "Email signup"
+specx propose auth/email/forgot-password
+specx dep add auth/email/forgot-password auth/core-session
+```
+
+Re-run `specx propose` on the **same path** to continue work — do not invent a new folder per iteration.
 
 ## Before writing
 
-1. `specx status` + `.specx/registry.yaml`
-2. Glob `specx/specs/**/spec.md` — list domains that exist
-3. Read `STEERING.md` — confirm feature aligns; note non-negotiables
-4. Read `BUILD-ORDER.md` — confirm feature is scheduled (or user waives)
-5. Read `RULES.md` + `ARCHITECTURE.md` for constraints
-6. `specx propose <kebab-name> -m "summary"` if folder missing
+1. `specx status` + `specx feature list`
+2. `specx/STRUCTURE.md`
+3. `STEERING.md`, `BUILD-ORDER.md`, `RULES.md`
+4. Upstream deps: read `specx/<dep-path>/spec.md` first
 
-## Write `specx/changes/<name>/proposal.md`
+## Write `specx/<segment>/.../<leaf>/FEATURE.md`
 
-### Why (1–2 sentences)
-Problem/opportunity. Why now. Link to PRD feature ID or BUILD-ORDER item if exists.
+### Capabilities (OpenSpec)
 
-### What changes
-- Bullet each observable change
-- **BREAKING:** prefix breaking changes
-- User-visible impact first
+Drives `specx/<path>/specs/<capability>/spec.md` under the **same leaf**.
 
-### Capabilities (CRITICAL — OpenSpec)
+### Dependencies
 
-This section drives **all** spec files. Research `specx/specs/` first.
+List in FEATURE.md and in `specx/features.yaml` via `specx dep add`.
 
-**New capabilities** (kebab-case):
-- `user-auth` → will create `changes/<change>/specs/user-auth/spec.md` → eventually `specs/user-auth/spec.md`
+## Never
 
-**Modified capabilities** (existing folders under `specx/specs/`):
-- Only if **requirement-level behavior** changes
-- Refactors alone do not belong here — design.md only
-- List exact folder names: `auth-session`, `checkout-cart`
-
-**Unchanged capabilities** (optional):
-- Domains touched but no requirement change — documents scope boundary
-
-### Constraints and assumptions (element 3)
-
-What affects implementation and is **not** obvious from code alone:
-
-- Stack, hosting, data store
-- Third-party API limits, quotas, SLAs
-- Performance (p95, max payload)
-- Regulatory or STEERING non-negotiables
-
-Persistent context: `STEERING.md`, `RULES.md`, root `AGENTS.md`.
-
-### Decisions already made (element 4)
-
-If humans already chose approach, list here so agents don't re-decide:
-
-- "Session store: existing Redis"
-- "Email provider: SendGrid (existing integration)"
-
-Unset decisions → leave for **specx-design**.
-
-### Impact
-- APIs, events, schemas
-- Dependencies, feature flags
-- Security/compliance (enterprise)
-- Migration / rollout
-
-### In scope
-Bullet list of what **this change includes** — tie to outcomes, not feature names.
-
-### Out of scope (mandatory — element 2)
-
-**As important as in-scope.** Agents expand scope without this. Be explicit:
-
-- "OAuth / Google sign-in — out of scope"
-- "Password reset — separate change"
-- "Admin impersonation — not included"
-
-If it is commonly assumed for this feature type, **still list it as out of scope**.
-
-### Risks & open questions
-What could block spec or design.
-
-## Dual-agent on proposal (recommended)
-
-1. Specialist drafts proposal
-2. Critic checks: capabilities complete? wrong domains? MVP violation?
-3. Human approves before **specx-spec**
-
-## Product memory
-
-Proposal is not living truth — **specs are**, after archive. Proposal is the intent record in `changes/archive/`.
-
-## After
-
-User proceeds → **specx-spec** (Specialist + Critic on deltas).
-
-**Forbidden:** Code, tasks, or design before Capabilities approved by human.
+- Create `specx/features/...` (legacy only)
+- Put `FEATURE.md` at `specx/auth/` — only at the **leaf**
+- Flat ids like `slice-1` unless truly a single-segment feature

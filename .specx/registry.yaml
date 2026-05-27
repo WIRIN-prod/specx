@@ -24,6 +24,19 @@ discovery:
       status: pending
     "09":
       status: pending
+features:
+  active: auth/email/registration
+  items:
+    demo-feature:
+      status: proposed
+      created_at: 2026-05-22T06:04:41.524Z
+    test2:
+      status: proposed
+      created_at: 2026-05-22T06:04:49.441Z
+    auth/email/registration:
+      status: proposed
+      created_at: 2026-05-27T10:13:58.629Z
+      updated_at: 2026-05-27T10:13:58.629Z
 changes:
   active: test2
   items:
