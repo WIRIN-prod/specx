@@ -1,6 +1,6 @@
 {
   "name": "specx",
-  "description": "User-approved project knowledge, architecture, planning, and implementation workflows.",
+  "description": "Research a user-approved project blueprint, plan milestone delivery, and guide agents through scoped implementation and review.",
   "version": "0.1.0",
   "author": {
     "name": "WIRIN",

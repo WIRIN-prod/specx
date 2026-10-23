@@ -2,7 +2,9 @@
 
 - ID:
 - Kind: application / service / package / datastore / external system / runtime
-- State: unresolved
+- Parent ID: none / <parent>
+- State: proposed
+- Revision: 1
 - Provenance:
 - Owner (if confirmed):
 
@@ -12,9 +14,9 @@
 
 Source-verified facts with repository-relative paths and symbols:
 
-## Intended behavior
+## Target behavior
 
-User-confirmed requirements or proposed changes. Keep separate from current behavior.
+Link approved or proposed feature specifications and requirement IDs. Keep this separate from the source-verified current implementation above.
 
 ## Interfaces
 
@@ -32,4 +34,13 @@ For every relation, name direction, reason, and evidence/status.
 
 ## Tests and quality gates
 
+Link to measurable product acceptance and roadmap milestone/task verification.
+
 ## Risks and unresolved questions
+
+## Child components and features
+
+| ID | Name | Kind | State | Record |
+|---|---|---|---|---|
+
+Use [FEATURE-TEMPLATE.md](../../specifications/FEATURE-TEMPLATE.md) for behavior-level records.

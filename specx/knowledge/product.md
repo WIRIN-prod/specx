@@ -12,7 +12,7 @@ For each journey, record trigger, actor, preconditions, steps, alternate paths, 
 
 ## Requirements
 
-Use stable IDs and observable acceptance conditions. Mark each item with an allowed state and evidence or approval reference.
+Use stable IDs and observable acceptance conditions. Link each requirement to its component and feature specification, decision records, and downstream roadmap milestones/tasks. Mark each item with an allowed state and evidence or approval reference. Product requirements describe intended outcomes; current implementation behavior belongs in the current-state survey.
 
 | ID | Requirement / scenario | State | Evidence / approval |
 |---|---|---|---|
@@ -20,4 +20,8 @@ Use stable IDs and observable acceptance conditions. Mark each item with an allo
 ## Constraints and non-goals
 
 ## Open questions
+
+## Blueprint acceptance
+
+Link the approved product specification revision and record which outcomes, journeys, constraints, and non-goals it covers. Do not declare the product blueprint ready while required product decisions remain unresolved.
 

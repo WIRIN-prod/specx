@@ -1,12 +1,13 @@
 ---
 name: propose
-description: Draft a reviewable proposal for additions or changes to accepted project knowledge without silently accepting them.
+description: Draft a reviewable proposal for additions or changes to approved project specifications, decisions, architecture, or constraints without silently accepting them.
 ---
 
-# Propose a knowledge change
+# Propose a blueprint or knowledge change
 
-1. Read the affected canonical records and their statuses, linked decisions, prior proposals, and current checkpoint.
-2. Gather direct evidence and cite exact repo-relative sources. Separate facts, desired behavior, and interpretation.
-3. Create or revise one proposal in `specx/proposals/` with exact changes, affected files/components, consequences, conflicts, unknowns, and user questions/options.
-4. Do not modify accepted knowledge or mark the proposal approved. Ask the user to review the exact proposal revision.
-5. Record the proposal revision and waiting state in the checkpoint.
+1. Read affected accepted product/component/feature specifications, stack and architecture records, decisions, linked roadmap items, prior proposals, and checkpoint.
+2. Gather direct code/documentation evidence where the proposal concerns current behavior. For desired behavior or stack changes, collaborate with the user; do not treat research or convention as a decision.
+3. Create or revise one proposal in `specx/proposals/` with exact stable IDs, target files, hierarchy/relations, revisions, consequences, conflicts, unresolved questions, options, affected readiness gates, and roadmap impact.
+4. Keep current-state evidence, target behavior, migration, and interpretation distinct. Include research sources and limitations when relevant.
+5. Do not modify accepted knowledge/specifications or mark the proposal approved. Ask the user to review the exact proposal revision.
+6. Record the proposal revision, affected component/feature/decision IDs, readiness effects, and waiting state in the checkpoint.

@@ -15,25 +15,31 @@ Do not use `inferred` as accepted truth. If an inference helps explain evidence,
 
 | Area | Status | Last reviewed | Evidence / open questions |
 |---|---|---|---|
-| Product purpose and users | unresolved | — | |
-| User journeys and requirements | unresolved | — | |
-| System context and boundaries | unresolved | — | |
-| Components and ownership | unresolved | — | |
-| Interfaces, events, and protocols | unresolved | — | |
-| Data stores and flows | unresolved | — | |
-| Authentication and authorization | unresolved | — | |
-| Security and privacy | unresolved | — | |
-| External services and dependencies | unresolved | — | |
+| Product outcomes, users, and journeys | unresolved | — | |
+| Target component and feature specification tree | unresolved | — | |
+| Current-state implementation inventory | unresolved | — | |
+| Target system context and architecture | unresolved | — | |
+| Technical stack and version choices | unresolved | — | |
+| APIs, events, protocols, and contracts | unresolved | — | |
+| Data ownership, lifecycle, and flows | unresolved | — | |
+| Identity, authentication, and authorization | unresolved | — | |
+| Security, privacy, and threat boundaries | unresolved | — | |
+| External systems and dependencies | unresolved | — | |
 | Runtime, deployment, and operations | unresolved | — | |
-| Engineering rules and quality gates | unresolved | — | |
-| Risks, constraints, and compliance | unresolved | — | |
+| Quality attributes and measurable targets | unresolved | — | |
+| Engineering rules and verification gates | unresolved | — | |
+| Decisions, constraints, risks, and non-goals | unresolved | — | |
+| Requirement-to-milestone/task traceability | unresolved | — | |
 
 Coverage is not complete merely because a section exists. Explain omissions and uninspected repositories/services.
+
+Planning readiness is assessed in [specifications/README.md](../specifications/README.md#blueprint-readiness). Discovery coverage and target blueprint coverage are different: source evidence can establish current behavior but cannot establish desired behavior.
 
 ## Records
 
 - [Product and users](product.md)
 - [Architecture and system context](architecture.md)
+- [Technical stack](technical-stack.md)
 - [Components](components/README.md)
 - [Interfaces and data](interfaces-and-data.md)
 - [Security](security.md)

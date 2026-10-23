@@ -18,7 +18,10 @@ function run(fn: (...args: never[]) => Promise<void> | void) {
     catch (err) { console.error(chalk.red(`\n${(err as Error).message}\n`)); process.exit(1); }
   };
 }
-program.command("init").description("Initialize a project knowledge base and agent integrations").argument("[path]", "project directory", ".").action(run((p: string) => runInit(p)));
+program.command("init").description("Initialize a project knowledge base and selected agent integrations")
+  .argument("[path]", "project directory", ".")
+  .option("--agents <list>", "Comma-separated agents: codex,claude,cursor,copilot")
+  .action(run((p: string, opts: { agents?: string }) => runInit(p, opts.agents, true)));
 program.command("update").description("Regenerate SpecX agent integrations").action(runUpdate);
 program.command("onboard").description("Print the project context and approval rules").action(run(runOnboard));
 program.command("status").description("Summarize local knowledge and work checkpoint").action(run(runStatus));

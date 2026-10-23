@@ -5,11 +5,11 @@ description: Execute one task from an explicitly user-approved SpecX plan within
 
 # Execute one approved task
 
-1. Read `AGENTS.md`, `.specx/AGENTS.md`, `specx/Home.md`, the current checkpoint, the approved plan and revision, and all linked accepted knowledge/rules.
-2. Verify that this task is approved, unblocked, and its current scope matches the approved revision. If not, stop and ask.
-3. Inspect working tree and branch. Preserve unrelated user changes. Do not overwrite or discard user work.
-4. Work only within task scope and approved behavior. If implementation requires a new decision, dependency, migration, interface, or scope expansion, stop before that change and ask the user.
-5. Run only the checks required by the approved task/project instructions. Report evidence, failures, and unrun checks honestly.
-6. Do not silently edit accepted knowledge. If code reveals drift or missing knowledge, draft a separate proposal and await approval.
-7. Update task and checkpoint Markdown with actual progress, changed files, evidence, blocker, and next safe action.
-8. Present the code diff and results for human review. Never merge or represent code as approved for merge.
+1. Read `AGENTS.md`, `.specx/AGENTS.md`, `specx/Home.md`, readiness and blueprint revision, checkpoint, exact approved roadmap revision, this task, linked requirements/specifications/decisions, and engineering rules.
+2. Verify the blueprint and roadmap revisions are approved, and the task is approved, dependency-ready, unblocked, and within its exact scope. If not, stop and report the blocker.
+3. Inspect Git status, current branch, target base, and uncommitted changes. Preserve unrelated user work. Never stash, reset, clean, or overwrite work without explicit authorization. If the task branch cannot be created safely in this checkout, use a separate worktree if available or ask the user to prepare the branch.
+4. Create or check out the task-specific branch from the approved base when supported. Record branch and base in the checkpoint. Do not work directly on the protected/main branch when a branch workflow is available.
+5. Implement only the approved task and linked target behavior. If it requires a new product decision, dependency, migration, interface, stack choice, or scope expansion, stop before making that change and ask the user. Do not modify accepted specifications to fit the implementation.
+6. Run the task's specified tests, checks, and quality gates. Report exact evidence, failures, and unrun checks honestly; never claim a check passed without running it.
+7. Update only task progress in the approved roadmap and checkpoint: changed files, branch/base, commit or PR reference if available, verification evidence, blockers, and next safe action. Knowledge changes require a separate proposal and approval.
+8. Present the complete diff for review. Do not merge, deploy, or claim human approval. The human decides whether to merge after review.

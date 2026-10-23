@@ -62,16 +62,23 @@ export async function runOnboard(): Promise<void> {
   console.log([
     `# specX context: ${config.project.name ?? path.basename(projectRoot)}`,
     "",
-    "The repository-local Markdown knowledge base is canonical. Read its status and provenance before acting.",
-    "Proposed, inferred, or unresolved knowledge is not approved truth. Stop for user decisions.",
-    "Execute only approved plans and review code changes before merge.",
+    "The repository-local Markdown blueprint is canonical. Keep source-verified current behavior separate from user-approved target specifications.",
+    "Discover the existing system, then use a frontier model with the user to specify the target. Do not write application code during these stages.",
+    "Assess and approve blueprint readiness before creating a phased milestone roadmap. Approve the exact roadmap before task execution.",
+    "Execute only one approved, unblocked task per branch; run its checks and review the diff. A human approves merge.",
     "",
     ...files.flatMap((file) => fs.existsSync(file) ? [fs.readFileSync(file, "utf8")] : []),
   ].join("\n"));
 }
 
 export function runUpdate(): void {
-  const written = generateAgentIntegrations();
+  const config = loadConfig();
+  const selectedAgents = config.integrations?.agents;
+  if (!selectedAgents?.length) {
+    throw new Error("No agent selection is saved in .specx/specx.yaml. Run `specx init` and choose the agents you use.");
+  }
+  const written = generateAgentIntegrations(undefined, undefined, selectedAgents);
   console.log(chalk.green("Agent integrations updated:"));
+  console.log(`  Selected: ${selectedAgents.join(", ")}`);
   for (const item of written) console.log(`  ${item}`);
 }
