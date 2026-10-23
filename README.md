@@ -81,6 +81,23 @@ The scaffold is intentionally unresolved. It is not evidence that a product area
 
 The detailed lifecycle workflows are skills installed in `.agents/skills/`, `.claude/skills/`, `.cursor/skills/`, and `.github/skills/`. Claude Code and Cursor also receive slash-command wrappers.
 
+## Install as a Claude Code plugin
+
+From a Claude Code session, add the public SpecX marketplace and install the plugin for your user:
+
+```text
+/plugin marketplace add WIRIN-prod/specx
+/plugin install specx@specx-marketplace
+```
+
+Or from a terminal (Claude Code v2.1.292 or later):
+
+```bash
+claude plugin install specx --marketplace WIRIN-prod/specx --scope user
+```
+
+After installation, start a new Claude Code session or run `/reload-plugins`. The workflow skills are available as `/specx:discover`, `/specx:propose`, `/specx:approve`, `/specx:plan`, `/specx:execute`, `/specx:review`, and `/specx:resume`.
+
 ## Why this design
 
 Spec Kit, OpenSpec, Kiro, BMAD, and Superpowers demonstrate useful clarify/design/plan/execute/review loops. Agent Skills supplies a portable progressive-disclosure format, while each host still needs its own wiring. C4 and service catalogs help structure architecture inventories; source indexes help navigate code. SpecX combines these patterns with explicit provenance and human approval. Automated maps are evidence aids, never proof of completeness.

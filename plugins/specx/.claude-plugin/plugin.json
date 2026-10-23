@@ -1,0 +1,9 @@
+{
+  "name": "specx",
+  "description": "User-approved project knowledge, architecture, planning, and implementation workflows.",
+  "version": "0.1.0",
+  "author": {
+    "name": "WIRIN",
+    "url": "https://github.com/WIRIN-prod/specx"
+  }
+}

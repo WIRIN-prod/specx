@@ -1,0 +1,17 @@
+{
+  "name": "specx-marketplace",
+  "description": "SpecX plugins for user-approved project knowledge workflows.",
+  "owner": {
+    "name": "WIRIN"
+  },
+  "metadata": {
+    "description": "SpecX user-approved project knowledge workflows"
+  },
+  "plugins": [
+    {
+      "name": "specx",
+      "source": "./plugins/specx",
+      "description": "Build and maintain an evidence-linked project knowledge base with explicit user approval gates."
+    }
+  ]
+}
