@@ -1,0 +1,229 @@
+# Plane Community Edition — self-hosted, local bind mounts.
+#
+# Derived from the official v1.4.1 self-host bundle
+# (github.com/makeplane/plane/releases/download/v1.4.1/docker-compose.yml).
+# Same images and same topology; the only change is storage: every named volume
+# is a bind mount under ${PLANE_DATA}, so all state is visible on the host and
+# can be backed up by copying a directory.
+#
+#   docker compose --env-file plane.env up -d
+#
+# Set PLANE_DATA in plane.env to relocate state (e.g. to another drive).
+
+x-db-env: &db-env
+  PGHOST: ${PGHOST:-plane-db}
+  PGDATABASE: ${PGDATABASE:-plane}
+  POSTGRES_USER: ${POSTGRES_USER:-plane}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-plane}
+  POSTGRES_DB: ${POSTGRES_DB:-plane}
+  POSTGRES_PORT: ${POSTGRES_PORT:-5432}
+  PGDATA: ${PGDATA:-/var/lib/postgresql/data}
+
+x-redis-env: &redis-env
+  REDIS_HOST: ${REDIS_HOST:-plane-redis}
+  REDIS_PORT: ${REDIS_PORT:-6379}
+  REDIS_URL: ${REDIS_URL:-redis://plane-redis:6379/}
+
+x-minio-env: &minio-env
+  MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-access-key}
+  MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY:-secret-key}
+
+x-aws-s3-env: &aws-s3-env
+  AWS_REGION: ${AWS_REGION:-}
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-access-key}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-secret-key}
+  AWS_S3_ENDPOINT_URL: ${AWS_S3_ENDPOINT_URL:-http://plane-minio:9000}
+  AWS_S3_BUCKET_NAME: ${AWS_S3_BUCKET_NAME:-uploads}
+
+x-proxy-env: &proxy-env
+  APP_DOMAIN: ${APP_DOMAIN:-localhost}
+  FILE_SIZE_LIMIT: ${FILE_SIZE_LIMIT:-5242880}
+  CERT_EMAIL: ${CERT_EMAIL}
+  CERT_ACME_CA: ${CERT_ACME_CA}
+  CERT_ACME_DNS: ${CERT_ACME_DNS}
+  LISTEN_HTTP_PORT: ${LISTEN_HTTP_PORT:-80}
+  LISTEN_HTTPS_PORT: ${LISTEN_HTTPS_PORT:-443}
+  BUCKET_NAME: ${AWS_S3_BUCKET_NAME:-uploads}
+  SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+
+x-mq-env: &mq-env
+  RABBITMQ_HOST: ${RABBITMQ_HOST:-plane-mq}
+  RABBITMQ_PORT: ${RABBITMQ_PORT:-5672}
+  RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-plane}
+  RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-plane}
+  RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-plane}
+  RABBITMQ_VHOST: ${RABBITMQ_VHOST:-plane}
+
+x-live-env: &live-env
+  API_BASE_URL: ${API_BASE_URL:-http://api:8000}
+  LIVE_SERVER_SECRET_KEY: ${LIVE_SERVER_SECRET_KEY}
+
+x-app-env: &app-env
+  WEB_URL: ${WEB_URL:-http://localhost}
+  DEBUG: ${DEBUG:-0}
+  CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+  GUNICORN_WORKERS: 1
+  USE_MINIO: ${USE_MINIO:-1}
+  DATABASE_URL: ${DATABASE_URL:-postgresql://plane:plane@plane-db/plane}
+  SECRET_KEY: ${SECRET_KEY}
+  AMQP_URL: ${AMQP_URL:-amqp://plane:plane@plane-mq:5672/plane}
+  API_KEY_RATE_LIMIT: ${API_KEY_RATE_LIMIT:-60/minute}
+  MINIO_ENDPOINT_SSL: ${MINIO_ENDPOINT_SSL:-0}
+  LIVE_SERVER_SECRET_KEY: ${LIVE_SERVER_SECRET_KEY}
+  WEBHOOK_ALLOWED_IPS: ${WEBHOOK_ALLOWED_IPS:-}
+  WEBHOOK_ALLOWED_HOSTS: ${WEBHOOK_ALLOWED_HOSTS:-}
+
+services:
+  web:
+    image: makeplane/plane-frontend:${APP_RELEASE:-v1.4.1}
+    restart: unless-stopped
+    depends_on:
+      - api
+      - worker
+
+  space:
+    image: makeplane/plane-space:${APP_RELEASE:-v1.4.1}
+    restart: unless-stopped
+    depends_on:
+      - api
+      - worker
+      - web
+
+  admin:
+    image: makeplane/plane-admin:${APP_RELEASE:-v1.4.1}
+    restart: unless-stopped
+    depends_on:
+      - api
+      - web
+
+  live:
+    image: makeplane/plane-live:${APP_RELEASE:-v1.4.1}
+    restart: unless-stopped
+    environment:
+      <<: [*live-env, *redis-env]
+    depends_on:
+      - api
+      - web
+
+  api:
+    image: makeplane/plane-backend:${APP_RELEASE:-v1.4.1}
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-api.sh
+    volumes:
+      - ${PLANE_DATA:-./data}/logs/api:/code/plane/logs
+    environment:
+      <<: [*app-env, *db-env, *redis-env, *minio-env, *aws-s3-env, *proxy-env]
+    depends_on:
+      plane-db:
+        condition: service_healthy
+      plane-redis:
+        condition: service_healthy
+      plane-mq:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+
+  worker:
+    image: makeplane/plane-backend:${APP_RELEASE:-v1.4.1}
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-worker.sh
+    volumes:
+      - ${PLANE_DATA:-./data}/logs/worker:/code/plane/logs
+    environment:
+      <<: [*app-env, *db-env, *redis-env, *minio-env, *aws-s3-env, *proxy-env]
+    depends_on:
+      - api
+
+  beat-worker:
+    image: makeplane/plane-backend:${APP_RELEASE:-v1.4.1}
+    restart: unless-stopped
+    command: ./bin/docker-entrypoint-beat.sh
+    volumes:
+      - ${PLANE_DATA:-./data}/logs/beat-worker:/code/plane/logs
+    environment:
+      <<: [*app-env, *db-env, *redis-env, *minio-env, *aws-s3-env, *proxy-env]
+    depends_on:
+      - api
+
+  # Runs the Django migrations, then exits. Everything that touches the database
+  # waits on it completing successfully rather than racing it.
+  migrator:
+    image: makeplane/plane-backend:${APP_RELEASE:-v1.4.1}
+    restart: on-failure
+    command: ./bin/docker-entrypoint-migrator.sh
+    volumes:
+      - ${PLANE_DATA:-./data}/logs/migrator:/code/plane/logs
+    environment:
+      <<: [*app-env, *db-env, *redis-env, *minio-env, *aws-s3-env, *proxy-env]
+    depends_on:
+      plane-db:
+        condition: service_healthy
+      plane-redis:
+        condition: service_healthy
+
+  plane-db:
+    image: postgres:15.7-alpine
+    restart: unless-stopped
+    command: postgres -c 'max_connections=1000'
+    environment:
+      <<: *db-env
+    volumes:
+      - ${PLANE_DATA:-./data}/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-plane} -d ${POSTGRES_DB:-plane}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  plane-redis:
+    image: valkey/valkey:7.2.11-alpine
+    restart: unless-stopped
+    volumes:
+      - ${PLANE_DATA:-./data}/redis:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  plane-mq:
+    image: rabbitmq:3.13.6-management-alpine
+    restart: unless-stopped
+    environment:
+      <<: *mq-env
+    volumes:
+      - ${PLANE_DATA:-./data}/rabbitmq:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+
+  plane-minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /export --console-address ":9090"
+    environment:
+      <<: *minio-env
+    volumes:
+      - ${PLANE_DATA:-./data}/minio:/export
+
+  proxy:
+    image: makeplane/plane-proxy:${APP_RELEASE:-v1.4.1}
+    restart: unless-stopped
+    environment:
+      <<: *proxy-env
+    ports:
+      - "${LISTEN_HTTP_PORT:-80}:80"
+      - "${LISTEN_HTTPS_PORT:-443}:443"
+    volumes:
+      - ${PLANE_DATA:-./data}/proxy/config:/config
+      - ${PLANE_DATA:-./data}/proxy/data:/data
+    depends_on:
+      - web
+      - api
+      - space
+      - admin
+      - live
+
+# No named volumes by design — every path above is a host bind mount.

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 import { existsSync } from "node:fs";
 
@@ -11,4 +11,5 @@ if (!existsSync(cliPath)) {
   process.exit(1);
 }
 
-await import(cliPath);
+// Must be a file:// URL - a bare Windows path is rejected by the ESM loader.
+await import(pathToFileURL(cliPath).href);

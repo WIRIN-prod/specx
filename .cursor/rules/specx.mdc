@@ -1,44 +1,8 @@
 ---
-description: specX SDD — read specx-sdd skill and reference.md first; use workflow skills for full process detail
+description: SpecX project knowledge and user approval rules
 globs:
 alwaysApply: true
 ---
 
-# specX — agents must use skills (not improvisation)
-
-This project uses **specX Spec-Driven Development**. Generic agile or "write a spec" behavior is wrong.
-
-## Mandatory first read
-
-1. `.cursor/skills/specx-sdd/SKILL.md`
-2. `.cursor/skills/specx-sdd/reference.md` — OpenSpec, BMAD, Kiro, GSD, Ralph, Spec Kit DNA
-3. `specx/SPECX.md`
-4. `specx/foundation/STEERING.md`
-5. `.specx/registry.yaml`
-
-## Workflow skills (full process — read entire SKILL.md)
-
-| Intent | Skill | Extra detail |
-|--------|-------|----------------|
-| Discovery | `specx-discover` | `phases.md` — lens per phase |
-| Draft | `specx-specialist` | Named persona |
-| Challenge | `specx-critic` | Verdict required |
-| Approve phase | `specx-approve` | Human said yes only |
-| Revise | `specx-revise` | |
-| New feature | `specx-propose` | Capabilities = OpenSpec |
-| Requirements | `specx-spec` | ADDED/MODIFIED/REMOVED |
-| Design | `specx-design` | ADR traceability |
-| Tasks | `specx-tasks` | One checkbox = one session |
-| Code | `specx-build` | Fresh context |
-| Verify | `specx-verify` | Ralph loop until READY |
-| Archive | `specx-archive` | Living specs merge |
-
-Slash commands and `.specx/commands/` mirror these skills — **skills are authoritative**.
-
-## Non-negotiables
-
-- Dual-agent: Specialist + Critic before human gate
-- Git commits after approvals (git is memory)
-- No code before spec reviewed (Kiro)
-- Delta specs only during changes (OpenSpec)
-- Product language in requirements; implementation in design/tasks
+Read specx/Home.md and .specx/AGENTS.md. The repository-local Markdown knowledge base is canonical. Proposed, inferred, disputed, and unresolved content is not accepted truth. Ask the user before resolving missing decisions, changing accepted knowledge, or expanding approved scope. Execute only tasks in an explicitly approved plan. Present code changes for human review before merge.
+Use the relevant skill in .cursor/skills/.

@@ -2,34 +2,40 @@ import fs from "node:fs";
 import path from "node:path";
 import chalk from "chalk";
 import { execSync } from "node:child_process";
-import { SpecxConfigSchema, TRACK_PHASES } from "../../schemas/specx-config.js";
-import { defaultRegistry } from "../../schemas/registry.js";
-import { loadConfig, saveConfig } from "../lib/config.js";
-import { loadRegistry, saveRegistry } from "../lib/registry.js";
+import { loadConfig } from "../lib/config.js";
 import { getRoots } from "../lib/paths.js";
-import { getFeatureDir } from "../lib/features.js";
 import { generateAgentIntegrations } from "../lib/agents.js";
-import {
-  printFeaturesStatus,
-  printDiscoveryStatus,
-  printFoundationStatus,
-} from "../lib/status-display.js";
-import { runPropose } from "./build.js";
-import { runPhase } from "./discovery.js";
 
-export function runStatus(): void {
+function markdownFiles(dir: string): string[] {
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    return entry.isDirectory() ? markdownFiles(full) : entry.name.endsWith(".md") ? [full] : [];
+  });
+}
+
+export async function runStatus(): Promise<void> {
   const config = loadConfig();
-  const registry = loadRegistry();
-  const { specxDir } = getRoots();
-
-  console.log(chalk.bold("\nspecX status"));
-  console.log(`  Project: ${config.project?.name ?? "—"}`);
-  console.log(`  Root: ${specxDir.replace(/\/specx$/, "")}`);
-
-  printDiscoveryStatus(config, registry, specxDir);
-  printFoundationStatus(config, specxDir);
-  printFeaturesStatus(registry, specxDir);
-  console.log();
+  const { projectRoot, specxDir } = getRoots();
+  const files = markdownFiles(specxDir);
+  const proposed = files.filter((file) => {
+    if (!file.toLowerCase().includes(`${path.sep}proposals${path.sep}`)) return false;
+    if (/README|TEMPLATE/i.test(path.basename(file))) return false;
+    return /state:\s*proposed/i.test(fs.readFileSync(file, "utf8"));
+  }).length;
+  const indexFile = path.join(specxDir, "knowledge", "README.md");
+  const unresolved = fs.existsSync(indexFile)
+    ? (fs.readFileSync(indexFile, "utf8").match(/\| unresolved \|/gi) ?? []).length
+    : 0;
+  const checkpoint = path.join(specxDir, "work", "CHECKPOINT.md");
+  console.log(chalk.bold("\nspecX project status"));
+  console.log(`  Project: ${config.project.name ?? path.basename(projectRoot)}`);
+  console.log(`  Root:    ${projectRoot}`);
+  console.log(`  Knowledge files: ${files.length}`);
+  console.log(`  Pending proposals: ${proposed}`);
+  console.log(`  Unresolved knowledge areas: ${unresolved}`);
+  console.log(`  Checkpoint: ${fs.existsSync(checkpoint) ? "available" : "not started"}`);
+  console.log(chalk.dim("\n  Canonical record: specx/ (Markdown in this repository)\n"));
 }
 
 export function runConfig(openEditor: boolean): void {
@@ -42,86 +48,30 @@ export function runConfig(openEditor: boolean): void {
   if (openEditor) {
     const editor = process.env.EDITOR ?? "vi";
     execSync(`${editor} "${configPath}"`, { stdio: "inherit" });
-  } else {
-    console.log(fs.readFileSync(configPath, "utf8"));
-  }
+  } else console.log(fs.readFileSync(configPath, "utf8"));
 }
 
-export function runTrack(trackName: string): void {
-  const parsed = SpecxConfigSchema.shape.track.safeParse(trackName);
-  if (!parsed.success) {
-    console.error(chalk.red("Track must be quick, standard, or enterprise"));
-    process.exit(1);
-  }
+export async function runOnboard(): Promise<void> {
+  const { projectRoot, specxDir, dotSpecxDir } = getRoots();
   const config = loadConfig();
-  saveConfig({ ...config, track: parsed.data });
-  saveRegistry(defaultRegistry(TRACK_PHASES[parsed.data]));
-  console.log(chalk.green(`Track set to ${parsed.data}`));
-}
-
-export function runOnboard(): void {
-  const { specxDir, dotSpecxDir } = getRoots();
-  const parts: string[] = ["# specX onboard context\n"];
-
-  const specxMd = path.join(specxDir, "SPECX.md");
-  if (fs.existsSync(specxMd)) {
-    parts.push("## SPECX.md\n", fs.readFileSync(specxMd, "utf8").slice(0, 8000));
-  }
-
-  const steering = path.join(specxDir, "foundation", "STEERING.md");
-  if (fs.existsSync(steering)) {
-    parts.push("\n## STEERING.md\n", fs.readFileSync(steering, "utf8").slice(0, 4000));
-  }
-
-  const registryPath = path.join(dotSpecxDir, "registry.yaml");
-  if (fs.existsSync(registryPath)) {
-    parts.push("\n## registry.yaml\n", fs.readFileSync(registryPath, "utf8"));
-  }
-
-  const registry = loadRegistry();
-  const active = registry.features?.active ?? registry.changes?.active;
-  if (active) {
-    const featureDir = getFeatureDir(specxDir, active);
-    for (const f of ["FEATURE.md", "proposal.md", "spec.md", "tasks.md"]) {
-      const p = path.join(featureDir, f);
-      if (fs.existsSync(p)) {
-        parts.push(`\n## ${active}/${f}\n`, fs.readFileSync(p, "utf8").slice(0, 3000));
-      }
-    }
-  }
-
-  console.log(parts.join("\n"));
+  const files = [
+    path.join(specxDir, "Home.md"),
+    path.join(dotSpecxDir, "AGENTS.md"),
+    path.join(specxDir, "work", "CHECKPOINT.md"),
+  ];
+  console.log([
+    `# specX context: ${config.project.name ?? path.basename(projectRoot)}`,
+    "",
+    "The repository-local Markdown knowledge base is canonical. Read its status and provenance before acting.",
+    "Proposed, inferred, or unresolved knowledge is not approved truth. Stop for user decisions.",
+    "Execute only approved plans and review code changes before merge.",
+    "",
+    ...files.flatMap((file) => fs.existsSync(file) ? [fs.readFileSync(file, "utf8")] : []),
+  ].join("\n"));
 }
 
 export function runUpdate(): void {
   const written = generateAgentIntegrations();
   console.log(chalk.green("Agent integrations updated:"));
-  for (const w of written) console.log(`  ${w}`);
-}
-
-export function runRun(options: {
-  prompt?: string;
-  phase?: string;
-  input?: string;
-  propose?: string;
-  autoApprove?: boolean;
-}): void {
-  if (options.propose) {
-    runPropose(options.propose, options.input);
-    if (options.autoApprove) {
-      console.log(chalk.dim("(auto-approve: complete artifacts manually in CI)"));
-    }
-    return;
-  }
-  if (options.phase) {
-    runPhase(parseInt(options.phase, 10));
-    return;
-  }
-  if (options.prompt) {
-    console.log(`# specx run\n\n${options.prompt}\n`);
-    console.log(chalk.dim("Use your AI agent with specx/SPECX.md context."));
-    return;
-  }
-  console.error(chalk.red("Provide --phase, --propose, or -p"));
-  process.exit(1);
+  for (const item of written) console.log(`  ${item}`);
 }

@@ -1,10 +1,21 @@
 node_modules/
 dist/
-specx/changes/*/
-!specx/changes/_template/
-!specx/changes/archive/
-.specx/cache/
-*.log
-.DS_Store
 coverage/
 .pnpm-store/
+*.log
+.DS_Store
+graphify-out/
+
+# specX secrets and scratch
+.env
+.specx/cache/
+.specx/audit.log
+
+# Never commit credential exports
+secret-key-*.csv
+*.pem
+*.key
+
+# Self-hosted Plane: real secrets and all container state
+deploy/plane/plane.env
+deploy/plane/data/

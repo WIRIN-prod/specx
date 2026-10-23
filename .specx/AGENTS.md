@@ -1,44 +1,26 @@
-# AGENTS.md — specX Spec-Driven Development
+# specX agent rules
 
-You are working in a **specX** project. Spec-Driven Development (SDD): **agree on behavior in specs before writing code**.
+## Canonical record
 
-## Primary agent instructions (OpenCode-style skills)
+The project knowledge base in `specx/` is canonical and lives in this repository as Markdown. Read `specx/Home.md`, its knowledge index, and `specx/work/CHECKPOINT.md` before acting. The record distinguishes observed current behavior from approved desired behavior.
 
-Full workflows live in **Cursor skills** — read the entire `SKILL.md`:
+## Approval is mandatory
 
-```
-.cursor/skills/
-  specx-sdd/           # Master SDD discipline
-  specx-discover/      # Discovery phases 01–11
-  specx-specialist/    # Produce artifacts
-  specx-critic/        # Challenge artifacts
-  specx-approve/       # Gate: human approved
-  specx-revise/        # Gate: revision
-  specx-propose/       # Start change
-  specx-spec/          # Delta requirements
-  specx-design/        # Technical design
-  specx-tasks/         # Checkbox tasks
-  specx-build/         # Implement one task
-  specx-verify/        # Verifier pass
-  specx-archive/       # Merge to living specs
-```
+- Only `user-confirmed` or evidence-backed `source-verified` items are accepted facts. Proposed, inferred, disputed, or unresolved content is not implementation authority.
+- Draft knowledge changes as proposals. Do not edit accepted knowledge or mark a proposal approved until the user explicitly approves the exact revision.
+- Approval of knowledge does not approve implementation. Plans require their own explicit approval before execution.
+- If behavior, requirements, architecture, dependencies, migrations, security decisions, or scope are missing or conflicting, stop and ask the user. Never choose on their behalf.
 
-Mirrors also copied to `.specx/commands/` for non-Cursor tools.
+## Work and continuity
 
-## Non-negotiables
+- Plans, task state, dependencies, decisions, and checkpoints are Markdown in this repository. Do not require Plane or another external tracker.
+- Execute only tasks in the exact approved plan revision and declared scope. Preserve unrelated working-tree changes.
+- Agents may prepare scoped changes in a working branch. A human reviews and approves before merge; agents do not merge or deploy.
+- Record evidence and the next safe action in `specx/work/CHECKPOINT.md` so work can resume across sessions and hosts.
+- Skills and prompts express policy but cannot enforce host permissions. Use repository review protections and host controls where configured.
 
-1. Read `specx/SPECX.md` → `STEERING.md` → `.specx/registry.yaml` → active change
-2. Specs in `specx/specs/` are truth; changes use deltas in `specx/changes/<name>/specs/`
-3. Human gates on approve and archive
-4. Dual-agent: Specialist then Critic before human review
-5. Fresh context per build task
+## Lifecycle
 
-## Delta spec rules
+`discover → propose → user approval → plan → user approval → execute → review → human merge approval`
 
-- `## ADDED|MODIFIED|REMOVED Requirements`
-- `### Requirement:` + `#### Scenario:` with GIVEN/WHEN/THEN
-- MODIFIED = copy full block from living spec, then edit
-
-## Enterprise
-
-`track: enterprise` in `.specx/specx.yaml` → phases 10–11, audit log, review before archive.
+Read the relevant skill under `.cursor/skills/` or `.claude/skills/` for the current stage. The portable skills are shipped from `.agents/skills/`; host adapters mirror them under Claude Code, Cursor, and GitHub Copilot skill directories.

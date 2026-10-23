@@ -1,63 +1,29 @@
----
-specx:
-  layer: hub
-  artifact: home
-  status: living
-tags: [specx, hub]
----
+# {{PROJECT_NAME}} — SpecX project record
 
-# {{PROJECT_NAME}} — specX hub
+This repository's Markdown project record is the durable source of truth for approved product knowledge, architecture, decisions, engineering rules, plans, and work checkpoints. It is maintained by proposals and explicit user approvals.
 
-> Map of maps. **Specialist** updates this after each approved discovery phase and each new feature leaf. See [[GRAPH]].
+## Start here
 
-## Quick links
+- [Knowledge index](knowledge/README.md)
+- [Product](knowledge/product.md)
+- [Architecture](knowledge/architecture.md)
+- [Component catalog](knowledge/components/README.md)
+- [Interfaces and data](knowledge/interfaces-and-data.md)
+- [Security](knowledge/security.md)
+- [External systems](knowledge/integrations.md)
+- [Approved decisions](knowledge/decisions/README.md)
+- [Engineering rules](knowledge/engineering-rules.md)
+- [Proposals](proposals/README.md)
+- [Plans](plans/README.md)
+- [Current checkpoint](work/CHECKPOINT.md)
 
-| Layer | Entry |
-|-------|--------|
-| Constitution | [[SPECX]] |
-| Graph rules | [[GRAPH]] |
-| Structure | [[STRUCTURE]] |
-| Registry | (CLI) `.specx/registry.yaml` |
-| Catalog | `features.yaml` |
+## Trust boundary
 
-## Discovery (track: {{TRACK}})
+Only entries marked **user-confirmed** or **source-verified** are accepted facts. Proposed, inferred, disputed, and unresolved content is not an instruction to implement. Source-verified claims cite exact repository evidence; user-confirmed claims cite the approval record. Unknowns stay visible until resolved.
 
-| Phase | Artifact | Status |
-|-------|----------|--------|
-| 01 | [[discovery/01-problem-statement]] | pending |
-| 02 | [[discovery/02-market-research]] | pending |
-| 03 | [[discovery/03-personas]] | pending |
-| 04 | [[discovery/04-user-journeys]] | pending |
-| 05 | [[discovery/05-information-architecture]] | pending |
-| 06 | [[discovery/06-user-flows]] | pending |
-| 07 | [[discovery/07-feature-inventory]] | pending |
-| 08 | [[discovery/08-prd]] | pending |
-| 09 | [[discovery/09-technical-spec]] | pending |
-| 10 | [[discovery/10-security]] | pending |
-| 11 | [[discovery/11-compliance]] | pending |
+## Project metadata
 
-<!-- Agent: remove rows not in track (quick: 07–09 only; standard: 01–09; enterprise: 01–11) -->
-
-## Foundation
-
-- [[foundation/STEERING]]
-- [[foundation/BUILD-ORDER]]
-- [[foundation/ARCHITECTURE]]
-- [[foundation/RULES]]
-
-## Features (leaves)
-
-<!-- Agent: one wikilink per leaf — [[auth/email/registration/FEATURE]] -->
-
-_None yet — run `specx propose <path>`._
-
-## Capability specs (living)
-
-- [[specs/example/spec]]
-
-## Graph
-
-| Role | Links |
-|------|-------|
-| Hub | [[Home]] |
-| Rules | [[GRAPH]], [[STRUCTURE]] |
+- Name: {{PROJECT_NAME}}
+- Stack: {{STACK}}
+- Initialized: {{DATE}}
+- Coverage: not assessed

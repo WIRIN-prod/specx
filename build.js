@@ -1,5 +1,5 @@
 import * as esbuild from "esbuild";
-import { cpSync, existsSync, mkdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,21 +12,16 @@ await esbuild.build({
   target: "node20",
   format: "esm",
   outfile: "dist/cli.js",
-  external: [
-    "commander",
-    "chalk",
-    "ora",
-    "yaml",
-    "zod",
-    "fast-glob",
-  ],
+  external: ["commander", "chalk", "ora", "yaml", "zod"],
   sourcemap: true,
 });
 
+const templatesSource = join(__dirname, "templates");
 const templatesDest = join(__dirname, "dist", "templates");
-if (existsSync(join(__dirname, "templates"))) {
+if (existsSync(templatesSource)) {
   mkdirSync(join(__dirname, "dist"), { recursive: true });
-  cpSync(join(__dirname, "templates"), templatesDest, { recursive: true });
+  rmSync(templatesDest, { recursive: true, force: true });
+  cpSync(templatesSource, templatesDest, { recursive: true });
 }
 
 console.log("Built dist/cli.js");

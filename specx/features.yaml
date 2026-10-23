@@ -1,6 +1,0 @@
-version: 1
-features:
-  auth/email/registration:
-    depends_on: []
-    title: auth/email/registration
-    path: auth/email/registration

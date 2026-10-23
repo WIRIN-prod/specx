@@ -15,7 +15,7 @@ export function findProjectRoot(startDir: string = process.cwd()): string {
   while (true) {
     if (
       existsSync(path.join(dir, ".specx", "specx.yaml")) ||
-      existsSync(path.join(dir, "specx", "SPECX.md"))
+      existsSync(path.join(dir, "specx", "Home.md"))
     ) {
       return dir;
     }

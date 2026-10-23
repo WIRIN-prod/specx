@@ -1,15 +1,3 @@
-track: enterprise
 project:
   name: specx
-  stack: TBD
-gates:
-  discovery:
-    approvers_required: 2
-  build:
-    review_before_archive: true
-    approvers_required: 1
-evolution:
-  drift_schedule: manual
-  audit: true
-team:
-  rbac_enabled: true
+  stack: TypeScript / Node.js
