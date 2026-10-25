@@ -1,17 +1,17 @@
 {
   "name": "specx-marketplace",
-  "description": "SpecX plugins for user-approved project knowledge workflows.",
+  "description": "SpecX: plan, execute, and review with AI agents. The user decides; agents execute.",
   "owner": {
     "name": "WIRIN"
   },
   "metadata": {
-    "description": "SpecX user-approved project knowledge workflows"
+    "description": "SpecX plan, execute, and review workflows"
   },
   "plugins": [
     {
       "name": "specx",
       "source": "./plugins/specx",
-      "description": "Build and maintain an evidence-linked project knowledge base with explicit user approval gates."
+      "description": "Plan specs and tasks, execute them in worktrees with tests and security review, and review code. Every decision is the user's."
     }
   ]
 }

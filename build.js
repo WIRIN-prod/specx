@@ -1,5 +1,5 @@
 import * as esbuild from "esbuild";
-import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -24,4 +24,19 @@ if (existsSync(templatesSource)) {
   cpSync(templatesSource, templatesDest, { recursive: true });
 }
 
-console.log("Built dist/cli.js");
+// Keep in sync with renderSkill in src/lib/skills.ts.
+function renderSkill(skill, name) {
+  const read = (rel) => readFileSync(join(templatesSource, rel), "utf8").replace(/\r\n/g, "\n");
+  const rules = read("RULES.md").trim().replace(/^# SpecX rules\n+/, "");
+  return read(join("skills", skill, "SKILL.md")).replaceAll("{{SKILL_NAME}}", name).replaceAll("{{RULES}}", rules);
+}
+
+// The Claude Code plugin is generated from the same templates, so it cannot drift.
+const pluginSkills = join(__dirname, "plugins", "specx", "skills");
+rmSync(pluginSkills, { recursive: true, force: true });
+for (const skill of ["plan", "execute", "review"]) {
+  mkdirSync(join(pluginSkills, skill), { recursive: true });
+  writeFileSync(join(pluginSkills, skill, "SKILL.md"), renderSkill(skill, skill), "utf8");
+}
+
+console.log("Built dist/cli.js and plugins/specx/skills");

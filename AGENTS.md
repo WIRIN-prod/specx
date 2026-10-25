@@ -1,13 +1,58 @@
 # AGENTS.md
 
-This repository implements **SpecX**, a user-approved project knowledge system.
-
-- Canonical project model and work plans are Markdown under `specx/`.
-- Start with [specx/Home.md](specx/Home.md) and [specx/work/CHECKPOINT.md](specx/work/CHECKPOINT.md).
-- Follow [.specx/AGENTS.md](.specx/AGENTS.md) and the applicable skill under `.cursor/skills/` or `.claude/skills/`.
-- Do not accept proposed knowledge or resolve unknowns without explicit user approval.
-- Execute only approved task plans and present code changes for human review before merge.
+This repository implements **SpecX**: plan, execute, and review software with AI agents. The user decides; agents execute. Skill sources live in `templates/skills/` and the rules in `templates/RULES.md`; host copies and `plugins/specx/skills/` are generated, so edit the templates and run `npm run build` and `specx update`.
 
 <!-- specx:agents:begin -->
-Read specx/Home.md and .specx/AGENTS.md. The repository-local Markdown knowledge base is canonical. Proposed, inferred, disputed, and unresolved content is not accepted truth. Ask the user before resolving missing decisions, changing accepted knowledge, or expanding approved scope. Execute only tasks in an explicitly approved plan. Present code changes for human review before merge.
+# SpecX rules
+
+The user decides. The agent executes. These rules apply to every SpecX command (`plan`, `execute`, `review`) and to every subagent. Follow them exactly; when in doubt, stop and ask the user.
+
+## 1. The user makes every decision
+
+- Never assume, default, or choose anything on the user's behalf. No choice is too small: product behavior, scope, architecture, packages and versions, APIs, data models, file layout, naming, UI framework, theme, colors, fonts, spacing, copy, tooling, test strategy, CI, and deployment all need the user's answer.
+- When a choice is needed, write it as an open decision in `specx/decisions/` with the question, the realistic options, and their trade-offs, then ask the user. You may recommend an option and say why, but it stays open until the user answers.
+- Work that depends on an open decision stops until the user answers. Record the answer in the user's words, with the date.
+- "Continue", silence, or approval of something else is not an answer.
+
+## 2. Confirm the source of truth
+
+- If docs, specs, comments, and code disagree, do not pick a side. Show the user both, with file and line, and ask which is correct. Record the answer as a decision. Fix the other side only through an approved task.
+- Approved specs and answered decisions are the only authority for building. Draft content, research, conventions, and your own inferences are not.
+
+## 3. Always maintain the task list
+
+- `specx/tasks/TASKS.md` is the single task list. Every piece of work is a task file in `specx/tasks/`, and its row in `TASKS.md` matches that file.
+- Update the task file and `TASKS.md` before starting work, whenever a status changes, and before stopping. Never do work that is not on the list.
+- When the `specx` CLI is available, run `specx tasks --write` to validate the list and regenerate `TASKS.md`.
+
+## 4. Nothing moves without approval
+
+- Specs: `draft` → `approved` only when the user approves that exact spec.
+- Tasks: `draft` → `todo` when the user approves the task list; `todo` → `in-progress` only when the user approves that task for execution.
+- Merge: only through a pull request, and only after the user approves that pull request.
+- Any material change after approval needs approval again.
+
+## 5. Stay in scope
+
+- Do only what the approved task says, in the files it lists. If it needs more, stop and ask.
+- Never add a dependency, change an interface, migrate data, or edit an approved spec without an answered decision.
+- Preserve the user's unrelated work. Never reset, stash, clean, force-push, or delete branches you did not create.
+
+## 6. Be honest
+
+- Report exactly what you ran and what happened. Never claim a test, check, or review passed unless you ran it and it passed. Say what you did not check.
+
+## Layout
+
+```text
+specx/
+  RULES.md       these rules (the SpecX section is refreshed by `specx update`)
+  Home.md        entry point
+  specs/         hierarchy: <area>/<component>/<feature>.md
+  decisions/     one file per decision, open or answered
+  tasks/         TASKS.md plus one file per task
+  reviews/       review reports
+```
+
+If `specx/` is missing, run `specx init`. If the CLI is unavailable, create this layout using the file formats in the `plan` skill.
 <!-- specx:agents:end -->

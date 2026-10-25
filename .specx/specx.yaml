@@ -1,3 +1,9 @@
 project:
   name: specx
   stack: TypeScript / Node.js
+integrations:
+  agents:
+    - codex
+    - claude
+    - cursor
+    - copilot

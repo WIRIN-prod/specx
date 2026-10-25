@@ -9,17 +9,6 @@ import { agentLabel, generateAgentIntegrations, parseAgentSelection } from "../l
 import { resolvePackageTemplates } from "../lib/paths.js";
 import { copyFromPackageTemplates, defaultVars } from "../lib/template.js";
 
-function ensureGitignore(projectRoot: string): void {
-  const file = path.join(projectRoot, ".gitignore");
-  const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
-  const entries = [".specx/audit.log", ".specx/cache/"];
-  const missing = entries.filter((entry) => !existing.split(/\r?\n/).includes(entry));
-  if (missing.length) {
-    const prefix = existing === "" || existing.endsWith("\n") ? existing : `${existing}\n`;
-    fs.writeFileSync(file, `${prefix}${prefix && !prefix.endsWith("\n\n") ? "\n" : ""}# specX local runtime data\n${missing.join("\n")}\n`, "utf8");
-  }
-}
-
 async function promptForAgents(): Promise<AgentHost[]> {
   console.log(chalk.bold("\nWhich agent integrations do you use?"));
   console.log("Choose one or more by entering their IDs separated by commas:");
@@ -55,27 +44,23 @@ export async function runInit(targetPath: string, agentsArgument?: string, requi
   else selectedAgents = [...AGENT_HOSTS];
 
   const spinner = ora("Initializing specX").start();
-  fs.mkdirSync(path.join(projectRoot, ".specx"), { recursive: true });
-  const configPath = path.join(projectRoot, ".specx", "specx.yaml");
   saveConfig(SpecxConfigSchema.parse({
     ...previousConfig,
     project: { ...previousConfig.project, name: previousConfig.project.name ?? projectName },
     integrations: { ...previousConfig.integrations, agents: selectedAgents },
   }), projectRoot);
   copyFromPackageTemplates("specx", path.join(projectRoot, "specx"), vars, { overwrite: false });
-  ensureGitignore(projectRoot);
-  const agents = generateAgentIntegrations(projectRoot, vars, selectedAgents);
+  const written = generateAgentIntegrations(projectRoot, selectedAgents);
   spinner.succeed("specX initialized");
-  console.log(chalk.dim("\nCreated or preserved:"));
-  console.log(`  ${configPath}`);
-  console.log(`  ${path.join(projectRoot, "specx", "Home.md")}`);
-  console.log(`  ${path.join(projectRoot, "specx", "knowledge", "README.md")}`);
   console.log(chalk.dim(`\nSelected agent integrations: ${selectedAgents.map(agentLabel).join(", ")}`));
-  console.log(chalk.dim("\nAgent integrations:"));
-  for (const item of agents) console.log(`  ${item}`);
+  for (const item of written) console.log(`  ${item}`);
+  const legacy = ["knowledge", "proposals", "plans", "specifications", "work"].filter((dir) => fs.existsSync(path.join(projectRoot, "specx", dir)));
+  if (legacy.length) {
+    console.log(chalk.yellow(`\nFolders from an earlier SpecX version were left untouched: ${legacy.map((dir) => `specx/${dir}/`).join(", ")}`));
+    console.log(chalk.yellow("SpecX no longer reads them. Delete them, or ask /specx:plan to turn them into specs."));
+  }
   console.log(chalk.bold("\nNext:"));
-  console.log("  1. Run /specx:discover to survey the existing implementation and review its evidence-linked proposal.");
-  console.log("  2. Run /specx:specify with a frontier model to research and write the target blueprint with you; approve the exact revision.");
-  console.log("  3. Assess blueprint readiness, then create and approve a milestone roadmap before implementation.");
-  console.log("  4. Let implementation agents execute one approved task per branch, verify and review it; a human approves merge.\n");
+  console.log("  /specx:plan     write specs for existing code or new work, answer decisions, approve tasks");
+  console.log("  /specx:execute  build approved tasks in worktrees; merge by pull request after your approval");
+  console.log("  /specx:review   review code for gaps, flaws, and missing use cases\n");
 }

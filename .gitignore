@@ -8,14 +8,13 @@ graphify-out/
 
 # specX secrets and scratch
 .env
-.specx/cache/
-.specx/audit.log
 
 # Never commit credential exports
 secret-key-*.csv
 *.pem
 *.key
 
-# Self-hosted Plane: real secrets and all container state
+
+# Local Plane leftovers (no longer used by SpecX) hold real secrets; never commit them
 deploy/plane/plane.env
 deploy/plane/data/

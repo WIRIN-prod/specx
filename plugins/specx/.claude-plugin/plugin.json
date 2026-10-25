@@ -1,6 +1,6 @@
 {
   "name": "specx",
-  "description": "Research a user-approved project blueprint, plan milestone delivery, and guide agents through scoped implementation and review.",
+  "description": "Plan, execute, and review software with AI agents. The user approves every decision; agents only execute.",
   "version": "0.1.0",
   "author": {
     "name": "WIRIN",

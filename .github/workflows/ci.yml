@@ -18,3 +18,5 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm test
+      - name: Generated plugin skills are up to date
+        run: git diff --exit-code -- plugins/specx/skills

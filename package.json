@@ -1,7 +1,7 @@
 {
   "name": "@specx/cli",
   "version": "0.1.0",
-  "description": "User-approved project knowledge and agent workflow for Markdown-first software projects",
+  "description": "Plan, execute, and review software with AI agents. The user decides; agents execute.",
   "keywords": [
     "ai",
     "agent-skills",
