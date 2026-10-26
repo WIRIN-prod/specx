@@ -30,39 +30,70 @@ Start a new session or run `/reload-plugins`. To update later: `claude plugin ma
 
 There is no separate setup step. Open your project in Claude Code and run `/specx:plan`. The first SpecX command in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md`. It makes no decisions and overwrites nothing.
 
-`/specx:execute` needs `gh` installed and signed in, and a git remote. It asks you once for the main branch and the worktree location (next to the repo by default).
+`/specx:execute` needs `gh` installed and signed in, and a git remote. It asks you once for the main branch, the worktree location (next to the repo by default), and how to commit progress updates, and records them as decisions in `specx/spec.md`.
 
 ## Rules every agent follows
 
 The same rules are in `specx/RULES.md` and the project's `CLAUDE.md`, and every command reads them first:
 
-1. **You make every decision.** Agents never assume or default anything, from architecture and packages down to theme and fonts. Each choice becomes a decision file with options, and the work that depends on it waits for your answer.
+1. **You make every decision.** Agents never assume or default anything, from architecture and packages down to theme and fonts. Each choice becomes an open decision in the spec it belongs to, and the work that depends on it waits for your answer.
 2. **You confirm the source of truth.** If docs and code disagree, the agent shows you both and asks which is correct.
-3. **There is always a task list.** `specx/tasks/TASKS.md` lists every piece of work and is updated whenever anything changes.
-4. **Nothing moves without approval.** That covers specs, tasks, starting execution, and merging.
-5. **Agents stay in scope.** They change only the files a task lists.
-6. **Reports are honest.** Agents never claim a check passed unless it ran and passed.
+3. **Agents read the whole context chain.** Before touching a spec, they read every parent spec above it.
+4. **There is always a task list.** `specx/TASKS.md` lists every task and is updated whenever anything changes.
+5. **Nothing moves without approval.** That covers specs, tasks, starting execution, and merging.
+6. **Agents stay in scope.** They change only the files a task lists.
+7. **Reports are honest.** Agents never claim a check passed unless it ran and passed.
 
-## What it creates in your project
+## Specs: one `spec.md` per folder
+
+Specs form a tree of folders, like nested routes in the Next.js app router. Each folder has exactly one `spec.md` that holds everything about that part of the system: requirements, acceptance criteria, design, decisions, tasks, and change log.
 
 ```text
 specx/
-  RULES.md                         rules for every agent
-  Home.md                          entry point and git settings
-  specs/<area>/<component>/<feature>.md
-  decisions/DEC-###-<slug>.md      every decision, open or answered
-  tasks/TASKS.md                   the task list
-  tasks/T-###.md                   one file per task
-  reviews/<date>-<scope>.md        review reports
+  RULES.md                             rules for every agent
+  spec.md                              ROOT: product, project-wide decisions, shared conventions
+  TASKS.md                             every task, one row each
+  auth/spec.md                         AUTH
+  auth/login/spec.md                   AUTH.LOGIN: what every login method shares
+  auth/login/user-creds/spec.md        AUTH.LOGIN.USER-CREDS
+  auth/login/sso/spec.md               AUTH.LOGIN.SSO
+  auth/login/passkeys/spec.md          AUTH.LOGIN.PASSKEYS
+  auth/pat/spec.md                     AUTH.PAT
+  auth/rbac/spec.md                    AUTH.RBAC
+  _templates/spec.md                   the spec format
+  _reviews/<date>-<scope>.md           review reports
 ```
 
-Specs, decisions, and tasks use YAML frontmatter, so related work can be traced and checked. A task lists the specs it implements, the tasks it `depends_on`, the decisions it needs, and the files it may change.
+- **Parents are shared by their children**, like a layout. A parent's *Shared with children* section and its decisions apply to every spec below it, so nothing is repeated.
+- **Parents carry the relationships.** A parent's *Children* table says what each child covers and how the children relate. Its tasks build the shared parts and integrate the children, and every child task names the parent task it rolls up to.
+- **Links across the tree** (for example, PAT needs RBAC) go in `depends_on`.
 
-- **Ready**: a task is ready when it is approved (`todo`), all its dependencies are `done`, and all its decisions are answered.
+Every `spec.md` follows the same standard sections, from [`_templates/spec.md`](plugins/specx/templates/specx/_templates/spec.md):
+
+1. Overview: purpose, in scope, out of scope
+2. Context chain: the parents it inherits from, and any overrides
+3. Current state: existing behavior, with `path:line` evidence
+4. Requirements: numbered, in [EARS](https://alistairmavin.com/ears/) form (`WHEN <trigger>, THE SYSTEM SHALL <response>`)
+5. Acceptance criteria: Given/When/Then, each linked to requirements
+6. Design: interfaces, data, flows and errors, security
+7. Shared with children
+8. Children
+9. Decisions: question, options, answer in your words with the date
+10. Tasks: status, parent task, dependencies, covered requirements, files, steps, verification, log
+11. Open questions
+12. Change log: version, date, change, who approved
+
+How tasks run:
+
+- **Ready**: a task is ready when it is approved (`todo`), its spec is approved, all its dependencies are `done`, and all its decisions are answered.
 - **Parallel**: ready tasks that share no files and do not depend on each other can run at the same time, one subagent each.
-- **Blocked**: if a task hits a new decision, that task and every related task (its dependents, its unfinished dependencies, and tasks sharing its specs or decisions) pause. Unrelated tasks continue.
+- **Blocked**: if a task hits a new decision, that task and every related task pause: its dependents, unfinished dependencies, parent and child tasks, and tasks in the same spec or sharing its decisions. Unrelated tasks continue.
 
-## Upgrading from 0.1 (CLI version)
+## Upgrading
+
+**From 0.2:** run `/specx:plan`. It notices the old `specs/`, `decisions/`, and `tasks/` folders and offers to convert them into the spec tree, keeping every decision's answer and date. Nothing is deleted until you approve.
+
+### From 0.1 (CLI version)
 
 0.2 is plugin-only: the `specx` CLI and the Cursor, Copilot, and Codex integrations are gone. To clean a project that used the old `specx init`:
 

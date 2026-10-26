@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Turn an existing codebase or a new feature request into user-approved, hierarchical specs and a dependency-linked task list that smaller models and parallel subagents can build from. Every choice is asked of the user.
+description: Turn an existing codebase or a new feature request into a tree of standard, user-approved specs (one spec.md per folder, parents shared by children like nested routes) with decisions and dependency-linked tasks inside each spec, ready for smaller models and parallel subagents. Every choice is asked of the user.
 ---
 
 # SpecX plan
@@ -10,16 +10,16 @@ Follow the rules in `specx/RULES.md` for everything below (step 0). Plan never w
 ## 0. Set up and read the rules
 
 1. If `specx/RULES.md` does not exist, this project is not set up yet. Tell the user, then create the following without overwriting any existing file. Setup needs no decisions from the user.
-   - Copy the folder `${CLAUDE_PLUGIN_ROOT}/templates/specx/` to `specx/`. In `specx/Home.md`, replace `{{PROJECT_NAME}}` with the project folder name and `{{DATE}}` with today's date.
+   - Copy the folder `${CLAUDE_PLUGIN_ROOT}/templates/specx/` to `specx/`. In `specx/spec.md`, replace `{{PROJECT_NAME}}` with the project folder name and `{{DATE}}` with today's date.
    - Copy `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md` to `specx/RULES.md`.
    - Put the same rules in the project's `CLAUDE.md` between a `<!-- specx:rules:begin -->` line and a `<!-- specx:rules:end -->` line. Create the file if it is missing, or replace what is between the markers if they exist.
-2. If `specx/RULES.md` differs from `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md`, tell the user the rules have changed and ask before replacing `specx/RULES.md` and the `CLAUDE.md` section.
+2. If `specx/RULES.md` differs from `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md`, tell the user the rules have changed and ask before replacing `specx/RULES.md` and the `CLAUDE.md` section. When replaced, also add any missing scaffold files (`spec.md`, `TASKS.md`, `_templates/spec.md`, `_reviews/`) without overwriting existing ones.
 3. Read `specx/RULES.md` completely and follow it for everything below.
-4. If `specx/` contains folders from an older SpecX (`knowledge/`, `proposals/`, `plans/`, `specifications/`, `work/`), tell the user that SpecX no longer reads them. Do not delete them.
+4. If `specx/` contains an older layout (`specs/`, `decisions/`, `tasks/`, `reviews/`, `Home.md`, `knowledge/`, `proposals/`, `plans/`, `specifications/`, `work/`), tell the user SpecX no longer reads it, and offer to convert it (step 8). Never delete it without the user's approval.
 
 ## 1. Get context
 
-1. Read `specx/RULES.md`, `specx/Home.md`, `specx/specs/README.md`, `specx/decisions/README.md`, and `specx/tasks/TASKS.md`.
+1. Read `specx/spec.md`, `specx/TASKS.md`, `specx/_templates/spec.md`, and every existing `spec.md` in the area you are planning, with its full context chain.
 2. Ask the user what to plan if it is not already clear:
    - **Existing code**: write specs for what the codebase does today.
    - **New work**: write specs for a new product, feature, or change.
@@ -32,100 +32,61 @@ Follow the rules in `specx/RULES.md` for everything below (step 0). Plan never w
 - **New work**: interview the user about goals, users, flows, edge cases, failure behavior, non-goals, and constraints. Ask in small batches.
 - If docs and code disagree, show both and ask the user which is correct (rule 2).
 
-## 3. Collect decisions
+## 3. Shape the tree
 
-- Every choice becomes a decision file with `status: open`: stack, packages and versions, architecture, data storage, auth, API style, error handling, testing, folder structure, naming, UI framework, theme, colors, fonts, copy, accessibility, deployment, and anything else that is not already answered.
+Specs are folders, like nested routes. Each folder has exactly one `spec.md`.
+
+```text
+specx/spec.md                          ROOT: product, project-wide decisions and conventions
+specx/auth/spec.md                     AUTH: an area
+specx/auth/login/spec.md               AUTH.LOGIN: shared by every login method
+specx/auth/login/user-creds/spec.md    AUTH.LOGIN.USER-CREDS
+specx/auth/login/sso/spec.md           AUTH.LOGIN.SSO
+specx/auth/login/passkeys/spec.md      AUTH.LOGIN.PASSKEYS
+specx/auth/pat/spec.md                 AUTH.PAT
+specx/auth/rbac/spec.md                AUTH.RBAC
+```
+
+- A feature gets its own folder. When a feature has variants or sub-features that share something, they become child folders, and what they share goes in the parent's **Shared with children** section, written once.
+- A parent's **Children** table lists every child, what it covers, and how the children relate: what they share and which depend on which.
+- Correlation across branches of the tree (for example, PAT needs RBAC) goes in `depends_on` in the spec's frontmatter.
+- The spec ID is the folder path in upper case joined with dots. The tree itself, and folder names, are decisions: propose the tree and ask the user to confirm it before writing specs.
+
+## 4. Collect decisions
+
+- Every choice becomes an open decision in the **Decisions** section of the highest spec it applies to: stack, packages and versions, architecture, data storage, auth, API style, error handling, testing, folder structure, naming, UI framework, theme, colors, fonts, copy, accessibility, deployment, and anything else not already answered. Project-wide choices go in `specx/spec.md`.
 - Ask the user in small, grouped batches. Give each question realistic options and trade-offs. You may recommend one, but never decide.
-- Record each answer in the user's words with the date, and set `status: answered`. Update the table in `specx/decisions/README.md`.
+- Record each answer in the user's words with the date, and set the decision to `answered`.
 
-## 4. Write specs
+## 5. Write the specs
 
-- Put specs in a hierarchy: `specx/specs/<area>/<component>/<feature>.md`. Areas and components get a `README.md` overview. IDs mirror the path in upper case, joined with dots: `IAM`, `IAM.AUTH`, `IAM.AUTH.LOGIN`. The taxonomy and names are decisions too; ask the user to confirm them.
-- Every spec links its `parent`, its `depends_on` specs, and the `decisions` it relies on, so related work can be found from any spec.
-- Keep current behavior (with evidence) separate from target behavior (from the user). Current behavior becomes the target only if the user says so.
-- Acceptance criteria are concrete and testable.
-- Update the spec tree in `specx/specs/README.md`.
-- Show the user the specs and ask for approval. Set `status: approved` only on the specs the user approved, and record the date in each spec's log.
+Write each `spec.md` in the format of `specx/_templates/spec.md`. Keep every section, in order, and write "None" where a section does not apply.
 
-## 5. Break approved specs into tasks
+- **Requirements** are numbered (`<SPEC>-R#`) and written in EARS: one testable SHALL statement each (`WHEN <trigger>, THE SYSTEM SHALL <response>`, `IF <condition>, THEN THE SYSTEM SHALL …`, and so on), with the source (user and date, or `path:line`).
+- **Acceptance criteria** are numbered (`<SPEC>-AC#`), written as Given/When/Then, and name the requirements they prove. Every requirement has at least one.
+- **Current state** holds existing behavior with evidence. Existing behavior becomes a requirement only if the user says so.
+- **Design** covers interfaces, data, flows and error handling, and security and privacy.
+- Never repeat what a parent already says. Point to it through the context chain.
+- Show the user each spec and ask for approval. Set `status: approved` only on specs the user approved, and record the version, date, and approver in the change log.
 
-Create tasks only from approved specs. Each task must be small enough for a smaller model to finish without guessing:
+## 6. Write the tasks
 
-- **One concern** that is reviewable as a single pull request, usually a handful of files.
-- **Self-contained**: the task file plus its linked specs and decisions is all an agent needs. Give exact files, steps, acceptance criteria, and verification commands. Leave nothing to "figure out".
-- **`depends_on`** lists only real dependencies, meaning the task needs code or an interface from another task. Tasks without a dependency between them must not touch the same files; if they would, add a dependency so they run in order. This is what lets parallel subagents work safely.
-- **`decisions`** lists every decision the task relies on. A task with an open decision is not ready.
-- **`files`** lists the exact files or folders the task may change.
-- **`model`** suggests `small`, `mid`, or `frontier`, with the reason in the body.
-- Tests are part of the task that changes the behavior, not a separate later task.
-- Task IDs are sequential: `T-001`, `T-002`, and so on.
+Write tasks in the **Tasks** section of the spec they implement, and only for approved specs. Each task must be small enough for a smaller model to finish with only its spec and context chain:
 
-Write each task with `status: draft`, add its row to `TASKS.md`, and check there are no unknown task or decision IDs and no dependency cycles. Show the user the task list and which tasks can run in parallel. Set `status: todo` only on the tasks the user approved.
+- **One concern**, reviewable as one pull request, usually a handful of files.
+- **Self-contained**: exact files, steps, the requirements and acceptance criteria it covers, and verification commands. Leave nothing to "figure out". Tests are part of the task that changes the behavior.
+- **Parent**: every task names the task in the parent spec it rolls up to. A parent spec holds the tasks that build what its **Shared with children** section describes, which child tasks depend on, and the task that integrates its children. A parent task is done only when all its child tasks and its own steps are done.
+- **Depends on** lists only real dependencies: the task needs code or an interface from another task. Tasks without a dependency between them must not share files; if they would, add a dependency so they run in order. This is what lets parallel subagents work safely.
+- **Decisions** lists every decision the task relies on. A task with an open decision is not ready.
+- **Model** suggests `small`, `mid`, or `frontier`, with the reason.
+- Task IDs are `<SPEC>-T#`.
 
-## 6. Finish
+Write each task as `draft`, add its row to `specx/TASKS.md`, and check there are no unknown IDs and no dependency cycles. Show the user the task list, which tasks can run in parallel, and how child tasks roll up to parent tasks. Set `todo` only on the tasks the user approved.
+
+## 7. Finish
 
 Report the approved specs, open decisions (with their questions), and tasks ready to build. The next step is `/specx:execute`.
 
-## File formats
+## 8. Convert an older layout (only when the user asks)
 
-Spec (`specx/specs/<area>/<component>/<feature>.md`):
-
-```markdown
----
-id: IAM.AUTH.LOGIN
-title: Login
-status: draft            # draft | approved | superseded
-parent: IAM.AUTH
-depends_on: []           # other spec IDs
-decisions: []            # DEC-### IDs
----
-
-## Purpose
-## Current behavior     <!-- with path:line evidence, or "none" for new work -->
-## Target behavior      <!-- from the user -->
-## Flows and edge cases
-## Interfaces and data
-## Acceptance criteria
-## Open questions
-## Log                  <!-- approvals and changes, with dates -->
-```
-
-Decision (`specx/decisions/DEC-###-<slug>.md`):
-
-```markdown
----
-id: DEC-001
-title: Body font
-status: open             # open | answered | superseded
-specs: []                # spec IDs affected
----
-
-## Question
-## Options              <!-- each with trade-offs; recommendation marked as such -->
-## Answer               <!-- the user's words and the date -->
-```
-
-Task (`specx/tasks/T-###.md`):
-
-```markdown
----
-id: T-001
-title: Add login form
-status: draft            # draft | todo | in-progress | blocked | in-review | done | cancelled
-specs: [IAM.AUTH.LOGIN]
-depends_on: []           # task IDs
-decisions: [DEC-001]
-files: [src/auth/login/]
-model: small             # small | mid | frontier
-branch:
-worktree:
-pr:
----
-
-## Goal
-## Steps
-## Acceptance criteria
-## Verification         <!-- exact commands and expected results -->
-## Out of scope
-## Log                  <!-- approvals, status changes, check results, with dates -->
-```
+Map the old content into the tree: specs into `spec.md` files, decisions into the **Decisions** section of the spec they belong to (project-wide ones into `specx/spec.md`), and tasks into the **Tasks** section of their spec and `specx/TASKS.md`. Keep every decision's answer and date exactly as recorded. Show the user the proposed tree and the result, and delete the old files only after the user approves.
