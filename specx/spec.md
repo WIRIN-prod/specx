@@ -2,7 +2,7 @@
 id: ROOT
 title: SpecX
 status: approved
-version: 3
+version: 4
 parent: none
 depends_on: []
 ---
@@ -47,6 +47,7 @@ None (root).
 | ROOT-R6 | Security | WHEN executing, THE SYSTEM SHALL run a strict model-run security review before opening a pull request. | ROOT-D3 |
 | ROOT-R7 | Functional | IF a task needs a new decision, THEN THE SYSTEM SHALL stop that task and every related task, and let unrelated tasks continue. | ROOT-D6 |
 | ROOT-R8 | Functional | THE SYSTEM SHALL write specs as one standard-format `spec.md` per folder, with decisions and tasks inside, in a parent/child tree where parents hold what children share. | ROOT-D11 |
+| ROOT-R10 | Functional | THE SYSTEM SHALL write each spec as a complete specification and technical plan, not code (architecture, technology with versions, interface contracts and errors, data model, flows, state, failures, security, configuration, observability, performance, testing, rollout) that passes the build-ready check before it is shown for approval. | ROOT-D12 |
 | ROOT-R9 | Functional | WHEN a SpecX command first runs in a project, THE SYSTEM SHALL create the `specx/` layout and rules without a separate CLI. | ROOT-D10 |
 
 ## 5. Acceptance criteria
@@ -138,6 +139,18 @@ None.
 - **Question:** How should specs, decisions, and tasks be organized and written?
 - **Answer:** "One `spec.md` per folder holding everything about that feature (decisions and tasks included, not separate files). Hierarchy like Next.js app router: `auth/login/spec.md` with children such as `auth/login/sso/spec.md`; what a parent holds is common to all children, and the parent spec carries the correlation and a parent task for each child task. Specs follow a standard spec format, not README prose." (user, 2026-10-26)
 
+### ROOT-D12: Spec depth
+
+- **Status:** answered (2026-10-26)
+- **Question:** How detailed must a spec be?
+- **Answer:** "The spec should be a complete plan on what to do, how to do it, and what to use, with technical and architecture details, so frontier models can write them up and then small models just follow the setup." (user, 2026-10-26)
+
+### ROOT-D13: Specification, not code
+
+- **Status:** answered (2026-10-26)
+- **Question:** Should specs include code layout and code-level detail?
+- **Answer:** "Code layout wouldn't be required; that can be decided by the LLM, but it should understand what we have planned. You don't need to give code-level details but need the technical layout for what needs to be done. Think of it not as a coding plan alone but as a specification detailed enough that just that one document gives the LLM enough details to know what to do, without needing to assume or guess anything." (user, 2026-10-26)
+
 ## 10. Tasks
 
 None.
@@ -153,3 +166,4 @@ None.
 | 1 | 2026-10-26 | Three commands, rules everywhere (ROOT-D1 to D9) | user |
 | 2 | 2026-10-26 | Plugin-only (ROOT-D10) | user |
 | 3 | 2026-10-26 | Spec tree with one standard `spec.md` per folder (ROOT-D11) | user |
+| 4 | 2026-10-26 | Specs are complete specifications and technical plans with a build-ready check, not code (ROOT-D12, ROOT-D13) | user |

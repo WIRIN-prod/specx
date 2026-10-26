@@ -51,13 +51,13 @@ For each approved task whose dependencies are merged:
 2. Set the task to `in-progress` with its branch and worktree, and update `TASKS.md`.
 3. Start one subagent for the task. Give it the task, its spec, every ancestor spec in its context chain, `specx/RULES.md`, and the worktree path. That is its whole context. Tell it to:
    - work only inside its worktree and only on the task's `Files`;
-   - follow the task's steps, meet the requirements and acceptance criteria it covers, and write the tests with the code;
-   - stop and report instead of choosing whenever anything is unclear, missing, or outside the task.
+   - follow the task's steps and the spec exactly (behavior, contracts, data, rules, errors, versions), choosing the code structure by the project's conventions, meet the requirements and acceptance criteria it covers, and write the tests with the code;
+   - stop and report instead of choosing whenever anything is unclear, missing, or outside the task. A detail the spec does not give is a spec gap, not a choice for the subagent.
 4. You decide how many subagents run at once from the dependency graph. Run tasks that have no dependency between them and no shared files at the same time. A dependent task waits until its dependency is merged, then starts from the updated main branch. If the host has no subagents, build the tasks one at a time.
 
 ## 5. When a task needs a decision
 
-- Add the decision as `open` to the spec it belongs to, set the task to `blocked`, and ask the user.
+- Add the decision as `open` to the spec it belongs to, set the task to `blocked`, and ask the user. A spec gap reported by a subagent is handled the same way: the answer goes into the spec, so the next implementer does not hit it again.
 - Stop only that task, unless other tasks are related to it (step 1). Stop all related tasks too. Unrelated tasks continue.
 - When the user answers, record it and resume. If the answer materially changes a task or spec, show the change and get it approved again.
 

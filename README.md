@@ -39,10 +39,11 @@ The same rules are in `specx/RULES.md` and the project's `CLAUDE.md`, and every 
 1. **You make every decision.** Agents never assume or default anything, from architecture and packages down to theme and fonts. Each choice becomes an open decision in the spec it belongs to, and the work that depends on it waits for your answer.
 2. **You confirm the source of truth.** If docs and code disagree, the agent shows you both and asks which is correct.
 3. **Agents read the whole context chain.** Before touching a spec, they read every parent spec above it.
-4. **There is always a task list.** `specx/TASKS.md` lists every task and is updated whenever anything changes.
-5. **Nothing moves without approval.** That covers specs, tasks, starting execution, and merging.
-6. **Agents stay in scope.** They change only the files a task lists.
-7. **Reports are honest.** Agents never claim a check passed unless it ran and passed.
+4. **Specs are build-ready.** A spec is a complete specification and technical plan, not code. A frontier model writes it; a small model builds from it without assuming or guessing anything. Gaps found while building go back to you, never filled by the agent.
+5. **There is always a task list.** `specx/TASKS.md` lists every task and is updated whenever anything changes.
+6. **Nothing moves without approval.** That covers specs, tasks, starting execution, and merging.
+7. **Agents stay in scope.** They change only the files a task lists.
+8. **Reports are honest.** Agents never claim a check passed unless it ran and passed.
 
 ## Specs: one `spec.md` per folder
 
@@ -75,13 +76,15 @@ Every `spec.md` follows the same standard sections, from [`_templates/spec.md`](
 3. Current state: existing behavior, with `path:line` evidence
 4. Requirements: numbered, in [EARS](https://alistairmavin.com/ears/) form (`WHEN <trigger>, THE SYSTEM SHALL <response>`)
 5. Acceptance criteria: Given/When/Then, each linked to requirements
-6. Design: interfaces, data, flows and errors, security
+6. Design, the technical plan at specification level: architecture (with a Mermaid diagram), technology with exact versions, interface contracts with inputs, outputs, and error tables, data model with every field, flows, state machines, failure handling, security, configuration, observability, performance, testing strategy, and rollout. Files and code are left to the implementer.
 7. Shared with children
 8. Children
 9. Decisions: question, options, answer in your words with the date
 10. Tasks: status, parent task, dependencies, covered requirements, files, steps, verification, log
 11. Open questions
 12. Change log: version, date, change, who approved
+
+Before a spec is shown to you for approval, `/specx:plan` runs a build-ready check: every section filled, every library versioned and traced to a decision, every contract and entity fully described, no code, every requirement measurable and tested, no vague words, and no question a small model would have to ask. You can also run `/specx:review` on specs to check this.
 
 How tasks run:
 

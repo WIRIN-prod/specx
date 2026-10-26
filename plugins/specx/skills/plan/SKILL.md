@@ -1,11 +1,13 @@
 ---
 name: plan
-description: Turn an existing codebase or a new feature request into a tree of standard, user-approved specs (one spec.md per folder, parents shared by children like nested routes) with decisions and dependency-linked tasks inside each spec, ready for smaller models and parallel subagents. Every choice is asked of the user.
+description: Turn an existing codebase or a new feature request into a tree of complete, build-ready technical specs (one spec.md per folder, parents shared by children like nested routes) with architecture, interfaces, data models, decisions, and dependency-linked tasks inside each spec, so smaller models and parallel subagents can build without making choices. Every choice is asked of the user.
 ---
 
 # SpecX plan
 
 Follow the rules in `specx/RULES.md` for everything below (step 0). Plan never writes application code.
+
+Plan is frontier-model work. Its output is a specification detailed enough that one document, with its context chain, tells an implementer everything: what the system does, the technical plan for how (architecture, technology, contracts, data, flows, rules, failures), and how it is verified. It is not code: files, functions, and code structure are left to the implementer. A small model later builds from it and must not have to assume or guess anything. Thin specs are the main way this fails: "Data: conversations, messages, turns" is not a data model; a table of every field with its type, nullability, default, and index is.
 
 ## 0. Set up and read the rules
 
@@ -28,7 +30,7 @@ Follow the rules in `specx/RULES.md` for everything below (step 0). Plan never w
 
 ## 2. Gather facts
 
-- **Existing code**: read manifests, entry points, modules, routes and APIs, data models and migrations, config, tests, CI, integrations, and security-sensitive code. Every claim about current behavior cites `path:line`. List what you did not inspect.
+- **Existing code**: read manifests and lockfiles, entry points, modules, routes and APIs, data models and migrations, config and environment variables, background workers, tests, CI, deployment, integrations, and security-sensitive code. Record the commit you observed. Capture the real architecture, not a summary: every component and how it connects, exact library versions, route signatures and response shapes, every table and field, every state machine, every config value. Every claim cites `path:line` and the symbol. List what you did not inspect.
 - **New work**: interview the user about goals, users, flows, edge cases, failure behavior, non-goals, and constraints. Ask in small batches.
 - If docs and code disagree, show both and ask the user which is correct (rule 2).
 
@@ -55,26 +57,55 @@ specx/auth/rbac/spec.md                AUTH.RBAC
 ## 4. Collect decisions
 
 - Every choice becomes an open decision in the **Decisions** section of the highest spec it applies to: stack, packages and versions, architecture, data storage, auth, API style, error handling, testing, folder structure, naming, UI framework, theme, colors, fonts, copy, accessibility, deployment, and anything else not already answered. Project-wide choices go in `specx/spec.md`.
-- Ask the user in small, grouped batches. Give each question realistic options and trade-offs. You may recommend one, but never decide.
+- Ask the user in small, grouped batches. Give each question realistic options and trade-offs. For technology choices, check current documentation for the latest stable version and its constraints, and state them in the options. You may recommend one, but never decide.
 - Record each answer in the user's words with the date, and set the decision to `answered`.
 
 ## 5. Write the specs
 
-Write each `spec.md` in the format of `specx/_templates/spec.md`. Keep every section, in order, and write "None" where a section does not apply.
+Write each `spec.md` in the format of `specx/_templates/spec.md`, including every subsection of §6 Design. Keep every section in order. Write "None: <reason>" where one does not apply, or "Inherited: <parent ID> §<section>" where a parent already covers it. The template's examples show the expected depth.
 
-- **Requirements** are numbered (`<SPEC>-R#`) and written in EARS: one testable SHALL statement each (`WHEN <trigger>, THE SYSTEM SHALL <response>`, `IF <condition>, THEN THE SYSTEM SHALL …`, and so on), with the source (user and date, or `path:line`).
-- **Acceptance criteria** are numbered (`<SPEC>-AC#`), written as Given/When/Then, and name the requirements they prove. Every requirement has at least one.
+- **Requirements** are numbered (`<SPEC>-R#`) and written in EARS: one testable SHALL statement each, with numbers instead of adjectives, and the source (user and date, decision ID, or `path:line`). Cover functional, security, performance, resilience, accessibility, and UI needs.
+- **Acceptance criteria** are numbered (`<SPEC>-AC#`), written as Given/When/Then with concrete values, and name the requirements they prove and the test level. Every requirement has at least one.
 - **Current state** holds existing behavior with evidence. Existing behavior becomes a requirement only if the user says so.
-- **Design** covers interfaces, data, flows and error handling, and security and privacy.
+- **Design** is the full technical plan, at specification level (no files, functions, or code):
+  - architecture with a Mermaid diagram and a table of components, their responsibilities, and what they talk to;
+  - every technology with exact version and the decision that chose it;
+  - every interface as a contract: what it does, every input with type and rules, the output and side effects, and an error table (status, code, message), in tables and prose rather than code;
+  - every entity with fields, types, nullability, defaults, constraints, indexes, and schema changes with rollback;
+  - flows as sequence diagrams between components;
+  - state machines;
+  - a failure table (detection, what the user sees, what is logged, recovery);
+  - security with a permission table;
+  - every config value with type and default;
+  - log events and metrics;
+  - performance targets;
+  - a test plan mapping every acceptance criterion to a test level;
+  - rollout and rollback steps.
+- **Shared with children** is written at the same depth, so children can reference it instead of repeating it.
 - Never repeat what a parent already says. Point to it through the context chain.
-- Show the user each spec and ask for approval. Set `status: approved` only on specs the user approved, and record the version, date, and approver in the change log.
+
+### Build-ready check
+
+Before showing a spec to the user, check it against every item. Fix what fails, or turn it into an open decision.
+
+- [ ] Every section and §6 subsection is filled, marked "None: <reason>", or "Inherited: …".
+- [ ] Every library, framework, service, and tool has an exact version and traces to an answered decision or to the code.
+- [ ] Every interface states its inputs with types and rules, its output and side effects, and every error's status, code, and message.
+- [ ] Every entity has every field with type, nullability, default, and indexes; every migration has a rollback.
+- [ ] Every requirement is measurable and has an acceptance criterion; every criterion maps to a test level.
+- [ ] No vague words remain: "appropriate", "as needed", "etc.", "handle errors", "fast", "secure", "TBD".
+- [ ] It reads as a specification, not code: no file paths, function signatures, or code, except where the spec describes current state.
+- [ ] A small model could build every task without assuming or guessing anything. If not, list the questions as open decisions.
+
+Show the user each spec, its open decisions, and the result of this check, and ask for approval. Set `status: approved` only on specs the user approved, and record the version, date, and approver in the change log.
 
 ## 6. Write the tasks
 
 Write tasks in the **Tasks** section of the spec they implement, and only for approved specs. Each task must be small enough for a smaller model to finish with only its spec and context chain:
 
 - **One concern**, reviewable as one pull request, usually a handful of files.
-- **Self-contained**: exact files, steps, the requirements and acceptance criteria it covers, and verification commands. Leave nothing to "figure out". Tests are part of the task that changes the behavior.
+- **Self-contained**: steps that say what to build and which design subsections it implements, without prescribing code; the requirements and acceptance criteria it covers; the tests to write; and the verification commands. Leave nothing to guess. Tests are part of the task that changes the behavior.
+- **Files**: your estimate of where the work lands, from the existing codebase. It exists so parallel tasks do not collide; the implementer chooses the exact code structure within it.
 - **Parent**: every task names the task in the parent spec it rolls up to. A parent spec holds the tasks that build what its **Shared with children** section describes, which child tasks depend on, and the task that integrates its children. A parent task is done only when all its child tasks and its own steps are done.
 - **Depends on** lists only real dependencies: the task needs code or an interface from another task. Tasks without a dependency between them must not share files; if they would, add a dependency so they run in order. This is what lets parallel subagents work safely.
 - **Decisions** lists every decision the task relies on. A task with an open decision is not ready.

@@ -18,7 +18,7 @@ Follow the rules in `specx/RULES.md` for everything below (step 0). Review never
 
 ## 1. Get context
 
-1. Ask the user for the scope if it is not clear: the whole codebase, a folder or area, specific specs, or a branch or pull request.
+1. Ask the user for the scope if it is not clear: the whole codebase, a folder or area, specific specs, or a branch or pull request. The user can also ask to review specs themselves for build-readiness.
 2. If approved specs cover the scope, ask whether to review against them or review the code on its own.
 
 ## 2. Read
@@ -32,6 +32,7 @@ Read all the code in scope and its tests. When reviewing against specs, read eac
 - **Use cases**: missing flows, empty, invalid, or very large input, failing dependencies, permissions, and accessibility for UI.
 - **Security**: be strict. Look for injection, authentication and authorization flaws, missing input validation, exposed secrets, weak cryptography, data exposure, SSRF and path traversal, unsafe deserialization, risky dependencies, sensitive data in logs, and insecure defaults. Choose tools that fit the stack and run them without adding them to the project.
 - **Tests**: important behavior with no test, and tests that cannot fail.
+- **Specs** (when reviewing specs): every item of the build-ready check in the `plan` skill, step 5. Report each place where a small model would have to make a choice.
 - If docs, specs, and code disagree, show the user both sides and ask which is correct (rule 2). Do not decide.
 
 ## 4. Verify findings
