@@ -7,16 +7,30 @@ on:
     branches: [main, master]
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm run build
-      - run: npm test
-      - name: Generated plugin skills are up to date
-        run: git diff --exit-code -- plugins/specx/skills
+      - name: Manifests are valid JSON
+        run: |
+          python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
+          python3 -m json.tool plugins/specx/.claude-plugin/plugin.json > /dev/null
+      - name: Skills have frontmatter and no unfilled placeholders
+        run: |
+          for skill in plan execute review; do
+            f=plugins/specx/skills/$skill/SKILL.md
+            head -1 "$f" | grep -qx -- '---'
+            grep -qx "name: $skill" "$f"
+            grep -q '^description: ' "$f"
+            ! grep -q '{{SKILL_NAME}}\|{{RULES}}' "$f"
+          done
+      - name: Rules in this repository match the plugin template
+        run: |
+          diff -u plugins/specx/templates/RULES.md specx/RULES.md
+          python3 - <<'PY'
+          import re
+          rules = open("plugins/specx/templates/RULES.md").read().strip()
+          claude = open("CLAUDE.md").read()
+          m = re.search(r"<!-- specx:rules:begin -->\n(.*?)\n<!-- specx:rules:end -->", claude, re.S)
+          assert m and m.group(1).strip() == rules, "CLAUDE.md rules differ from plugin template"
+          PY

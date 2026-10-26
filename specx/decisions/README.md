@@ -13,3 +13,4 @@ Every choice belongs to the user, from architecture down to fonts. Each decision
 | [DEC-007](DEC-007-migration.md) | Existing projects | answered | 2026-10-26 |
 | [DEC-008](DEC-008-earlier-plans.md) | Earlier unreviewed plans | answered | 2026-10-26 |
 | [DEC-009](DEC-009-user-decides.md) | Who decides | answered | 2026-10-26 |
+| [DEC-010](DEC-010-plugin-only.md) | Plugin-only distribution | answered | 2026-10-26 |

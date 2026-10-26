@@ -1,6 +1,6 @@
 # Tasks
 
-The single task list for this project. Each row mirrors a task file in this folder. Update both together, or run `specx tasks --write`.
+The single task list for this project. Each row mirrors a task file in this folder. Update both together.
 
 Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus `blocked` and `cancelled`.
 

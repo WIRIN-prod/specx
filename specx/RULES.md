@@ -1,4 +1,3 @@
-<!-- specx:rules:begin -->
 # SpecX rules
 
 The user decides. The agent executes. These rules apply to every SpecX command (`plan`, `execute`, `review`) and to every subagent. Follow them exactly; when in doubt, stop and ask the user.
@@ -19,7 +18,7 @@ The user decides. The agent executes. These rules apply to every SpecX command (
 
 - `specx/tasks/TASKS.md` is the single task list. Every piece of work is a task file in `specx/tasks/`, and its row in `TASKS.md` matches that file.
 - Update the task file and `TASKS.md` before starting work, whenever a status changes, and before stopping. Never do work that is not on the list.
-- When the `specx` CLI is available, run `specx tasks --write` to validate the list and regenerate `TASKS.md`.
+- Check the list whenever you change it: no unknown task or decision IDs, no dependency cycles, and every `TASKS.md` row matches its task file.
 
 ## 4. Nothing moves without approval
 
@@ -42,7 +41,7 @@ The user decides. The agent executes. These rules apply to every SpecX command (
 
 ```text
 specx/
-  RULES.md       these rules (the SpecX section is refreshed by `specx update`)
+  RULES.md       these rules (also in CLAUDE.md)
   Home.md        entry point
   specs/         hierarchy: <area>/<component>/<feature>.md
   decisions/     one file per decision, open or answered
@@ -50,5 +49,4 @@ specx/
   reviews/       review reports
 ```
 
-If `specx/` is missing, run `specx init`. If the CLI is unavailable, create this layout using the file formats in the `plan` skill.
-<!-- specx:rules:end -->
+If `specx/` is missing, run any SpecX command; it creates this layout first.

@@ -5,16 +5,30 @@ description: Build user-approved SpecX tasks, each in its own git worktree and s
 
 # SpecX execute
 
-Read and follow the rules at the end of this file before doing anything.
+Follow the rules in `specx/RULES.md` for everything below (step 0).
+
+## 0. Set up and read the rules
+
+1. If `specx/RULES.md` does not exist, this project is not set up yet. Tell the user, then create the following without overwriting any existing file. Setup needs no decisions from the user.
+   - Copy the folder `${CLAUDE_PLUGIN_ROOT}/templates/specx/` to `specx/`. In `specx/Home.md`, replace `{{PROJECT_NAME}}` with the project folder name and `{{DATE}}` with today's date.
+   - Copy `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md` to `specx/RULES.md`.
+   - Put the same rules in the project's `CLAUDE.md` between a `<!-- specx:rules:begin -->` line and a `<!-- specx:rules:end -->` line. Create the file if it is missing, or replace what is between the markers if they exist.
+2. If `specx/RULES.md` differs from `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md`, tell the user the rules have changed and ask before replacing `specx/RULES.md` and the `CLAUDE.md` section.
+3. Read `specx/RULES.md` completely and follow it for everything below.
+4. If `specx/` contains folders from an older SpecX (`knowledge/`, `proposals/`, `plans/`, `specifications/`, `work/`), tell the user that SpecX no longer reads them. Do not delete them.
 
 ## 1. Get context
 
-1. Read `specx/RULES.md` and `specx/tasks/TASKS.md`. Run `specx tasks` when the CLI is available. It lists the ready tasks, the groups that can run in parallel, and any problems with the task list.
-2. If the task list has problems (unknown dependencies, cycles, a row that does not match its file), resolve them with the user before building anything.
+1. Read `specx/tasks/TASKS.md`, every task file in `specx/tasks/`, and the decisions in `specx/decisions/`.
+2. Check the task list: every task and decision ID that is referenced exists, there are no dependency cycles, and each `TASKS.md` row matches its task file. Resolve any problem with the user before building anything.
+3. Work out the board:
+   - **Ready**: status `todo`, every `depends_on` task is `done`, and every decision it lists is `answered`.
+   - **Parallel**: two ready tasks can run at the same time only if neither depends on the other, directly or through other tasks, and their `files` do not overlap. Files overlap when they are the same path or one is inside the other. A task with no `files` overlaps everything.
+   - **Related** to a task: tasks that depend on it directly or indirectly, tasks it depends on that are not yet `done`, and unfinished tasks that share one of its specs or decisions.
 
 ## 2. Git setup
 
-Ask once, then record the answers under `git:` in `.specx/specx.yaml`:
+Ask once, then record the answers in a `## Git settings` section of `specx/Home.md` as `main_branch:` and `worktree_root:` lines. Later runs read them from there:
 
 - `main_branch`: ask the user which branch pull requests should target. Do not guess, even if `main` exists.
 - `worktree_root`: worktrees go next to the repository by default, as `<parent folder>/<repo>-<task-id>`. Ask whether the user wants a different location.
@@ -42,7 +56,7 @@ For each approved task whose dependencies are merged:
 ## 5. When a task needs a decision
 
 - Write the decision file with `status: open`, set the task to `blocked`, and ask the user.
-- Stop only that task, unless other tasks are related to it. Related means tasks that depend on it (directly or indirectly), tasks it depends on that are not yet done, and tasks that share one of its specs or decisions. Stop all related tasks too; `specx tasks --related <task-id>` lists them. Unrelated tasks continue.
+- Stop only that task, unless other tasks are related to it. Related means tasks that depend on it (directly or indirectly), tasks it depends on that are not yet done, and tasks that share one of its specs or decisions. Stop all related tasks too. Unrelated tasks continue.
 - When the user answers, record it and resume. If the answer materially changes a task, show the updated task and get it approved again.
 
 ## 6. Verify
@@ -72,56 +86,3 @@ Inside the task's worktree:
 ## 9. Finish
 
 Report what was merged, what is in review, what is blocked (with the open questions), and what has not started. `TASKS.md` must match.
-
-## Rules
-
-The user decides. The agent executes. These rules apply to every SpecX command (`plan`, `execute`, `review`) and to every subagent. Follow them exactly; when in doubt, stop and ask the user.
-
-## 1. The user makes every decision
-
-- Never assume, default, or choose anything on the user's behalf. No choice is too small: product behavior, scope, architecture, packages and versions, APIs, data models, file layout, naming, UI framework, theme, colors, fonts, spacing, copy, tooling, test strategy, CI, and deployment all need the user's answer.
-- When a choice is needed, write it as an open decision in `specx/decisions/` with the question, the realistic options, and their trade-offs, then ask the user. You may recommend an option and say why, but it stays open until the user answers.
-- Work that depends on an open decision stops until the user answers. Record the answer in the user's words, with the date.
-- "Continue", silence, or approval of something else is not an answer.
-
-## 2. Confirm the source of truth
-
-- If docs, specs, comments, and code disagree, do not pick a side. Show the user both, with file and line, and ask which is correct. Record the answer as a decision. Fix the other side only through an approved task.
-- Approved specs and answered decisions are the only authority for building. Draft content, research, conventions, and your own inferences are not.
-
-## 3. Always maintain the task list
-
-- `specx/tasks/TASKS.md` is the single task list. Every piece of work is a task file in `specx/tasks/`, and its row in `TASKS.md` matches that file.
-- Update the task file and `TASKS.md` before starting work, whenever a status changes, and before stopping. Never do work that is not on the list.
-- When the `specx` CLI is available, run `specx tasks --write` to validate the list and regenerate `TASKS.md`.
-
-## 4. Nothing moves without approval
-
-- Specs: `draft` → `approved` only when the user approves that exact spec.
-- Tasks: `draft` → `todo` when the user approves the task list; `todo` → `in-progress` only when the user approves that task for execution.
-- Merge: only through a pull request, and only after the user approves that pull request.
-- Any material change after approval needs approval again.
-
-## 5. Stay in scope
-
-- Do only what the approved task says, in the files it lists. If it needs more, stop and ask.
-- Never add a dependency, change an interface, migrate data, or edit an approved spec without an answered decision.
-- Preserve the user's unrelated work. Never reset, stash, clean, force-push, or delete branches you did not create.
-
-## 6. Be honest
-
-- Report exactly what you ran and what happened. Never claim a test, check, or review passed unless you ran it and it passed. Say what you did not check.
-
-## Layout
-
-```text
-specx/
-  RULES.md       these rules (the SpecX section is refreshed by `specx update`)
-  Home.md        entry point
-  specs/         hierarchy: <area>/<component>/<feature>.md
-  decisions/     one file per decision, open or answered
-  tasks/         TASKS.md plus one file per task
-  reviews/       review reports
-```
-
-If `specx/` is missing, run `specx init`. If the CLI is unavailable, create this layout using the file formats in the `plan` skill.
