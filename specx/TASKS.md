@@ -6,3 +6,4 @@ Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus 
 
 | Task | Title | Spec | Status | Parent | Depends on | PR |
 |---|---|---|---|---|---|---|
+| ROOT-T1 | Align SpecX workflows with agent-skills | [ROOT](spec.md) | in-review | — | — | — |

@@ -1,8 +1,8 @@
 ---
 id: ROOT
 title: SpecX
-status: approved
-version: 4
+status: draft
+version: 5
 parent: none
 depends_on: []
 ---
@@ -49,6 +49,7 @@ None (root).
 | ROOT-R8 | Functional | THE SYSTEM SHALL write specs as one standard-format `spec.md` per folder, with decisions and tasks inside, in a parent/child tree where parents hold what children share. | ROOT-D11 |
 | ROOT-R10 | Functional | THE SYSTEM SHALL write each spec as a complete specification and technical plan, not code (architecture, technology with versions, interface contracts and errors, data model, flows, state, failures, security, configuration, observability, performance, testing, rollout) that passes the build-ready check before it is shown for approval. | ROOT-D12 |
 | ROOT-R9 | Functional | WHEN a SpecX command first runs in a project, THE SYSTEM SHALL create the `specx/` layout and rules without a separate CLI. | ROOT-D10 |
+| ROOT-R11 | Process | THE SYSTEM SHALL enforce only approved quality criteria and commands, record whether each failure blocks or warns, and require user approval before weakening an existing gate. | ROOT-D14 |
 
 ## 5. Acceptance criteria
 
@@ -58,9 +59,28 @@ None (root).
 - When the user runs `/specx:plan`
 - Then `specx/RULES.md`, `specx/spec.md`, `specx/TASKS.md`, `specx/_templates/spec.md`, and a rules section in `CLAUDE.md` exist, and only the three SpecX commands are offered
 
+**ROOT-AC2** (R11)
+
+- Given a project with an approved quality gate naming its criterion, command, run point, and failure policy
+- When an agent encounters or proposes a change that weakens that gate
+- Then the agent reports the change and waits for the user's approval before applying it
+
 ## 6. Design
 
 The plugin ships skills and templates only. Each skill starts with the same setup step, which copies `plugins/specx/templates/` into the project. CI checks the manifests, the skill frontmatter, and that this repository's rules match the template.
+
+The workflow is compared with Addy Osmani's [agent-skills](https://github.com/addyosmani/agent-skills) reference pack:
+
+| Reference capability | SpecX command and handling |
+|---|---|
+| Define, interview, refine ideas, spec-driven development | Plan confirms intent when unclear, researches the repository, and writes build-ready specs. |
+| Planning and task breakdown | Plan records broad capability/dependency maps in the parent Children table and creates approved vertical tasks. |
+| Incremental implementation, context engineering, TDD, security, Git and shipping | Execute assigns each approved task its own worktree and subagent, follows the approved test method, runs checks and security review, and uses a PR for merge approval. |
+| Code review and quality | Review reports evidence-backed findings on correctness, readability/simplicity, architecture, security, and performance; it does not modify code. |
+| Constraint-driven development | User-approved quality gates are captured in the root or relevant spec and checked throughout Plan, Execute, and Review. |
+| API, UI, accessibility, observability, CI/CD, migration and documentation specialties | Use the relevant existing spec sections and task scope; no separate slash commands are added. |
+
+The reference repository is [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills). SpecX keeps only `/specx:plan`, `/specx:execute`, and `/specx:review`. Quality gates require user-approved criteria and commands, an explicit run point, and a block-or-warn policy; no numeric target or failure policy is assumed.
 
 ## 7. Shared with children
 
@@ -68,8 +88,8 @@ None.
 
 ## 8. Children
 
-| Spec | Covers | Relation | Status |
-|---|---|---|---|
+| Spec | Responsibility | Depends on | Build order | Shared context and relation | Status |
+|---|---|---|---|---|---|
 
 ## 9. Decisions
 
@@ -151,9 +171,45 @@ None.
 - **Question:** Should specs include code layout and code-level detail?
 - **Answer:** "Code layout wouldn't be required; that can be decided by the LLM, but it should understand what we have planned. You don't need to give code-level details but need the technical layout for what needs to be done. Think of it not as a coding plan alone but as a specification detailed enough that just that one document gives the LLM enough details to know what to do, without needing to assume or guess anything." (user, 2026-10-26)
 
+### ROOT-D14: Align SpecX skills with agent-skills
+
+- **Status:** answered (2026-10-27)
+- **Question:** How should SpecX compare with and use the `addyosmani/agent-skills` reference?
+- **Answer:** "Compare our skills with the repo and see which skills align with what and if anything is missed add even if we want to add more slash command." The user approved the resulting plan: map the reference to SpecX, integrate compatible missing practices into Plan, Execute, and Review, keep the three existing commands, preserve per-task approval gates, and do not invent quality thresholds or policies. (user, 2026-10-27)
+- **Reference:** [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills), reviewed 2026-10-27.
+
 ## 10. Tasks
 
-None.
+### ROOT-T1: Align SpecX workflows with agent-skills
+
+- **Status:** in-review
+- **Parent:** None
+- **Depends on:** None
+- **Covers:** ROOT-R1, ROOT-R11, ROOT-AC1, ROOT-AC2
+- **Decisions:** ROOT-D14
+- **Files:** `plugins/specx/skills/`, `plugins/specx/templates/`, `specx/`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** frontier, because this coordinates workflow and rule changes across the plugin and its canonical spec
+- **Branch / worktree / PR:** —
+
+**Steps**
+
+1. Compare the reference capabilities with Plan, Execute, and Review; retain the three-command interface.
+2. Add confirmed intent and capability mapping, vertical task slicing, approved quality-gate capture, and source/trade-off handling to Plan.
+3. Add user-approved TDD handling, structured check-failure diagnosis, and spec-gap stopping to Execute.
+4. Add five review dimensions, evidence-backed remedies, and quality-gate integrity checks to Review.
+5. Update the spec template and mirrored rules; bump the plugin patch version.
+
+**Verification**
+
+- Confirm root spec rules are in draft version 5 and record ROOT-D14.
+- Confirm all rules copies match the canonical template.
+- Confirm plugin metadata remains valid and only the three intended command skills are present.
+- Manually check the intent, capability-map, TDD-choice, failed-check, five-dimension review, and gate-weakening scenarios.
+
+**Log**
+
+- 2026-10-27: implementation started after the user approved the comparison plan.
+- 2026-10-27: implemented workflow guidance, refreshed scaffold and rule copies, and bumped plugin to 0.4.1. PowerShell checks confirmed manifest validity, synchronized rules, the three-skill inventory, and `git diff --check` passed. No application test suite was run.
 
 ## 11. Open questions
 
@@ -167,3 +223,4 @@ None.
 | 2 | 2026-10-26 | Plugin-only (ROOT-D10) | user |
 | 3 | 2026-10-26 | Spec tree with one standard `spec.md` per folder (ROOT-D11) | user |
 | 4 | 2026-10-26 | Specs are complete specifications and technical plans with a build-ready check, not code (ROOT-D12, ROOT-D13) | user |
+| 5 | 2026-10-27 | Align workflows with agent-skills, add user-approved quality-gate handling and keep three commands (ROOT-D14) | pending user approval |

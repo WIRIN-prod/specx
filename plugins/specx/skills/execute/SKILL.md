@@ -12,8 +12,8 @@ Follow the rules in `specx/RULES.md` for everything below (step 0).
 1. If `specx/RULES.md` does not exist, this project is not set up yet. Tell the user, then create the following without overwriting any existing file. Setup needs no decisions from the user.
    - Copy the folder `${CLAUDE_PLUGIN_ROOT}/templates/specx/` to `specx/`. In `specx/spec.md`, replace `{{PROJECT_NAME}}` with the project folder name and `{{DATE}}` with today's date.
    - Copy `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md` to `specx/RULES.md`.
-   - Put the same rules in the project's `CLAUDE.md` between a `<!-- specx:rules:begin -->` line and a `<!-- specx:rules:end -->` line. Create the file if it is missing, or replace what is between the markers if they exist.
-2. If `specx/RULES.md` differs from `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md`, tell the user the rules have changed and ask before replacing `specx/RULES.md` and the `CLAUDE.md` section.
+   - Put the same rules in the project's `CLAUDE.md` and `AGENTS.md` between `<!-- specx:rules:begin -->` and `<!-- specx:rules:end -->` markers. Create either file if missing, or replace only the content between existing markers.
+2. If `specx/RULES.md` differs from `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md`, tell the user the rules have changed and ask before replacing `specx/RULES.md` and the managed sections in `CLAUDE.md` and `AGENTS.md`.
 3. Read `specx/RULES.md` completely and follow it for everything below.
 4. If `specx/` still uses an older layout (`specs/`, `decisions/`, `tasks/`, `Home.md`, or older), stop and ask the user to convert it with `/specx:plan` first.
 
@@ -53,6 +53,7 @@ For each approved task whose dependencies are merged:
    - work only inside its worktree and only on the task's `Files`;
    - follow the task's steps and the spec exactly (behavior, contracts, data, rules, errors, versions), choosing the code structure by the project's conventions, meet the requirements and acceptance criteria it covers, and write the tests with the code;
    - stop and report instead of choosing whenever anything is unclear, missing, or outside the task. A detail the spec does not give is a spec gap, not a choice for the subagent.
+   - use only the behavior-change test method recorded in the approved spec. For test-first/TDD, write and run the focused failing test before changing behavior; for a bug fix, first add a regression test that reproduces it. If the method is missing or unclear, block the task and ask the user through `/specx:plan` rather than choosing.
 4. You decide how many subagents run at once from the dependency graph. Run tasks that have no dependency between them and no shared files at the same time. A dependent task waits until its dependency is merged, then starts from the updated main branch. If the host has no subagents, build the tasks one at a time.
 
 ## 5. When a task needs a decision
@@ -65,13 +66,15 @@ For each approved task whose dependencies are merged:
 
 Inside the task's worktree:
 
-1. Run the task's verification commands and the project's tests, linting, type checks, and build. Everything must pass. Fix failures within the task's scope, or stop and report.
-2. Check every acceptance criterion the task covers, with evidence.
-3. Run a strict security review. Its goal is to find every security problem before merge.
+1. Follow the approved testing method, then run the task's verification commands and the project's tests, linting, type checks, and build. Every required check must pass.
+2. When a check fails, keep its output and diagnose in order: reproduce the failure, localize it to the task, spec, or environment, make the smallest in-scope correction, then rerun the focused check and affected required gates. For a behavior regression, add a reproducing test under the approved method. Never skip, disable, delete, or weaken a check or assertion to get a pass.
+3. If the failure reveals a spec conflict, missing decision, or work outside scope, stop the task and related tasks as specified in step 5. Record the evidence and ask the user; do not improvise a fix.
+4. Check every acceptance criterion the task covers, with evidence.
+5. Run a strict security review. Its goal is to find every security problem before merge.
    - Choose tools that fit the stack, such as dependency audits, secret scanning, and static analysis. Run them without adding them to the project; adding a dependency is a decision for the user.
    - Read the whole diff for injection, authentication and authorization flaws, missing input validation, exposed secrets, weak cryptography, data exposure, SSRF and path traversal, unsafe deserialization, risky dependencies, sensitive data in logs, and insecure defaults.
    - Treat anything uncertain as a finding. A critical or high finding blocks the pull request until it is fixed within scope or the user decides what to do.
-4. Record what ran and the results in the task's log.
+6. Verify that no approved quality gate was weakened in the diff. Record what ran and the results in the task's log.
 
 ## 7. Open the pull request
 
