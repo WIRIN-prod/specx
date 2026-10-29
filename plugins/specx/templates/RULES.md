@@ -49,11 +49,17 @@ The user decides. The agent executes. These rules apply to every SpecX command (
 
 - Report exactly what you ran and what happened. Never claim a test, check, or review passed unless you ran it and it passed. Say what you did not check.
 
+## 9. Preserve approved quality gates
+
+- A binding quality gate names its criterion or threshold, exact check or command, when it runs, and whether failure blocks or warns. It must trace to an approved spec or decision.
+- Do not invent thresholds, commands, or block-or-warn policies. Existing CI and test configuration are evidence of current behavior; do not silently promote them into new product requirements.
+- Never weaken, disable, skip, or delete an approved gate, test, or assertion to make work pass. Ask the user before changing an approved gate.
+
 ## Layout
 
 ```text
 specx/
-  RULES.md                    these rules (also in CLAUDE.md)
+  RULES.md                    these rules (also in CLAUDE.md and AGENTS.md)
   spec.md                     root spec: product, project-wide decisions, shared conventions
   TASKS.md                    every task, one row each
   auth/spec.md                an area

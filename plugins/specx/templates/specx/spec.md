@@ -98,8 +98,8 @@ None yet. Project-wide conventions go here, such as the stack, folder structure,
 
 ## 8. Children
 
-| Spec | Covers | Relation | Status |
-|---|---|---|---|
+| Spec | Responsibility | Depends on | Build order | Shared context and relation | Status |
+|---|---|---|---|---|---|
 
 ## 9. Decisions
 

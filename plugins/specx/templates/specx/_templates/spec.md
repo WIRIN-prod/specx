@@ -212,11 +212,26 @@ sequenceDiagram
 
 ### 6.12 Testing strategy
 
-<!-- What is tested at which level, test data and fixtures, what is mocked, how tests are run. Every acceptance criterion maps to a test. -->
+<!--
+Record the user's approved behavior-change test method (test-first/TDD, tests
+alongside implementation, or another method). If unanswered, leave it as an
+open decision; Execute must not choose. Describe test levels, fixtures, mocks,
+commands, and how each acceptance criterion is verified. Existing CI and test
+configuration is current-state evidence, not a new approved gate unless the
+user confirms it as target policy.
+-->
 
 | Level | What | Proves |
 |---|---|---|
 | Unit | Lockout counting, password verification | AUTH.LOGIN-AC1, R2 |
+
+**Behavior-change test method:** Open decision until the user approves one. Do not infer a default.
+
+**Approved quality gates:** Record only gates the user approved. Include the criterion or threshold, exact check command, when it runs, failure policy, and decision/source.
+
+| Dimension | Approved criterion or threshold | Exact check or command | Run point | Failure policy | Decision/source |
+|---|---|---|---|---|---|
+| None yet | None: ask the user before establishing a binding gate | — | — | — | — |
 
 ### 6.13 Migration and rollout
 
@@ -237,9 +252,9 @@ None: no children yet.
 
 <!-- One row per child folder. Relation says how children correlate: what they share, and which depend on which. -->
 
-| Spec | Covers | Relation | Status |
-|---|---|---|---|
-| [AUTH.LOGIN.SSO](sso/spec.md) | Sign-in through an identity provider | Uses the shared session (§7); independent of PASSKEYS | draft |
+| Spec | Responsibility | Depends on | Build order | Shared context and relation | Status |
+|---|---|---|---|---|---|
+| [AUTH.LOGIN.SSO](sso/spec.md) | Sign-in through an identity provider | AUTH.LOGIN-T1 | 2 | Uses the shared session (§7); independent of PASSKEYS | draft |
 
 ## 9. Decisions
 
