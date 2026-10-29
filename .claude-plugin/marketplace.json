@@ -1,17 +1,17 @@
 {
   "name": "specx-marketplace",
-  "description": "SpecX: plan, execute, and review with AI agents. The user decides; agents execute.",
+  "description": "SpecX: explore ideas, plan, execute, and review with AI agents. The user decides; agents execute.",
   "owner": {
     "name": "WIRIN"
   },
   "metadata": {
-    "description": "SpecX plan, execute, and review workflows"
+    "description": "SpecX explore, plan, execute, and review workflows"
   },
   "plugins": [
     {
       "name": "specx",
       "source": "./plugins/specx",
-      "description": "Plan specs and tasks, execute them in worktrees with tests and security review, and review code. Every decision is the user's."
+      "description": "Explore ideas, plan specifications and tasks, execute them in worktrees with tests and security review, and review code. Every decision is the user’s."
     }
   ]
 }
