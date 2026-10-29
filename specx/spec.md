@@ -189,7 +189,7 @@ None.
 - **Decisions:** ROOT-D14
 - **Files:** `plugins/specx/skills/`, `plugins/specx/templates/`, `specx/`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** frontier, because this coordinates workflow and rule changes across the plugin and its canonical spec
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `codex/specx-workflows-0.4.1` / current checkout / [#1](https://github.com/WIRIN-prod/specx/pull/1)
 
 **Steps**
 
@@ -210,6 +210,7 @@ None.
 
 - 2026-10-27: implementation started after the user approved the comparison plan.
 - 2026-10-27: implemented workflow guidance, refreshed scaffold and rule copies, and bumped plugin to 0.4.1. PowerShell checks confirmed manifest validity, synchronized rules, the three-skill inventory, and `git diff --check` passed. No application test suite was run.
+- 2026-10-29: committed as `e478624`, pushed on `codex/specx-workflows-0.4.1`, and opened PR #1.
 
 ## 11. Open questions
 
