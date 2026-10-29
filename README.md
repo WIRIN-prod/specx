@@ -1,9 +1,10 @@
 # specX
 
-**Plan, execute, and review software with AI agents. You decide; agents execute.** SpecX is a Claude Code plugin with three commands:
+**Explore ideas, plan, execute, and review software with AI agents. You decide; agents execute.** SpecX is a Claude Code plugin with four commands:
 
 | Command | What it does |
 |---|---|
+| `/specx:explore` | Discusses an idea in a flexible conversation grounded in read-only repository context, then recaps it and suggests `/specx:plan`. It creates no files or tasks. |
 | `/specx:plan` | Writes specs for existing code or new work as an area/component/feature hierarchy, asks you every decision, and breaks approved specs into small, dependency-linked tasks that smaller models and parallel subagents can pick up. |
 | `/specx:execute` | Asks you to approve a batch of ready tasks. It then builds each one in its own git worktree with its own subagent, runs the tests and a strict security review, and opens a pull request. It merges only after you approve. |
 | `/specx:review` | Reviews existing code, against approved specs or on its own, for gaps, flaws, bugs, security issues, and unhandled use cases. Findings go back to `plan`. |
@@ -28,7 +29,7 @@ Start a new session or run `/reload-plugins`. To update later: `claude plugin ma
 
 ## Start
 
-There is no separate setup step. Open your project in Claude Code and run `/specx:plan`. The first SpecX command in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md`. It makes no decisions and overwrites nothing.
+There is no separate setup step. Open your project in Claude Code. Use `/specx:explore` to discuss an idea without changing the repository, then run `/specx:plan` when you are ready to create specifications and tasks. The first planning, execution, or review command in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md`. It makes no decisions and overwrites nothing.
 
 `/specx:execute` needs `gh` installed and signed in, and a git remote. It asks you once for the main branch, the worktree location (next to the repo by default), and how to commit progress updates, and records them as decisions in `specx/spec.md`.
 
@@ -113,7 +114,7 @@ It removes only SpecX-generated skills, commands, rules, and `.specx/`, and take
 ```text
 .claude-plugin/marketplace.json     marketplace listing
 plugins/specx/.claude-plugin/       plugin manifest (bump `version` on every change)
-plugins/specx/skills/               the three commands
+plugins/specx/skills/               the four commands
 plugins/specx/templates/            RULES.md and the specx/ scaffold copied into projects
 specx/                              this repository's own SpecX record
 ```

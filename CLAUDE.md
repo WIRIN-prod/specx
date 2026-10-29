@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This repository is the **SpecX** Claude Code plugin: plan, execute, and review software with AI agents; the user decides, agents execute. Plugin files are in `plugins/specx/`: skills in `skills/` and the scaffold and rules in `templates/`. Bump `version` in `plugins/specx/.claude-plugin/plugin.json` for every change, or installed copies will not update. This repository's own SpecX record is in `specx/`.
+This repository is the **SpecX** Claude Code plugin: explore ideas, plan, execute, and review software with AI agents; the user decides, agents execute. Plugin files are in `plugins/specx/`: skills in `skills/` and the scaffold and rules in `templates/`. Bump `version` in `plugins/specx/.claude-plugin/plugin.json` for every change, or installed copies will not update. This repository's own SpecX record is in `specx/`.
 
 <!-- specx:rules:begin -->
 # SpecX rules

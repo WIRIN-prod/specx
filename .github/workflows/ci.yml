@@ -17,7 +17,7 @@ jobs:
           python3 -m json.tool plugins/specx/.claude-plugin/plugin.json > /dev/null
       - name: Skills have frontmatter and no unfilled placeholders
         run: |
-          for skill in plan execute review; do
+          for skill in explore plan execute review; do
             f=plugins/specx/skills/$skill/SKILL.md
             head -1 "$f" | grep -qx -- '---'
             grep -qx "name: $skill" "$f"
