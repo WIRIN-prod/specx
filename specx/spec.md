@@ -295,7 +295,7 @@ None.
 - **Decisions:** ROOT-D15, ROOT-D16, ROOT-D17, ROOT-D18, ROOT-D19
 - **Files:** `plugins/specx/skills/explore/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`, `.github/workflows/ci.yml`, `README.md`, `.claude-plugin/marketplace.json`, `CLAUDE.md`, `specx/spec.md`, `specx/TASKS.md`
 - **Model:** frontier, because the command's interaction boundary and handoff behavior must be specified before implementation
-- **Branch / worktree / PR:** `specx/ROOT-T2` / `C:\Users\DASH AND DOT\STUDY\specx-ROOT-T2` / —
+- **Branch / worktree / PR:** `specx/ROOT-T2` / `C:\Users\DASH AND DOT\STUDY\specx-ROOT-T2` / [#2](https://github.com/WIRIN-prod/specx/pull/2)
 
 **Steps**
 
