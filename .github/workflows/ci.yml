@@ -15,6 +15,9 @@ jobs:
         run: |
           python3 -m json.tool .claude-plugin/marketplace.json > /dev/null
           python3 -m json.tool plugins/specx/.claude-plugin/plugin.json > /dev/null
+          python3 -m json.tool plugins/specx/hooks/hooks.json > /dev/null
+      - name: Guard hook works
+        run: python3 plugins/specx/hooks/guard_test.py
       - name: Skills have frontmatter and no unfilled placeholders
         run: |
           for skill in explore plan execute review; do

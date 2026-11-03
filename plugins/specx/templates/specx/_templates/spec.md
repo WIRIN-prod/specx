@@ -13,20 +13,22 @@ depends_on: [AUTH.RBAC]      # spec IDs outside this spec's own branch of the tr
 SpecX spec format. One spec.md per folder holds everything about that part of
 the system. Delete these comments when writing a real spec.
 
-The bar: a frontier model writes this spec; a small model then builds every
-task from this spec and its context chain alone, without assuming or guessing
-anything. This is a specification, not code: it states what the system does
-and the technical plan for how (architecture, technology, contracts, data,
-flows, rules, failures), but not files, functions, or code. The implementer
-chooses the code structure, following the project's conventions. If an
-implementer would have to guess a behavior, a library, a field, a status code,
-an error message, or a rule, the spec is not done.
+The bar: a spec covers one phase. A frontier model writes it; a smaller model
+then builds every task from this spec and its context chain, choosing only
+implementation details and logging them as assumptions. This is a
+specification, not code: it states what the system does and the technical plan
+for how (architecture, technology, contracts, data, flows, rules, failures),
+but not files, functions, or code. The implementer chooses the code structure,
+following the project's conventions. If an implementer would have to guess a
+behavior, a library, a field, a status code, an error message, or a rule, the
+spec is not done.
 
 IDs: requirements <SPEC>-R#, acceptance criteria <SPEC>-AC#, decisions <SPEC>-D#,
-tasks <SPEC>-T#. Keep IDs stable; never reuse a deleted ID.
+milestones <SPEC>-M#, tasks <SPEC>-T#. Keep IDs stable; never reuse a deleted ID.
 Every section and subsection stays. Where one does not apply, write
 "None: <reason>". Where a parent already covers it, write
-"Inherited: <parent ID> §<section>" instead of repeating it.
+"Inherited: <parent ID> §<section>" instead of repeating it. Where a later phase
+on the roadmap owns it, write "Deferred: <phase ID>".
 Every technology, library, pattern, and convention named here must trace to an
 answered decision (yours or a parent's) or to current code (path:line).
 -->
@@ -273,8 +275,22 @@ None: no children yet.
 
 ## 10. Tasks
 
+### Milestones
+
+<!-- Parts of this phase the user can run and check, in build order. Execute previews each one, demos it, and waits for the user. -->
+
+| ID | Goal | Done when | Tasks | Status |
+|---|---|---|---|---|
+| AUTH.LOGIN-M1 | A user can sign in with email and password | Signing in with a seeded user reaches `/dashboard` | AUTH.LOGIN-T1 | draft |
+
 <!--
 Status: draft | todo | in-progress | blocked | in-review | done | cancelled.
+Type: feature | bug | chore | spike. A feature carries a user story and
+acceptance criteria. A bug carries steps to reproduce, expected result, and
+actual result. A chore carries why it is needed and how we know it is done. A
+spike carries a question and a time limit; its code is never merged.
+Milestone: the milestone this task belongs to, or — for an Ongoing item.
+Assumptions: implementation details chosen while building, each with its reason.
 Parent: the task in the parent spec this task rolls up to. A parent task is done
 only when all its child tasks and its own steps are done.
 Depends on: tasks that must be merged first. Tasks without a dependency between
@@ -289,6 +305,9 @@ commands to run.
 ### AUTH.LOGIN-T1: AuthService.login with lockout
 
 - **Status:** draft
+- **Type:** feature
+- **Story:** As a returning user, I want to sign in with my email and password, so that I can reach my dashboard.
+- **Milestone:** AUTH.LOGIN-M1
 - **Parent:** AUTH-T1
 - **Depends on:** None
 - **Covers:** AUTH.LOGIN-R1, AUTH.LOGIN-R2, AUTH.LOGIN-AC1
@@ -296,6 +315,7 @@ commands to run.
 - **Files:** `src/server/auth/` <!-- the planner's estimate, from the existing codebase -->
 - **Model:** small, because the contract, rules, and errors are fully specified in §6.3–6.7
 - **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
 
 **Steps**
 
