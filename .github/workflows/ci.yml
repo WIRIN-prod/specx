@@ -25,7 +25,7 @@ jobs:
             head -1 "$f" | grep -qx -- '---'
             grep -qx "name: $skill" "$f"
             grep -q '^description: ' "$f"
-            ! grep -q '{{SKILL_NAME}}\|{{RULES}}' "$f"
+            if grep -q '{{SKILL_NAME}}\|{{RULES}}' "$f"; then exit 1; fi
           done
       - name: Rules in this repository match the plugin template
         run: |

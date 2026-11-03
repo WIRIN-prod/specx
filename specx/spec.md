@@ -1,8 +1,8 @@
 ---
 id: ROOT
 title: SpecX
-status: approved
-version: 9
+status: draft
+version: 10
 parent: none
 depends_on: []
 ---
@@ -13,7 +13,7 @@ The root spec for SpecX itself. The format is in [_templates/spec.md](../plugins
 
 ## 1. Overview
 
-**Purpose:** A Claude Code plugin that lets a user explore ideas, plan, execute, and review software with AI agents, where the user makes every decision and agents only execute.
+**Purpose:** A Claude Code plugin that lets a user explore ideas, plan, execute, and review software with AI agents, where the user decides, and agents execute and log the implementation details they choose.
 
 **In scope:**
 
@@ -129,13 +129,13 @@ None (root).
 
 ## 6. Design
 
-The plugin ships skills and templates only. Each planning or execution skill starts with the same setup step, which copies `plugins/specx/templates/` into the project. CI checks the manifests, the skill frontmatter, and that this repository's rules match the template. Explore is a conversation: it starts from the user's idea, reads relevant repository and SpecX context when the idea concerns an existing project, uses cited evidence to ground the discussion, and writes nothing until the user asks for the framework. It does not run project code or browse external sources unless the user explicitly asks for research. If no repository is available, it continues from the user's description and identifies repository facts as unknown. The user controls when the conversation ends; Explore then recaps the idea, stated choices, constraints, available evidence, and unresolved questions, offers to write the framework, and suggests `/specx:plan`. Plan is invoked only when the user runs it.
+The plugin ships skills, templates, and a guard hook. Each planning or execution skill starts with the same setup step, which copies `plugins/specx/templates/` into the project. CI checks the manifests, the skill frontmatter, and that this repository's rules match the template. Explore is a conversation: it starts from the user's idea, reads relevant repository and SpecX context when the idea concerns an existing project, uses cited evidence to ground the discussion, and writes nothing until the user asks for the framework. It does not run project code or browse external sources unless the user explicitly asks for research. If no repository is available, it continues from the user's description and identifies repository facts as unknown. The user controls when the conversation ends; Explore then recaps the idea, stated choices, constraints, available evidence, and unresolved questions, offers to write the framework, and suggests `/specx:plan`. Plan is invoked only when the user runs it.
 
-**Explore interaction contract:** The input is the user's idea and the current conversation. For an existing project, inspect only relevant source and documentation, `specx/TASKS.md`, and the full ancestor chain of any relevant `spec.md`; use read-only tools and cite repository claims as `path:line`. Do not execute project code or run tests, and do not alter files until the user asks for the framework. Browse external sources only when the user explicitly asks. Hold a flexible dialogue: follow the user's lead, clarify gaps, and surface possible directions with trade-offs without selecting one. If repository context is unavailable, say so and continue from the user's description. If code and documentation disagree, present both with locations and ask the user which is authoritative; carry their answer in the recap for Plan to record. The recap contains the idea, target users, desired outcomes, user-stated choices, constraints, non-goals, available repository evidence, and unresolved questions. The command is exposed as a plugin skill alongside the existing three skills; no new runtime dependency is introduced.
+**Explore interaction contract:** The input is the user's idea and the current conversation. For an existing project, inspect only relevant source and documentation, `specx/TASKS.md`, and the full ancestor chain of any relevant `spec.md`; use read-only tools and cite repository claims as `path:line`. Do not execute project code or run tests, and do not alter files until the user asks for the framework. Browse external sources only when the user explicitly asks. Hold a flexible dialogue: follow the user's lead, clarify gaps, and surface possible directions with trade-offs without selecting one. If repository context is unavailable, say so and continue from the user's description. If code and documentation disagree, present both with locations and ask the user which is authoritative; carry their answer in the recap for Plan to record. The recap contains the idea, target users, desired outcomes, user-stated choices, constraints, non-goals, available repository evidence, and unresolved questions. The command is exposed as a plugin skill alongside Plan, Execute, and Review; no new runtime dependency is introduced.
 
 **Delivery model:** Explore writes the framework: a new project's intended system, or an existing codebase's current one. Plan proposes stages (default Core, Essentials, Production, Ongoing), feature-sized phases inside them, and milestones inside each phase; the user edits this roadmap, which lives in the root Children table. Plan writes one spec per phase, only for the next phase, with big decisions asked individually and small ones on a single defaults sheet. In Ongoing, single features, bugs, chores, and spikes are added to the spec they belong to. Execute previews a milestone or item, builds each task in its own worktree and subagent on a delivery branch, verifies it, has an independent agent review it, demos it, and opens a pull request of the size the project chose.
 
-**View and control:** `specx/STATUS.md` shows what is happening, what waits on the user, the roadmap, and logged assumptions. The guard hook runs on `PreToolUse` when Python 3 is available. It reads a scope file in the task worktree's git directory, and asks a person to confirm risky commands in projects that have `specx/RULES.md`. It sees file tools and command text only, and does nothing if Python 3 is missing, so the rules remain the primary control.
+**View and control:** `specx/STATUS.md` shows what is happening, what waits on the user, the roadmap, and logged assumptions. The guard hook runs on `PreToolUse` when Python 3 is available. It reads a scope file in the task worktree's git directory, denies an agent editing that file, and asks a person to confirm risky commands in projects that have `specx/RULES.md`. It sees file tools and command text only, catches edits outside a worktree only when the hook's cwd is that worktree, does not follow `cd` inside a command, and does nothing if Python 3 is missing, so the rules remain the primary control.
 
 The workflow is compared with Addy Osmani's [agent-skills](https://github.com/addyosmani/agent-skills) reference pack:
 
@@ -328,6 +328,51 @@ None.
 - **Answer:** "Yes, this is better approach change it and also review the review skills so that is aligned with it" (user, 2026-11-03)
 - **Affects:** ROOT-R2, ROOT-R6, ROOT-R20 to R24, ROOT-AC8 to AC10, ROOT-T3
 
+### ROOT-D26: Where `specx/` lives during Execute
+
+- **Status:** open
+- **Question:** Plan never commits, so approved specs may not be on the delivery branch, and the post-merge `done` update cannot join a pull request that has already merged. Where do `specx/` changes go during Execute? (review finding H3)
+- **Options:**
+  1. Execute commits approved specs as the delivery branch's first commit, keeps `specx/` edits on that branch, and carries each `done` update in the next delivery. Everything goes through a PR, but `main` lags by one delivery.
+  2. Plan gets its own small PR for approved specs, then Execute branches from them. `main` is always current on specs, but adds one more approval per phase.
+  3. `specx/` status stays uncommitted in the main checkout until the user commits it. Simple, but spec updates and code can drift.
+- **Recommendation:** Option 1, because it adds no approvals and keeps specs and code in one PR. The user decides.
+- **Answer:**
+- **Affects:** Rule 4, ROOT-R5, ROOT-T3
+
+### ROOT-D27: Commands that need confirmation
+
+- **Status:** open
+- **Question:** Should the guard also ask before `git rebase`, `git commit --amend`, `git filter-branch`, `git branch -D`, `git push --delete`, `git push` to the main branch, `git checkout -- .`, `git restore .`, and `git worktree remove --force`? (review finding H5)
+- **Options:**
+  1. All of them, except `git branch -D` and `git worktree remove --force`, which Execute runs for spikes. Safer, but more prompts.
+  2. Only commands that change shared history: `filter-branch`, `push --delete`, and pushes to the main branch. Fewer prompts, but local work can still be discarded unprompted.
+- **Recommendation:** Option 1. The user decides.
+- **Answer:**
+- **Affects:** ROOT-R24, ROOT-T3
+
+### ROOT-D28: What Explore may change in an approved root spec
+
+- **Status:** open
+- **Question:** ROOT-AC6 allows only §1, §3, §6.1, and §9, but Explore also changes the status, version, and change log when the root spec is already approved. Which is correct? (review finding M8)
+- **Options:**
+  1. Widen ROOT-AC6 to include the status, version, change log, and `specx/STATUS.md`, which rules 5 and 6 require.
+  2. Keep ROOT-AC6, and stop Explore from writing to an approved root spec. Changes then go through Plan.
+- **Recommendation:** Option 1. The user decides.
+- **Answer:**
+- **Affects:** ROOT-R14, ROOT-AC6, ROOT-T3
+
+### ROOT-D29: AGENTS.md in this repository
+
+- **Status:** open
+- **Question:** `specx/RULES.md` says the rules are also in `AGENTS.md`, but this repository has none. Which is correct?
+- **Options:**
+  1. Add `AGENTS.md` here with the same rules, and check it in CI.
+  2. Keep it for user projects only, and say so in the rules.
+- **Recommendation:** Option 1, so this repository follows its own layout. The user decides.
+- **Answer:**
+- **Affects:** ROOT-T3
+
 ## 10. Tasks
 
 ### ROOT-T1: Align SpecX workflows with agent-skills
@@ -406,17 +451,17 @@ None.
 
 ### ROOT-T3: Phased delivery and visible control
 
-- **Status:** in-progress
+- **Status:** blocked
 - **Type:** feature
 - **Story:** As a SpecX user, I want working code early and a clear view of what the agents do, so that I can steer without answering every question up front.
 - **Milestone:** —
 - **Parent:** None
 - **Depends on:** ROOT-T2
 - **Covers:** ROOT-R2, ROOT-R5, ROOT-R6, ROOT-R10, ROOT-R14, ROOT-R15, ROOT-R17 to R24, ROOT-AC4 to AC10
-- **Decisions:** ROOT-D21, ROOT-D22, ROOT-D23, ROOT-D24, ROOT-D25
+- **Decisions:** ROOT-D21, ROOT-D22, ROOT-D23, ROOT-D24, ROOT-D25, ROOT-D26, ROOT-D27, ROOT-D28, ROOT-D29
 - **Files:** `plugins/specx/`, `.github/workflows/ci.yml`, `.claude-plugin/marketplace.json`, `README.md`, `CLAUDE.md`, `specx/`
 - **Model:** frontier, because this changes the workflow across every command and the rules
-- **Branch / worktree / PR:** `specx/ROOT-T3` / main checkout / —
+- **Branch / worktree / PR:** `specx/ROOT-T3` / main checkout / not opened
 - **Assumptions:** None.
 
 **Steps**
@@ -437,6 +482,7 @@ None.
 - 2026-11-03: the user discussed the design and instructed: "Yes, this is better approach change it and also review the review skills so that is aligned with it".
 - 2026-11-03: implemented in the working tree. Spec version 9 stays `draft` until the user approves this exact version.
 - 2026-11-03: the user approved spec version 9: "Approve and proceed".
+- 2026-11-03: independent review (`specx/_reviews/2026-11-03-ROOT-T3.md`) found 5 high, 8 medium, and 8 low findings. Fixed H1, H2, H4 and the spellings in H5, M1 to M7, L1 to L6, and L8. H3, the rest of H5, M8, and L7 need the user: ROOT-D26 to D29. Blocked until answered. Plugin bumped to 0.5.1; spec version 10 is `draft`.
 
 ## 11. Open questions
 
@@ -456,5 +502,6 @@ None.
 | 7 | 2026-10-29 | Resolve Explore handling of sensitive repository evidence (ROOT-D19) | user |
 | 8 | 2026-10-29 | Resolve three-versus-four command descriptions (ROOT-D20) | user |
 | 9 | 2026-11-03 | Framework, phased delivery, risk-sorted decisions, preview, demo, status, independent review, guard hook (ROOT-D21 to D25) | user |
+| 10 | 2026-11-03 | Fixes from independent review; open decisions ROOT-D26 to D29 | pending |
 
 - 2026-10-29: implemented Explore and synchronized the four-command docs; redaction/read-only review and structural validations passed, including manifest JSON, skill inventory/frontmatter, synchronized rules, docs, and spec/task consistency. No project test suite was run.

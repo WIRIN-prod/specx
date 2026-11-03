@@ -21,7 +21,7 @@ Explore is a conversation for thinking through an idea before formal planning. H
 
 ## Write boundary
 
-During the discussion, Explore changes nothing. It writes only when the user explicitly asks it to write the framework, and then only the root spec plus any SpecX setup that spec needs. It never writes application code, tasks, or child specs, and never invokes `/specx:plan` on the user's behalf.
+During the discussion, Explore changes nothing. It writes only when the user explicitly asks it to write the framework, and then only the root spec, `specx/STATUS.md`, and any SpecX setup those need. It never writes application code, tasks, or child specs, and never invokes `/specx:plan` on the user's behalf.
 
 ## Conclude
 
@@ -44,10 +44,10 @@ The framework is the thin map every phase builds from. A new project records wha
    - Copy the folder `${CLAUDE_PLUGIN_ROOT}/templates/specx/` to `specx/`. In `specx/spec.md`, replace `{{PROJECT_NAME}}` with the project folder name and `{{DATE}}` with today's date.
    - Copy `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md` to `specx/RULES.md`.
    - Put the same rules in the project's `CLAUDE.md` and `AGENTS.md` between `<!-- specx:rules:begin -->` and `<!-- specx:rules:end -->` markers. Create either file if missing, or replace only the content between existing markers.
-2. Show the proposed framework text and write only after the user accepts it. If `specx/spec.md` is `approved`, this is a material change: set it to `draft`, bump its version, and add a change-log row.
+2. Read `specx/RULES.md` completely and follow it for the rest of these steps. Then show the proposed framework text and write only after the user accepts it. If `specx/spec.md` is `approved`, this is a material change: set it to `draft`, bump its version, and add a change-log row.
 3. Write only these parts of `specx/spec.md`, keeping every other section:
    - **§1 Overview:** purpose, target users, in scope, and out of scope, from the conversation.
    - **§3 Current state:** for existing code, at a named commit, with `path:line` evidence: the components, stack with versions, data stores, and what works today. Keep it to one map of the system; Plan details an area only when a phase touches it. For new work: "None: new work".
    - **§6.1 Architecture:** the main components and how they connect, with a Mermaid diagram. For new work, mark anything the user has not chosen as open.
    - **§9 Decisions:** the choices that are expensive to change later: stack, data storage, authentication approach, and hosting. Record each as `answered` only if the user made that choice in this conversation, in their words with the date. Otherwise record it as `open`, with options and trade-offs.
-4. Report what you wrote and what remains open, and suggest `/specx:plan`. Do not invoke it.
+4. Update `specx/STATUS.md` with what is waiting on the user. Report what you wrote and what remains open, and suggest `/specx:plan`. Do not invoke it.

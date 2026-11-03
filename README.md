@@ -29,7 +29,7 @@ Start a new session or run `/reload-plugins`. To update later: `claude plugin ma
 
 ## Start
 
-There is no separate setup step. Open your project in Claude Code. Use `/specx:explore` to discuss an idea and ask it to write the framework, then run `/specx:plan`, `/specx:execute`, and `/specx:plan` again for the next phase. The first command that writes in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md`. It makes no decisions and overwrites nothing.
+There is no separate setup step. Open your project in Claude Code. Use `/specx:explore` to discuss an idea and ask it to write the framework, then run `/specx:plan`, `/specx:execute`, and `/specx:plan` again for the next phase. The first command that writes in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md` and `AGENTS.md`. It makes no decisions and overwrites nothing.
 
 `/specx:execute` needs `gh` installed and signed in, and a git remote. It asks you once for the main branch, the worktree location (next to the repo by default), how to commit progress updates, and how large pull requests should be after the first phase, and records them as decisions in `specx/spec.md`.
 
@@ -56,7 +56,7 @@ In the Ongoing stage, work is single items: a `feature` with a user story, a `bu
 
 ## Rules every agent follows
 
-The same rules are in `specx/RULES.md` and the project's `CLAUDE.md`, and every command reads them first:
+The same rules are in `specx/RULES.md` and the project's `CLAUDE.md` and `AGENTS.md`, and every command reads them first:
 
 1. **You make the decisions, sorted by risk.** Big or hard-to-reverse choices are asked first. Small visible ones, such as theme and fonts, come together on one defaults sheet. Agents choose only invisible, reversible implementation details, and log them for you to overturn.
 2. **You confirm the source of truth.** If docs and code disagree, the agent shows you both and asks which is correct.
@@ -118,7 +118,7 @@ How tasks run:
 
 ## Upgrading
 
-**From 0.4:** the next command notices the rules changed and asks before replacing them. It adds `STATUS.md`. Existing specs keep working; new tasks gain `Type` and `Milestone`, and a `TASKS.md` table without those columns needs them added.
+**From 0.4:** the next `plan`, `execute`, or `review` notices the rules changed and asks before replacing them. It adds `STATUS.md`. Existing specs keep working; new tasks gain `Type` and `Milestone`, and a `TASKS.md` table without those columns needs them added.
 
 **From 0.2:** run `/specx:plan`. It notices the old `specs/`, `decisions/`, and `tasks/` folders and offers to convert them into the spec tree, keeping every decision's answer and date. Nothing is deleted until you approve.
 

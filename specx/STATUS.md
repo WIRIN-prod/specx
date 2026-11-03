@@ -4,11 +4,12 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-ROOT-T3 (phased delivery and visible control) is committed on `specx/ROOT-T3`, in independent review.
+ROOT-T3 (phased delivery and visible control) is on `specx/ROOT-T3`, blocked on four decisions. No PR is open.
 
 ## Waiting on you
 
-Nothing right now.
+- Answer ROOT-D26 to D29 in [spec.md](spec.md).
+- Approve root spec version 10.
 
 ## Roadmap
 
@@ -16,7 +17,7 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 
 | Stage | Phase | Milestone | Progress | Version |
 |---|---|---|---|---|
-| — | — | ROOT-T3 | built, not yet reviewed by an independent agent | 0.5.0 |
+| — | — | ROOT-T3 | reviewed; high findings H3 and part of H5 open | 0.5.1 |
 
 ## Assumptions to check
 
@@ -24,4 +25,4 @@ None logged.
 
 ## Latest review
 
-None for ROOT-T3.
+[2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)

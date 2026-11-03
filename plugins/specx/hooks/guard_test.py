@@ -18,8 +18,8 @@ def run(payload):
     return json.loads(done.stdout)["hookSpecificOutput"]["permissionDecision"]
 
 
-def edit(path):
-    return run(json.dumps({"tool_name": "Edit", "tool_input": {"file_path": path}}))
+def edit(path, cwd=None):
+    return run(json.dumps({"tool_name": "Edit", "tool_input": {"file_path": path}, "cwd": cwd}))
 
 
 def bash(command, cwd):
@@ -57,6 +57,10 @@ with tempfile.TemporaryDirectory() as root:
     assert edit(os.path.join(tree, "specx", "spec.md")) == "deny", "specx is not in scope"
     assert edit(os.path.join(tree, "docs", "b.md")) == "deny", "sibling file"
     assert edit(os.path.join(repo, "other.py")) is None, "main checkout has no scope"
+    assert edit(os.path.join(repo, "other.py"), tree) == "deny", "leaving the worktree"
+    assert edit("/tmp/specx-guard-outside", tree) == "deny", "outside any repository"
+    assert edit("src/a.py", tree) is None, "relative path inside scope"
+    assert edit(os.path.join(git_dir, "specx-scope"), tree) == "deny", "own scope file"
 
     for command in (
         "gh pr merge 3 --merge",
@@ -65,11 +69,24 @@ with tempfile.TemporaryDirectory() as root:
         "git reset --hard HEAD~1",
         "git clean -fd",
         "git stash",
+        "git -C /x push --force",
+        "git -C /x reset --hard",
+        "git -c a=b push -f origin x",
+        "git push -fu origin x",
+        "git push -uf origin x",
+        "git push origin +x",
+        "git reset -q --hard",
+        "git push origin x \\\n  --force",
+        "gh -R a/b pr merge 3",
+        "gh api -X PUT repos/a/b/pulls/3/merge",
     ):
         assert bash(command, repo) == "ask", command
     assert bash("git push origin specx/T1", repo) is None, "ordinary push"
     assert bash("git status", repo) is None, "ordinary command"
+    for command in ("git stash list", "git stash show", "git clean -n", "git push -u origin x"):
+        assert bash(command, repo) is None, command
     assert bash("gh pr merge 3 --merge", root) is None, "not a SpecX project"
 
 assert run("not json") is None, "bad input does not block work"
+assert run("[1]") is None, "wrong shape does not block work"
 print("guard ok")

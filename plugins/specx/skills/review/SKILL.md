@@ -10,7 +10,7 @@ Follow the rules in `specx/RULES.md` for everything below (step 0). Review never
 There are two modes:
 
 - **Full review:** the user runs `/specx:review`. Follow every step below.
-- **Milestone review:** Execute starts you as a new subagent after a milestone is built. You never built this work, and you do not rely on the builder's claims. Skip step 0's setup and step 1's questions: your scope is the diff range you were given, against the specs you were given. Do steps 2 to 4 and then step 5's milestone report.
+- **Milestone review:** Execute starts you as a new subagent after a milestone or Ongoing item is built. You never built this work, and you do not rely on the builder's claims. Skip step 0's setup and step 1's questions, but read the `specx/RULES.md` you were given. Your scope is the diff range you were given, against the specs you were given. Do steps 2 to 4 and then step 5's milestone report.
 
 ## 0. Set up and read the rules
 
@@ -18,7 +18,7 @@ There are two modes:
    - Copy the folder `${CLAUDE_PLUGIN_ROOT}/templates/specx/` to `specx/`. In `specx/spec.md`, replace `{{PROJECT_NAME}}` with the project folder name and `{{DATE}}` with today's date.
    - Copy `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md` to `specx/RULES.md`.
    - Put the same rules in the project's `CLAUDE.md` and `AGENTS.md` between `<!-- specx:rules:begin -->` and `<!-- specx:rules:end -->` markers. Create either file if missing, or replace only the content between existing markers.
-2. If `specx/RULES.md` differs from `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md`, tell the user the rules have changed and ask before replacing `specx/RULES.md` and the managed sections in `CLAUDE.md` and `AGENTS.md`.
+2. If `specx/RULES.md` differs from `${CLAUDE_PLUGIN_ROOT}/templates/RULES.md`, tell the user the rules have changed and ask before replacing `specx/RULES.md` and the managed sections in `CLAUDE.md` and `AGENTS.md`. When replaced, also add any missing scaffold files (`spec.md`, `TASKS.md`, `STATUS.md`, `_templates/spec.md`, `_reviews/`) without overwriting existing ones.
 3. Read `specx/RULES.md` completely and follow it for everything below.
 
 ## 1. Get context

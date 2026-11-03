@@ -22,12 +22,12 @@ Plan is frontier-model work, one phase at a time. Everything planned must be spe
 ## 1. Get context
 
 1. Read `specx/spec.md`, `specx/TASKS.md`, `specx/STATUS.md`, `specx/_templates/spec.md`, and every existing `spec.md` in the area you are planning, with its full context chain.
-2. Work out what is being asked:
+2. If the framework is missing (root spec §1 is empty), ask the user for the idea and fill the same parts Explore writes: §1, §3, §6.1, and the expensive-to-change decisions in §9. Suggest `/specx:explore` if the idea is still vague.
+3. If the outcome or intended user is unclear, restate the current understanding as intended user, outcome, success criteria, binding constraints, and non-goals. Ask the user to correct or confirm it. Skip this extra confirmation when the request is already clear.
+4. Work out what is being asked:
    - **No roadmap yet:** go to step 2.
    - **Next phase:** the roadmap exists and the user wants the next phase, or names one. Go to step 3.
    - **A single item:** one feature, bug, chore, or spike. Go to step 7.
-3. If the framework is missing (root spec §1 is empty), ask the user for the idea and fill the same parts Explore writes: §1, §3, §6.1, and the expensive-to-change decisions in §9. Suggest `/specx:explore` if the idea is still vague.
-4. If the outcome or intended user is unclear, restate the current understanding as intended user, outcome, success criteria, binding constraints, and non-goals. Ask the user to correct or confirm it. Skip this extra confirmation when the request is already clear.
 
 ## 2. Propose the roadmap
 
@@ -107,7 +107,7 @@ Before showing a spec to the user, check it against every item. Fix what fails, 
 - [ ] Every entity has every field with type, nullability, default, and indexes; every migration has a rollback.
 - [ ] Every requirement is measurable and has an acceptance criterion; every criterion maps to a test level.
 - [ ] No vague words remain: "appropriate", "as needed", "etc.", "handle errors", "fast", "secure", "TBD".
-- [ ] It reads as a specification, not code: no file paths, function signatures, or code, except where the spec describes current state.
+- [ ] It reads as a specification, not code: no file paths, function signatures, or code, except in Current state and in each task's `Files`.
 - [ ] An implementer would have to choose nothing except implementation details (rule 1). If not, list the questions as open decisions.
 
 Show the user the spec, its open decisions, and the result of this check, and ask for approval. Set `status: approved` only on specs the user approved, and record the version, date, and approver in the change log.
@@ -120,7 +120,7 @@ Write the phase's milestones and tasks in the **Tasks** section of its spec, and
 - **Milestone**: the milestone it belongs to, or `—` for an Ongoing item.
 - **One concern**, usually a handful of files.
 - **Vertical and self-contained**: prefer the smallest end-to-end behavior that can be independently verified across relevant components. Avoid splitting all storage, API, and UI work into horizontal layers unless the dependency graph requires it. Steps say what to build and which design subsections it implements, without prescribing code; include covered requirements and acceptance criteria, tests, and exact verification commands.
-- **Files**: your estimate of where the work lands, from the existing codebase. It exists so parallel tasks do not collide and is the scope the guard hook enforces; the implementer chooses the exact code structure within it.
+- **Files**: the paths the task may change, never empty. List folders when the exact files are not known. This stops parallel tasks colliding and is the scope the guard hook enforces, so include test paths; the implementer chooses the code structure within it.
 - **Parent**: every task names the task in the parent spec it rolls up to, or `None`. A parent task is done only when all its child tasks and its own steps are done.
 - **Depends on** lists only real dependencies: the task needs code or an interface from another task. Tasks without a dependency between them must not share files; if they would, add a dependency so they run in order.
 - Order tasks by their actual dependency graph and expose independent slices for parallel work.

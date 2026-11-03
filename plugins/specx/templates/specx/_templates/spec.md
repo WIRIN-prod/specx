@@ -297,8 +297,8 @@ Depends on: tasks that must be merged first. Tasks without a dependency between
 them must not share files.
 Steps say what to build and which design subsections it implements, clearly
 enough that nothing has to be guessed. They do not prescribe code. Files is the
-planner's estimate of where the work lands, from the existing codebase, so
-parallel tasks do not collide. Verification lists the tests to write and the
+paths the task may change, never empty, including tests; parallel tasks use it
+to avoid collisions and the guard hook enforces it. Verification lists the tests to write and the
 commands to run.
 -->
 
@@ -312,7 +312,7 @@ commands to run.
 - **Depends on:** None
 - **Covers:** AUTH.LOGIN-R1, AUTH.LOGIN-R2, AUTH.LOGIN-AC1
 - **Decisions:** AUTH.LOGIN-D1
-- **Files:** `src/server/auth/` <!-- the planner's estimate, from the existing codebase -->
+- **Files:** `src/server/auth/`, `tests/auth/` <!-- the paths this task may change; never empty -->
 - **Model:** small, because the contract, rules, and errors are fully specified in §6.3–6.7
 - **Branch / worktree / PR:** —
 - **Assumptions:** None yet.
