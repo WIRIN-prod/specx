@@ -58,7 +58,7 @@ None (root).
 | ROOT-R16 | Functional | THE SYSTEM SHALL offer exactly these four commands: `/specx:explore`, `/specx:plan`, `/specx:execute`, and `/specx:review`. | ROOT-D15 |
 | ROOT-R17 | Functional | WHEN planning, THE SYSTEM SHALL propose a roadmap of stages, phases, and milestones for the user to edit, and write specs and tasks for the next phase only. | ROOT-D21, ROOT-D22 |
 | ROOT-R18 | Functional | THE SYSTEM SHALL type every task as `feature`, `bug`, `chore`, or `spike`, each with its own short record, and SHALL add a single item without a full planning pass. | ROOT-D24 |
-| ROOT-R19 | Functional | THE SYSTEM SHALL ship the first phase as one pull request and each Ongoing item as its own, and ask the user to choose the pull request size for later phases. | ROOT-D23 |
+| ROOT-R19 | Functional | THE SYSTEM SHALL ship the first phase as one pull request and each Ongoing item except a spike as its own, and ask the user to choose the pull request size for later phases. | ROOT-D23 |
 | ROOT-R20 | Functional | WHILE building, THE SYSTEM SHALL let agents choose implementation details and SHALL log each non-structural choice as an assumption the user can overturn. | ROOT-D25 |
 | ROOT-R21 | Functional | WHEN a milestone or item starts, THE SYSTEM SHALL show a short preview, and WHEN a milestone is built, THE SYSTEM SHALL show a demo with run steps, evidence, and assumptions, and wait for the user. | ROOT-D25 |
 | ROOT-R22 | Functional | THE SYSTEM SHALL keep `specx/STATUS.md` current with what is happening, what is waiting on the user, and the assumptions made. | ROOT-D25 |
@@ -135,7 +135,7 @@ The plugin ships skills, templates, and a guard hook. Each planning or execution
 
 **Delivery model:** Explore writes the framework: a new project's intended system, or an existing codebase's current one. Plan proposes stages (default Core, Essentials, Production, Ongoing), feature-sized phases inside them, and milestones inside each phase; the user edits this roadmap, which lives in the root Children table. Plan writes one spec per phase, only for the next phase, with big decisions asked individually and small ones on a single defaults sheet. In Ongoing, single features, bugs, chores, and spikes are added to the spec they belong to. Execute previews a milestone or item, builds each task in its own worktree and subagent on a delivery branch, verifies it, has an independent agent review it, demos it, and opens a pull request of the size the project chose.
 
-**View and control:** `specx/STATUS.md` shows what is happening, what waits on the user, the roadmap, and logged assumptions. The guard hook runs on `PreToolUse` when Python 3 is available. It reads a scope file in the task worktree's git directory, denies an agent editing that file, and asks a person to confirm merges, force pushes, branch deletions on the remote, pushes to the main branch, rebase, amend, filter-branch, hard reset, clean, stash, and discarding changes with checkout or restore, in projects that have `specx/RULES.md`. It sees file tools and command text only, catches edits outside a worktree only when the hook's cwd is that worktree, does not follow `cd` inside a command, and does nothing if Python 3 is missing, so the rules remain the primary control.
+**View and control:** `specx/STATUS.md` shows what is happening, what waits on the user, the roadmap, and logged assumptions. The guard hook runs on `PreToolUse` when Python 3 is available. It reads a scope file in the task worktree's git directory, denies an agent editing that file, and asks a person to confirm merges, force pushes, branch deletions on the remote, mirror pushes, pushes naming the main branch, rebase and `pull --rebase`, amend, filter-branch, hard reset, clean, stash, and discarding changes with checkout, switch, or restore, in projects that have `specx/RULES.md`. It sees file tools and command text only, catches edits outside a worktree only when the hook's cwd is that worktree, does not follow `cd` inside a command, and does nothing if Python 3 is missing, so the rules remain the primary control.
 
 The workflow is compared with Addy Osmani's [agent-skills](https://github.com/addyosmani/agent-skills) reference pack:
 
@@ -484,6 +484,7 @@ None.
 - 2026-11-03: the user approved spec version 9: "Approve and proceed".
 - 2026-11-03: independent review (`specx/_reviews/2026-11-03-ROOT-T3.md`) found 5 high, 8 medium, and 8 low findings. Fixed H1, H2, H4 and the spellings in H5, M1 to M7, L1 to L6, and L8. H3, the rest of H5, M8, and L7 need the user: ROOT-D26 to D29. Blocked until answered. Plugin bumped to 0.5.1; spec version 10 is `draft`.
 - 2026-11-05: the user answered ROOT-D26 to D29: "A,a,a,a". Applied all four; resumed. Spec version 10 awaits approval.
+- 2026-11-05: second independent review (`specx/_reviews/2026-11-05-ROOT-T3.md`) found no critical or high findings, 3 medium and 6 low. Fixed all except L6 (quoted text prompts), a known guard limit.
 
 ## 11. Open questions
 

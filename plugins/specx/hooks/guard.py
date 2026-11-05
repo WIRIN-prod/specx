@@ -4,7 +4,8 @@
 Denies edits outside a task's scope file, and makes a person confirm merges and
 history-destroying git commands.
 
-shortcut: it sees file tools and the Bash command text, not what a command does,
+shortcut: it sees file tools and the Bash command text, not what a command does
+(so a bare `git push` to a branch tracking main, or quoted text, is misjudged),
 so a shell redirect or script can still edit outside scope, and a `cd` inside a
 command is not followed. It reads the worktree from the hook's cwd, so an edit
 outside the worktree is caught only when cwd is that worktree. Upgrade to a
@@ -27,11 +28,15 @@ RISKY_COMMAND = re.compile(
     r"|" + GIT + r"stash\b(?!\s+(list|show)\b)"
     r"|" + GIT + r"push\b[^|;&]*?\s(--delete\b|-d\b|:\S+)"
     # shortcut: guesses the main branch is `main` or `master`; read it from specx/spec.md if others appear.
-    r"|" + GIT + r"push\b[^|;&]*?\s(\S*:)?(main|master)(\s|$)"
+    r"|" + GIT + r"push\b[^|;&]*?\s(\S*:)?(refs/heads/)?(main|master)(\s|$)"
+    r"|" + GIT + r"push\b[^|;&]*?\s--mirror\b"
+    r"|" + GIT + r"pull\b[^|;&\n]*\s(--rebase|-r)\b"
     r"|" + GIT + r"(rebase|filter-branch)\b"
     r"|" + GIT + r"commit\b[^|;&\n]*\s--amend\b"
-    r"|" + GIT + r"checkout\b[^|;&\n]*\s--(\s|$)"
+    r"|" + GIT + r"checkout\b[^|;&\n]*\s(--|\.|-f|--force)(\s|$)"
+    r"|" + GIT + r"switch\b[^|;&\n]*\s(--discard-changes|-f|--force)\b"
     r"|" + GIT + r"restore\b(?![^|;&\n]*\s(--staged|-S)\b)"
+    r"|" + GIT + r"restore\b[^|;&\n]*\s(--worktree|-W)\b"
 )
 
 

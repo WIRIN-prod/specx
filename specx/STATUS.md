@@ -4,11 +4,11 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-ROOT-T3 (phased delivery and visible control) is on `specx/ROOT-T3`, with ROOT-D26 to D29 applied, in a second independent review. No PR is open.
+ROOT-T3 (phased delivery and visible control) is on `specx/ROOT-T3`, with ROOT-D26 to D29 applied and both independent reviews addressed. No PR is open.
 
 ## Waiting on you
 
-- Approve root spec version 10, after the second review.
+- Approve root spec version 10.
 
 ## Roadmap
 
@@ -16,7 +16,7 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 
 | Stage | Phase | Milestone | Progress | Version |
 |---|---|---|---|---|
-| — | — | ROOT-T3 | first review fixed; second review running | 0.5.1 |
+| — | — | ROOT-T3 | two reviews addressed; awaiting spec approval | 0.5.1 |
 
 ## Assumptions to check
 
@@ -24,4 +24,4 @@ None logged.
 
 ## Latest review
 
-[2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)
+[2026-11-05-ROOT-T3.md](_reviews/2026-11-05-ROOT-T3.md), after [2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)

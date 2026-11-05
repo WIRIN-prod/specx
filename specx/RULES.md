@@ -46,7 +46,7 @@ Agents never choose on the user's behalf, except for implementation details. Eve
 - Specs: `draft` → `approved` only when the user approves that exact spec version.
 - Tasks: `draft` → `todo` when the user approves the task list; `todo` → `in-progress` only when the user approves the preview of that milestone or item.
 - Milestones: each ends with a demo. The next one starts only after the user chooses to continue.
-- Review: an agent never reviews its own work. An independent agent reviews each milestone before its demo.
+- Review: an agent never reviews its own work. An independent agent reviews each milestone and Ongoing item before its demo. If the host has no subagents, the demo must say the review was not independent.
 - Merge into the main branch: only through a pull request, and only after the user approves that pull request.
 - Any material change after approval needs approval again, and bumps the spec's version.
 

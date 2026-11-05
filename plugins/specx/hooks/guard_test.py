@@ -88,6 +88,15 @@ with tempfile.TemporaryDirectory() as root:
         "git commit --amend",
         "git checkout -- .",
         "git restore .",
+        "git push origin HEAD:refs/heads/main",
+        "git push origin x:refs/heads/master",
+        "git push --mirror origin",
+        "git pull --rebase",
+        "git checkout .",
+        "git checkout HEAD .",
+        "git checkout -f main",
+        "git switch --discard-changes main",
+        "git restore --source=x --staged --worktree f",
     ):
         assert bash(command, repo) == "ask", command
     assert bash("git push origin specx/T1", repo) is None, "ordinary push"
@@ -103,6 +112,14 @@ with tempfile.TemporaryDirectory() as root:
         "git branch -D specx/T1",
         "git worktree remove --force ../t",
         "git commit -m amend",
+        "git switch --no-track -c specx/delivery-M1",
+        "git pull --ff-only",
+        "git branch -d specx/delivery-M1",
+        "git merge --no-ff origin/main",
+        "git merge --abort",
+        "git push -u origin specx/delivery-M1",
+        "gh pr create --base main --head specx/delivery-M1",
+        "git checkout specx/main-x",
     ):
         assert bash(command, repo) is None, command
     assert bash("gh pr merge 3 --merge", root) is None, "not a SpecX project"

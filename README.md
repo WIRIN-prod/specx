@@ -111,7 +111,7 @@ Before a spec is shown to you for approval, `/specx:plan` runs a build-ready che
 
 How tasks run:
 
-- **Delivery**: the first phase is one pull request, each Ongoing item gets its own, and you choose the size for later phases.
+- **Delivery**: the first phase is one pull request, each Ongoing item except a spike gets its own, and you choose the size for later phases.
 - **Ready**: a task is ready when it is approved (`todo`), its spec is approved, all its dependencies are `done`, and all its decisions are answered.
 - **Parallel**: ready tasks that share no files and do not depend on each other can run at the same time, one subagent each.
 - **Blocked**: if a task hits a new decision, that task and every related task pause: its dependents, unfinished dependencies, parent and child tasks, and tasks in the same spec or sharing its decisions. Unrelated tasks continue.
@@ -145,6 +145,6 @@ plugins/specx/templates/            RULES.md and the specx/ scaffold copied into
 specx/                              this repository's own SpecX record
 ```
 
-`CLAUDE.md` and `specx/RULES.md` in this repository must match `plugins/specx/templates/RULES.md`; CI checks it.
+`CLAUDE.md`, `AGENTS.md`, and `specx/RULES.md` in this repository must match `plugins/specx/templates/RULES.md`; CI checks it.
 
 MIT License. See [LICENSE](LICENSE).

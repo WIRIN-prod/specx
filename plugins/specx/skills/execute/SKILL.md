@@ -33,7 +33,7 @@ These are project-wide decisions in `specx/spec.md`. If they are not answered ye
 
 - **Main branch**: the branch pull requests target. Ask; do not guess, even if `main` exists.
 - **Worktree location**: worktrees go next to the repository by default, as `<parent folder>/<repo>-<task-id>`. Ask whether the user wants a different location.
-- **Pull request size after the first phase**: the first phase is always one pull request, and each Ongoing item gets its own. For later phases the user chooses one of:
+- **Pull request size after the first phase**: the first phase is always one pull request, and each Ongoing item except a spike gets its own. For later phases the user chooses one of:
   1. One per phase: fewer reviews, but each is large.
   2. One per milestone: smaller reviews that merge sooner, but more approvals.
   3. Mixed by phase: the user picks 1 or 2 for each phase when it starts.
@@ -46,20 +46,20 @@ A **delivery** is the work one pull request carries, following that decision. Me
 
 ## 3. Preview and approve
 
-Before building a milestone or Ongoing item, record the delivery branch's current commit in each task's log as its start point, then show a preview of about five lines:
+Before building a milestone or Ongoing item, show a preview of about five lines:
 
 - What you will build, in plain words.
 - What the user will be able to do when it is finished.
 - The tasks, and which run in parallel.
 - Anything risky, or that you expect to log as an assumption.
 
-The user can approve, redirect, or reorder before any code exists. A redirect that changes a spec goes through `/specx:plan`. Only work the user explicitly approves proceeds. Record the approval (date and the user's words) in each task's log, and update `specx/STATUS.md` with what is starting.
+The user can approve, redirect, or reorder before any code exists. A redirect that changes a spec goes through `/specx:plan`. Only work the user explicitly approves proceeds. Record the approval (date and the user's words) in each task's log, and update `specx/STATUS.md` with what is starting. Once the delivery branch exists (step 4.1), record its current commit in each task's log as the start point; undo and review use it.
 
 ## 4. One worktree and one subagent per task
 
 You, the main session, own `specx/`: you update task statuses, logs, assumptions, `TASKS.md`, and `STATUS.md`. Subagents never edit `specx/`.
 
-1. If this delivery has no branch yet, check that the main checkout is on the main branch, then run `git fetch` and `git switch -c specx/delivery-<id> origin/<main branch>` there (or the local branch when there is no remote-tracking branch). Uncommitted changes come with it. If the switch refuses, stop and show the user why. Then commit only `specx/` (`git add specx/`) as the delivery's first commit, naming the specs and tasks it carries. The user's other uncommitted work stays uncommitted. `<id>` is the phase, milestone, or task ID the pull request covers.
+1. If this delivery has no branch yet, check that the main checkout is on the main branch, then run `git fetch` and `git switch --no-track -c specx/delivery-<id>` there. Uncommitted changes come with it. Commit only `specx/` (`git add specx/`) as the delivery's first commit, naming the specs and tasks it carries; the user's other uncommitted work stays uncommitted. Then run `git merge --no-ff origin/<main branch>` (skip it when there is no remote-tracking branch) so the delivery starts from the latest main branch. If the merge conflicts, run `git merge --abort` and show the user the conflicting files; do not resolve them yourself. `<id>` is the phase, milestone, or task ID the pull request covers.
 
 For each approved task whose dependencies are done:
 
@@ -114,7 +114,7 @@ If the delivery still has milestones left, go back to step 3 for the next one.
 
 ## 9. Open the pull request
 
-1. Set the delivery's tasks to `in-review`, and update `TASKS.md` and `STATUS.md`. Commit `specx/` and anything else left for this delivery, with a message that names the task or milestone IDs. Push `specx/delivery-<id>`.
+1. Set the delivery's tasks to `in-review`, and update `TASKS.md` and `STATUS.md`. Commit `specx/` and any remaining paths inside the delivery's task `Files`, nothing else, with a message that names the task or milestone IDs. Run `git push -u origin specx/delivery-<id>`; never a bare `git push`, which may target the main branch.
 2. Run `gh pr create --base <main branch> --head specx/delivery-<id>`. The body states the delivery, its spec, the milestones, tasks, requirements, and acceptance criteria covered, what changed, the tests run and their results, the review results, the assumptions, and anything not checked.
 3. Show the user the pull request link. It is recorded in `specx/` after the merge.
 
