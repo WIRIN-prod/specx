@@ -1,7 +1,7 @@
 ---
 id: ROOT
 title: SpecX
-status: draft
+status: approved
 version: 10
 parent: none
 depends_on: []
@@ -451,7 +451,7 @@ None.
 
 ### ROOT-T3: Phased delivery and visible control
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** feature
 - **Story:** As a SpecX user, I want working code early and a clear view of what the agents do, so that I can steer without answering every question up front.
 - **Milestone:** —
@@ -485,6 +485,7 @@ None.
 - 2026-11-03: independent review (`specx/_reviews/2026-11-03-ROOT-T3.md`) found 5 high, 8 medium, and 8 low findings. Fixed H1, H2, H4 and the spellings in H5, M1 to M7, L1 to L6, and L8. H3, the rest of H5, M8, and L7 need the user: ROOT-D26 to D29. Blocked until answered. Plugin bumped to 0.5.1; spec version 10 is `draft`.
 - 2026-11-05: the user answered ROOT-D26 to D29: "A,a,a,a". Applied all four; resumed. Spec version 10 awaits approval.
 - 2026-11-05: second independent review (`specx/_reviews/2026-11-05-ROOT-T3.md`) found no critical or high findings, 3 medium and 6 low. Fixed all except L6 (quoted text prompts), a known guard limit.
+- 2026-11-05: the user approved spec version 10: "Yes". Pushed `specx/ROOT-T3` and opened a pull request; the link is recorded after merge.
 
 ## 11. Open questions
 
@@ -504,6 +505,6 @@ None.
 | 7 | 2026-10-29 | Resolve Explore handling of sensitive repository evidence (ROOT-D19) | user |
 | 8 | 2026-10-29 | Resolve three-versus-four command descriptions (ROOT-D20) | user |
 | 9 | 2026-11-03 | Framework, phased delivery, risk-sorted decisions, preview, demo, status, independent review, guard hook (ROOT-D21 to D25) | user |
-| 10 | 2026-11-05 | Fixes from independent review; ROOT-D26 to D29 | pending |
+| 10 | 2026-11-05 | Fixes from independent review; ROOT-D26 to D29 | user |
 
 - 2026-10-29: implemented Explore and synchronized the four-command docs; redaction/read-only review and structural validations passed, including manifest JSON, skill inventory/frontmatter, synchronized rules, docs, and spec/task consistency. No project test suite was run.
