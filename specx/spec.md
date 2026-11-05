@@ -2,7 +2,7 @@
 id: ROOT
 title: SpecX
 status: approved
-version: 8
+version: 10
 parent: none
 depends_on: []
 ---
@@ -13,7 +13,7 @@ The root spec for SpecX itself. The format is in [_templates/spec.md](../plugins
 
 ## 1. Overview
 
-**Purpose:** A Claude Code plugin that lets a user explore ideas, plan, execute, and review software with AI agents, where the user makes every decision and agents only execute.
+**Purpose:** A Claude Code plugin that lets a user explore ideas, plan, execute, and review software with AI agents, where the user decides, and agents execute and log the implementation details they choose.
 
 **In scope:**
 
@@ -31,7 +31,8 @@ None (root).
 ## 3. Current state
 
 - Plugin manifest: `plugins/specx/.claude-plugin/plugin.json`
-- Skills: `plugins/specx/skills/{plan,execute,review}/SKILL.md`
+- Skills: `plugins/specx/skills/{explore,plan,execute,review}/SKILL.md`
+- Guard hook and its self-check: `plugins/specx/hooks/`
 - Rules and scaffold: `plugins/specx/templates/`
 - Cleanup for 0.1 projects: `scripts/upgrade-from-0.1.sh`
 
@@ -40,21 +41,29 @@ None (root).
 | ID | Type | Requirement | Source |
 |---|---|---|---|
 | ROOT-R1 | Functional | THE SYSTEM SHALL offer the existing `/specx:plan`, `/specx:execute`, and `/specx:review` commands. | ROOT-D1 |
-| ROOT-R2 | Functional | WHEN a choice is needed, THE SYSTEM SHALL record it as an open decision and ask the user instead of choosing. | ROOT-D9 |
+| ROOT-R2 | Functional | WHEN a big or small choice is needed, THE SYSTEM SHALL ask the user instead of choosing: big choices as open decisions, and small choices together on one defaults sheet. | ROOT-D9, ROOT-D25 |
 | ROOT-R3 | Functional | IF docs and code disagree, THEN THE SYSTEM SHALL ask the user which is the source of truth. | ROOT-D9 |
 | ROOT-R4 | Functional | THE SYSTEM SHALL keep `specx/TASKS.md` in step with every task in the spec tree. | ROOT-D9 |
-| ROOT-R5 | Functional | WHEN executing, THE SYSTEM SHALL build each approved task in its own worktree and subagent, and merge only by pull request with a merge commit after the user approves. | ROOT-D2, D4, D5 |
-| ROOT-R6 | Security | WHEN executing, THE SYSTEM SHALL run a strict model-run security review before opening a pull request. | ROOT-D3 |
+| ROOT-R5 | Functional | WHEN executing, THE SYSTEM SHALL build each approved task in its own worktree and subagent, collect tasks on a delivery branch checked out in the main checkout that also carries every `specx/` change, and merge into the main branch only by pull request with a merge commit after the user approves. | ROOT-D2, D4, D5, D23, D26 |
+| ROOT-R6 | Security | WHEN executing, THE SYSTEM SHALL run a strict model-run security review, by an agent that did not build the work, before opening a pull request. | ROOT-D3, ROOT-D25 |
 | ROOT-R7 | Functional | IF a task needs a new decision, THEN THE SYSTEM SHALL stop that task and every related task, and let unrelated tasks continue. | ROOT-D6 |
 | ROOT-R8 | Functional | THE SYSTEM SHALL write specs as one standard-format `spec.md` per folder, with decisions and tasks inside, in a parent/child tree where parents hold what children share. | ROOT-D11 |
-| ROOT-R10 | Functional | THE SYSTEM SHALL write each spec as a complete specification and technical plan, not code (architecture, technology with versions, interface contracts and errors, data model, flows, state, failures, security, configuration, observability, performance, testing, rollout) that passes the build-ready check before it is shown for approval. | ROOT-D12 |
-| ROOT-R9 | Functional | WHEN `/specx:plan`, `/specx:execute`, or `/specx:review` first runs in a project, THE SYSTEM SHALL create the `specx/` layout and rules without a separate CLI. | ROOT-D10 |
+| ROOT-R10 | Functional | THE SYSTEM SHALL write each spec, for the next phase only, as a complete specification and technical plan, not code (architecture, technology with versions, interface contracts and errors, data model, flows, state, failures, security, configuration, observability, performance, testing, rollout) that passes the build-ready check before it is shown for approval. | ROOT-D12, ROOT-D21 |
+| ROOT-R9 | Functional | WHEN `/specx:plan`, `/specx:execute`, or `/specx:review` first runs in a project, or Explore first writes a framework, THE SYSTEM SHALL create the `specx/` layout and rules without a separate CLI. | ROOT-D10 |
 | ROOT-R11 | Process | THE SYSTEM SHALL enforce only approved quality criteria and commands, record whether each failure blocks or warns, and require user approval before weakening an existing gate. | ROOT-D14 |
 | ROOT-R12 | Functional | WHEN the user invokes `/specx:explore`, THE SYSTEM SHALL support a flexible back-and-forth ideation discussion that helps the user and model understand the problem, desired outcome, and possible directions. | ROOT-D15, ROOT-D17 |
 | ROOT-R13 | Functional | WHEN an Explore discussion concerns an existing project, THE SYSTEM SHALL inspect relevant repository code, documentation, the applicable SpecX spec context chain, and `specx/TASKS.md` read-only, and cite factual repository claims as `path:line`, never reproducing secret values or unnecessary personal data in Explore responses, including quotations and summaries. | ROOT-D18 |
-| ROOT-R14 | Process | DURING Explore, THE SYSTEM SHALL NOT create or modify project files, specs, decisions, or tasks. | ROOT-D16 |
-| ROOT-R15 | Functional | WHEN the user indicates an Explore discussion is ready to conclude, THE SYSTEM SHALL recap the idea, target users, desired outcomes, user-stated choices, constraints, non-goals, available repository evidence, and unresolved questions, then suggest `/specx:plan` without invoking it. | ROOT-D16 |
+| ROOT-R14 | Process | DURING Explore, THE SYSTEM SHALL NOT create or modify project files, specs, decisions, or tasks unless the user asks it to write the framework, and then SHALL write only the framework parts of the root spec, its status, version, and change log, `specx/STATUS.md`, and any setup those need. | ROOT-D21, ROOT-D28 |
+| ROOT-R15 | Functional | WHEN the user indicates an Explore discussion is ready to conclude, THE SYSTEM SHALL recap the idea, target users, desired outcomes, user-stated choices, constraints, non-goals, available repository evidence, and unresolved questions, ask whether to write the framework, then suggest `/specx:plan` without invoking it. | ROOT-D21 |
 | ROOT-R16 | Functional | THE SYSTEM SHALL offer exactly these four commands: `/specx:explore`, `/specx:plan`, `/specx:execute`, and `/specx:review`. | ROOT-D15 |
+| ROOT-R17 | Functional | WHEN planning, THE SYSTEM SHALL propose a roadmap of stages, phases, and milestones for the user to edit, and write specs and tasks for the next phase only. | ROOT-D21, ROOT-D22 |
+| ROOT-R18 | Functional | THE SYSTEM SHALL type every task as `feature`, `bug`, `chore`, or `spike`, each with its own short record, and SHALL add a single item without a full planning pass. | ROOT-D24 |
+| ROOT-R19 | Functional | THE SYSTEM SHALL ship the first phase as one pull request and each Ongoing item except a spike as its own, and ask the user to choose the pull request size for later phases. | ROOT-D23 |
+| ROOT-R20 | Functional | WHILE building, THE SYSTEM SHALL let agents choose implementation details and SHALL log each non-structural choice as an assumption the user can overturn. | ROOT-D25 |
+| ROOT-R21 | Functional | WHEN a milestone or item starts, THE SYSTEM SHALL show a short preview, and WHEN a milestone is built, THE SYSTEM SHALL show a demo with run steps, evidence, and assumptions, and wait for the user. | ROOT-D25 |
+| ROOT-R22 | Functional | THE SYSTEM SHALL keep `specx/STATUS.md` current with what is happening, what is waiting on the user, and the assumptions made. | ROOT-D25 |
+| ROOT-R23 | Process | WHEN a milestone is built, THE SYSTEM SHALL have it reviewed by an agent that did not build it, using `/specx:review`'s milestone mode. | ROOT-D25 |
+| ROOT-R24 | Security | WHERE the guard hook can run, THE SYSTEM SHALL deny edits outside a task's scope and require confirmation for merges and history-destroying git commands. | ROOT-D25 |
 
 ## 5. Acceptance criteria
 
@@ -80,32 +89,66 @@ None (root).
 
 - Given an existing repository with relevant code, documentation, and SpecX context
 - When the user explores an idea about that project
-- Then Explore reads relevant context without executing project code or changing files, cites repository claims as `path:line` without reproducing secret values or unnecessary personal data in responses, and asks the user to resolve any conflict between code and documentation
+- Then Explore reads relevant context without executing project code, changes no files unless asked to write the framework, cites repository claims as `path:line` without reproducing secret values or unnecessary personal data in responses, and asks the user to resolve any conflict between code and documentation
 
 **ROOT-AC5** (R14, R15)
 
 - Given a user who says the Explore discussion is ready to conclude
 - When Explore returns its recap
-- Then it includes the idea, target users, desired outcomes, user-stated choices, constraints, non-goals, available repository evidence (or says none was available), and unresolved questions, suggests `/specx:plan`, does not invoke Plan, and leaves the repository unchanged
+- Then it includes the idea, target users, desired outcomes, user-stated choices, constraints, non-goals, available repository evidence (or says none was available), and unresolved questions, asks whether to write the framework, suggests `/specx:plan`, does not invoke Plan, and, if the user declines, leaves the repository unchanged
+
+**ROOT-AC6** (R14, R15; ROOT-D28)
+
+- Given a concluded Explore discussion
+- When the user asks it to write the framework
+- Then only `specx/spec.md` §1, §3, §6.1, §9, its status, version, and change log, `specx/STATUS.md`, and any missing setup change, and every decision the user did not make is recorded as `open`
+
+**ROOT-AC7** (R17, R10)
+
+- Given a framework and an approved roadmap with several phases
+- When the user runs `/specx:plan`
+- Then a full spec, defaults sheet, milestones, and tasks exist for the next phase only, and later phases stay one row in the root Children table
+
+**ROOT-AC8** (R19, R21, R22, R23)
+
+- Given an approved first milestone
+- When `/specx:execute` builds it
+- Then a preview comes first, `specx/STATUS.md` tracks the work, an independent agent reviews it, and a demo with run steps, evidence, and assumptions comes before the next milestone starts
+
+**ROOT-AC9** (R20)
+
+- Given a task whose spec leaves an internal, reversible detail open
+- When a subagent reaches it
+- Then it chooses, logs the assumption with a reason, and does not stop; if the gap is a new dependency, interface, schema change, security behavior, or anything visible, it stops and reports
+
+**ROOT-AC10** (R24)
+
+- Given a task worktree with a scope file, in a project with `specx/RULES.md`
+- When an agent edits a file outside scope, or runs `gh pr merge`
+- Then the edit is denied and the merge asks a person to confirm; `python3 plugins/specx/hooks/guard_test.py` proves this
 
 ## 6. Design
 
-The plugin ships skills and templates only. Each planning or execution skill starts with the same setup step, which copies `plugins/specx/templates/` into the project. CI checks the manifests, the skill frontmatter, and that this repository's rules match the template. Explore is a read-only conversation: it starts from the user's idea, reads relevant repository and SpecX context when the idea concerns an existing project, uses cited evidence to ground the discussion, and writes nothing. It does not run project code or browse external sources unless the user explicitly asks for research. If no repository is available, it continues from the user's description and identifies repository facts as unknown. The user controls when the conversation ends; Explore then recaps the idea, stated choices, constraints, available evidence, and unresolved questions and suggests `/specx:plan`. Plan is invoked only when the user runs it.
+The plugin ships skills, templates, and a guard hook. Each planning or execution skill starts with the same setup step, which copies `plugins/specx/templates/` into the project. CI checks the manifests, the skill frontmatter, and that this repository's rules match the template. Explore is a conversation: it starts from the user's idea, reads relevant repository and SpecX context when the idea concerns an existing project, uses cited evidence to ground the discussion, and writes nothing until the user asks for the framework. It does not run project code or browse external sources unless the user explicitly asks for research. If no repository is available, it continues from the user's description and identifies repository facts as unknown. The user controls when the conversation ends; Explore then recaps the idea, stated choices, constraints, available evidence, and unresolved questions, offers to write the framework, and suggests `/specx:plan`. Plan is invoked only when the user runs it.
 
-**Explore interaction contract:** The input is the user's idea and the current conversation. For an existing project, inspect only relevant source and documentation, `specx/TASKS.md`, and the full ancestor chain of any relevant `spec.md`; use read-only tools and cite repository claims as `path:line`. Do not execute project code, run tests, or alter files. Browse external sources only when the user explicitly asks. Hold a flexible dialogue: follow the user's lead, clarify gaps, and surface possible directions with trade-offs without selecting one. If repository context is unavailable, say so and continue from the user's description. If code and documentation disagree, present both with locations and ask the user which is authoritative; carry their answer in the recap for Plan to record. The recap contains the idea, target users, desired outcomes, user-stated choices, constraints, non-goals, available repository evidence, and unresolved questions. The command is exposed as a plugin skill alongside the existing three skills; no new runtime dependency or persistent state is introduced.
+**Explore interaction contract:** The input is the user's idea and the current conversation. For an existing project, inspect only relevant source and documentation, `specx/TASKS.md`, and the full ancestor chain of any relevant `spec.md`; use read-only tools and cite repository claims as `path:line`. Do not execute project code or run tests, and do not alter files until the user asks for the framework. Browse external sources only when the user explicitly asks. Hold a flexible dialogue: follow the user's lead, clarify gaps, and surface possible directions with trade-offs without selecting one. If repository context is unavailable, say so and continue from the user's description. If code and documentation disagree, present both with locations and ask the user which is authoritative; carry their answer in the recap for Plan to record. The recap contains the idea, target users, desired outcomes, user-stated choices, constraints, non-goals, available repository evidence, and unresolved questions. The command is exposed as a plugin skill alongside Plan, Execute, and Review; no new runtime dependency is introduced.
+
+**Delivery model:** Explore writes the framework: a new project's intended system, or an existing codebase's current one. Plan proposes stages (default Core, Essentials, Production, Ongoing), feature-sized phases inside them, and milestones inside each phase; the user edits this roadmap, which lives in the root Children table. Plan writes one spec per phase, only for the next phase, with big decisions asked individually and small ones on a single defaults sheet. In Ongoing, single features, bugs, chores, and spikes are added to the spec they belong to. Execute previews a milestone or item, builds each task in its own worktree and subagent on a delivery branch, verifies it, has an independent agent review it, demos it, and opens a pull request of the size the project chose.
+
+**View and control:** `specx/STATUS.md` shows what is happening, what waits on the user, the roadmap, and logged assumptions. The guard hook runs on `PreToolUse` when Python 3 is available. It reads a scope file in the task worktree's git directory, denies an agent editing that file, and asks a person to confirm merges, force pushes, branch deletions on the remote, mirror pushes, pushes naming the main branch, rebase and `pull --rebase`, amend, filter-branch, hard reset, clean, stash, and discarding changes with checkout, switch, or restore, in projects that have `specx/RULES.md`. It sees file tools and command text only, catches edits outside a worktree only when the hook's cwd is that worktree, does not follow `cd` inside a command, and does nothing if Python 3 is missing, so the rules remain the primary control.
 
 The workflow is compared with Addy Osmani's [agent-skills](https://github.com/addyosmani/agent-skills) reference pack:
 
 | Reference capability | SpecX command and handling |
 |---|---|
-| Define, interview, refine ideas, spec-driven development | Plan confirms intent when unclear, researches the repository, and writes build-ready specs. |
+| Define, interview, refine ideas, spec-driven development | Plan confirms intent when unclear, proposes the roadmap, researches what the next phase touches, and writes build-ready specs for it. |
 | Planning and task breakdown | Plan records broad capability/dependency maps in the parent Children table and creates approved vertical tasks. |
-| Incremental implementation, context engineering, TDD, security, Git and shipping | Execute assigns each approved task its own worktree and subagent, follows the approved test method, runs checks and security review, and uses a PR for merge approval. |
+| Incremental implementation, context engineering, TDD, security, Git and shipping | Execute assigns each approved task its own worktree and subagent, follows the approved test method, runs checks, has an independent agent run review including security, demos each milestone, and uses a PR for merge approval. |
 | Code review and quality | Review reports evidence-backed findings on correctness, readability/simplicity, architecture, security, and performance; it does not modify code. |
 | Constraint-driven development | User-approved quality gates are captured in the root or relevant spec and checked throughout Plan, Execute, and Review. |
 | API, UI, accessibility, observability, CI/CD, migration and documentation specialties | Use the relevant existing spec sections and task scope; no separate slash commands are added. |
 
-The reference repository is [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills). SpecX keeps a focused four-command interface: `/specx:explore` for conversational idea exploration, `/specx:plan` for formal specifications and tasks, `/specx:execute` for approved implementation, and `/specx:review` for report-only review. Quality gates require user-approved criteria and commands, an explicit run point, and a block-or-warn policy; no numeric target or failure policy is assumed.
+The reference repository is [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills). SpecX keeps a focused four-command interface: `/specx:explore` for conversational idea exploration and the framework, `/specx:plan` for the roadmap and each phase's specifications and tasks, `/specx:execute` for approved implementation, and `/specx:review` for report-only review. Quality gates require user-approved criteria and commands, an explicit run point, and a block-or-warn policy; no numeric target or failure policy is assumed.
 
 ## 7. Shared with children
 
@@ -113,8 +156,8 @@ None.
 
 ## 8. Children
 
-| Spec | Responsibility | Depends on | Build order | Shared context and relation | Status |
-|---|---|---|---|---|---|
+| Spec | Stage | Responsibility | Depends on | Build order | Version | Shared context and relation | Status |
+|---|---|---|---|---|---|---|---|
 
 ## 9. Decisions
 
@@ -132,7 +175,7 @@ None.
 
 ### ROOT-D16: Explore output
 
-- **Status:** answered (2026-10-29)
+- **Status:** superseded (2026-11-03) by ROOT-D21
 - **Question:** Should Explore create a file or task after the discussion?
 - **Answer:** "Conversation only; recap and suggest `/specx:plan`." (user, 2026-10-29)
 
@@ -215,7 +258,7 @@ None.
 
 ### ROOT-D9: Who decides
 
-- **Status:** answered (2026-10-26)
+- **Status:** superseded in part (2026-11-03) by ROOT-D25, for implementation details and the defaults sheet
 - **Question:** How much may SpecX agents decide on their own?
 - **Answer:** "Nothing. Every decision, from architecture and packages down to theme and fonts, is asked of the user and approved before execution completes. The LLM is only the executor. Always maintain a task list. When docs and code disagree, confirm the source of truth with the user. Rules are added everywhere so agents follow them exactly." (user, 2026-10-26)
 
@@ -250,11 +293,93 @@ None.
 - **Answer:** "Compare our skills with the repo and see which skills align with what and if anything is missed add even if we want to add more slash command." The user approved the resulting plan: map the reference to SpecX, integrate compatible missing practices into Plan, Execute, and Review, keep the three existing commands, preserve per-task approval gates, and do not invent quality thresholds or policies. (user, 2026-10-27)
 - **Reference:** [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills), reviewed 2026-10-27.
 
+### ROOT-D21: Framework first, then one phase at a time
+
+- **Status:** answered (2026-11-03)
+- **Question:** Writing every spec before any code delays a working codebase. How should the workflow change?
+- **Answer:** "explore creates a framework which is needed to be build based on users ideas then plan starts and creates phases and milestone and just writes per phase specs and them starts with code so users get their 0.0.1 code base... same happens when its an existing code base where explore writes the the framework already build and plan updates the specs which is already created" (user, 2026-11-03). The user accepted the proposal that Explore writes only when asked: "Yes, this is better approach change it" (user, 2026-11-03).
+- **Affects:** ROOT-R10, ROOT-R14, ROOT-R15, ROOT-R17, ROOT-AC4 to AC7, ROOT-T3
+
+### ROOT-D22: Stages, phases, and milestones
+
+- **Status:** answered (2026-11-03)
+- **Question:** How is work divided, and who sets the division?
+- **Answer:** "Users can decide llm gives them this question on these are the phases. Phases can also be divided into poc, auth, rbac. Basically around features and these phases can be part of core, essential, production etc." and "Phases will have sub parts called milestones where the core idea could be divided in to milestonez" (user, 2026-11-03)
+- **Affects:** ROOT-R17, ROOT-AC7, ROOT-T3
+
+### ROOT-D23: Pull request size
+
+- **Status:** answered (2026-11-03)
+- **Question:** How much work does one pull request carry?
+- **Answer:** "Approve the whole phase 1 as a pr" (user, 2026-11-03). The size for later phases was not chosen for SpecX as a whole, so Execute asks it as a project-wide decision in each project.
+- **Affects:** ROOT-R5, ROOT-R19, ROOT-T3
+
+### ROOT-D24: Work after the first phases
+
+- **Status:** answered (2026-11-03)
+- **Question:** How is individual work bounded once the product exists?
+- **Answer:** "each change is a feature or a bug or something else, each could be bounded by a user story" (user, 2026-11-03). The user then accepted the proposal of `feature`, `bug`, `chore`, and `spike` types with records suited to each: "Yes, this is better approach change it" (user, 2026-11-03).
+- **Affects:** ROOT-R18, ROOT-T3
+
+### ROOT-D25: Control through visibility and reversibility
+
+- **Status:** answered (2026-11-03)
+- **Question:** May agents make small, reversible implementation choices on their own if each is logged for the user to overturn at the milestone demo, alongside risk-sorted decisions, a milestone demo, a live status view, a preview, a separate reviewer, and hooks?
+- **Answer:** "Yes, this is better approach change it and also review the review skills so that is aligned with it" (user, 2026-11-03)
+- **Affects:** ROOT-R2, ROOT-R6, ROOT-R20 to R24, ROOT-AC8 to AC10, ROOT-T3
+
+### ROOT-D26: Where `specx/` lives during Execute
+
+- **Status:** answered (2026-11-05)
+- **Question:** Plan never commits, so approved specs may not be on the delivery branch, and the post-merge `done` update cannot join a pull request that has already merged. Where do `specx/` changes go during Execute? (review finding H3)
+- **Options:**
+  1. Execute commits approved specs as the delivery branch's first commit, keeps `specx/` edits on that branch, and carries each `done` update in the next delivery. Everything goes through a PR, but `main` lags by one delivery.
+  2. Plan gets its own small PR for approved specs, then Execute branches from them. `main` is always current on specs, but adds one more approval per phase.
+  3. `specx/` status stays uncommitted in the main checkout until the user commits it. Simple, but spec updates and code can drift.
+- **Recommendation:** Option 1, because it adds no approvals and keeps specs and code in one PR. The user decides.
+- **Answer:** "A,a,a,a", answering ROOT-D26 to D29 in order (user, 2026-11-05). Option 1: approved specs become the delivery branch's first commit, `specx/` edits stay on that branch, and `done` updates go in the next delivery.
+- **Affects:** Rule 4, ROOT-R5, ROOT-T3
+
+### ROOT-D27: Commands that need confirmation
+
+- **Status:** answered (2026-11-05)
+- **Question:** Should the guard also ask before `git rebase`, `git commit --amend`, `git filter-branch`, `git branch -D`, `git push --delete`, `git push` to the main branch, `git checkout -- .`, `git restore .`, and `git worktree remove --force`? (review finding H5)
+- **Options:**
+  1. All of them, except `git branch -D` and `git worktree remove --force`, which Execute runs for spikes. Safer, but more prompts.
+  2. Only commands that change shared history: `filter-branch`, `push --delete`, and pushes to the main branch. Fewer prompts, but local work can still be discarded unprompted.
+- **Recommendation:** Option 1. The user decides.
+- **Answer:** "A,a,a,a", answering ROOT-D26 to D29 in order (user, 2026-11-05). Option 1: also ask before `rebase`, `commit --amend`, `filter-branch`, `push --delete`, pushes to the main branch, `checkout -- .`, and `restore .`, but not `branch -D` or `worktree remove --force`.
+- **Affects:** ROOT-R24, ROOT-T3
+
+### ROOT-D28: What Explore may change in an approved root spec
+
+- **Status:** answered (2026-11-05)
+- **Question:** ROOT-AC6 allows only §1, §3, §6.1, and §9, but Explore also changes the status, version, and change log when the root spec is already approved. Which is correct? (review finding M8)
+- **Options:**
+  1. Widen ROOT-AC6 to include the status, version, change log, and `specx/STATUS.md`, which rules 5 and 6 require.
+  2. Keep ROOT-AC6, and stop Explore from writing to an approved root spec. Changes then go through Plan.
+- **Recommendation:** Option 1. The user decides.
+- **Answer:** "A,a,a,a", answering ROOT-D26 to D29 in order (user, 2026-11-05). Option 1: widen ROOT-AC6 to include the status, version, change log, and `specx/STATUS.md`.
+- **Affects:** ROOT-R14, ROOT-AC6, ROOT-T3
+
+### ROOT-D29: AGENTS.md in this repository
+
+- **Status:** answered (2026-11-05)
+- **Question:** `specx/RULES.md` says the rules are also in `AGENTS.md`, but this repository has none. Which is correct?
+- **Options:**
+  1. Add `AGENTS.md` here with the same rules, and check it in CI.
+  2. Keep it for user projects only, and say so in the rules.
+- **Recommendation:** Option 1, so this repository follows its own layout. The user decides.
+- **Answer:** "A,a,a,a", answering ROOT-D26 to D29 in order (user, 2026-11-05). Option 1: add `AGENTS.md` here with the same rules, and check it in CI.
+- **Affects:** ROOT-T3
+
 ## 10. Tasks
 
 ### ROOT-T1: Align SpecX workflows with agent-skills
 
 - **Status:** done
+- **Type:** feature
+- **Milestone:** —
 - **Parent:** None
 - **Depends on:** None
 - **Covers:** ROOT-R1, ROOT-R11, ROOT-AC1, ROOT-AC2
@@ -288,7 +413,9 @@ None.
 
 ### ROOT-T2: Add the Explore pre-planning command
 
-- **Status:** in-review
+- **Status:** done
+- **Type:** feature
+- **Milestone:** —
 - **Parent:** None
 - **Depends on:** ROOT-T1 (both tasks change the command inventory, plugin skills, CI validation, and root spec)
 - **Covers:** ROOT-R12, ROOT-R13, ROOT-R14, ROOT-R15, ROOT-R16, ROOT-AC3, ROOT-AC4, ROOT-AC5
@@ -320,9 +447,50 @@ None.
 - 2026-10-29: PR #1 merged into main as merge commit 55a7d0b, satisfying the dependency. The user confirmed main as base/PR target and approved execution with: Implement it. ROOT-T2 resumed in this worktree, then was blocked by ROOT-D20 before commit/PR preparation.
 - 2026-10-29: security review identified an unresolved secret-redaction rule for repository citations; ROOT-D19 was answered by the user: redact secrets and unnecessary personal data. Spec version 7 was approved. A mismatch was then found between the four-command spec/skill and repository descriptions that still say three; ROOT-D20 was answered by the user: four commands are authoritative, and the README, marketplace descriptions, and CLAUDE.md should be updated. Spec version 8 is approved; ROOT-T2 resumed.
 
+- 2026-11-03: `gh pr view 2` shows PR #2 merged on 2026-10-29; status corrected to `done`.
+
+### ROOT-T3: Phased delivery and visible control
+
+- **Status:** in-review
+- **Type:** feature
+- **Story:** As a SpecX user, I want working code early and a clear view of what the agents do, so that I can steer without answering every question up front.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T2
+- **Covers:** ROOT-R2, ROOT-R5, ROOT-R6, ROOT-R10, ROOT-R14, ROOT-R15, ROOT-R17 to R24, ROOT-AC4 to AC10
+- **Decisions:** ROOT-D21, ROOT-D22, ROOT-D23, ROOT-D24, ROOT-D25, ROOT-D26, ROOT-D27, ROOT-D28, ROOT-D29
+- **Files:** `plugins/specx/`, `.github/workflows/ci.yml`, `.claude-plugin/marketplace.json`, `README.md`, `CLAUDE.md`, `AGENTS.md`, `specx/`
+- **Model:** frontier, because this changes the workflow across every command and the rules
+- **Branch / worktree / PR:** `specx/ROOT-T3` / main checkout / not opened
+- **Assumptions:** None.
+
+**Steps**
+
+1. Rewrite Explore, Plan, Execute, and Review to the delivery and control model in §6.
+2. Update the rules and sync every copy; add `STATUS.md`, milestones, and task types to the scaffold.
+3. Add the guard hook with a self-check, run it in CI, and bump the plugin version.
+4. Update the README, marketplace description, and this spec.
+
+**Verification**
+
+- `python3 plugins/specx/hooks/guard_test.py`: prints `guard ok`
+- The checks in `.github/workflows/ci.yml` pass.
+- Run one real project through Explore, Plan, and Execute to check ROOT-AC6 to AC9. Not done yet.
+
+**Log**
+
+- 2026-11-03: the user discussed the design and instructed: "Yes, this is better approach change it and also review the review skills so that is aligned with it".
+- 2026-11-03: implemented in the working tree. Spec version 9 stays `draft` until the user approves this exact version.
+- 2026-11-03: the user approved spec version 9: "Approve and proceed".
+- 2026-11-03: independent review (`specx/_reviews/2026-11-03-ROOT-T3.md`) found 5 high, 8 medium, and 8 low findings. Fixed H1, H2, H4 and the spellings in H5, M1 to M7, L1 to L6, and L8. H3, the rest of H5, M8, and L7 need the user: ROOT-D26 to D29. Blocked until answered. Plugin bumped to 0.5.1; spec version 10 is `draft`.
+- 2026-11-05: the user answered ROOT-D26 to D29: "A,a,a,a". Applied all four; resumed. Spec version 10 awaits approval.
+- 2026-11-05: second independent review (`specx/_reviews/2026-11-05-ROOT-T3.md`) found no critical or high findings, 3 medium and 6 low. Fixed all except L6 (quoted text prompts), a known guard limit.
+- 2026-11-05: the user approved spec version 10: "Yes". Pushed `specx/ROOT-T3` and opened a pull request; the link is recorded after merge.
+
 ## 11. Open questions
 
 - Plugin skills locate templates through `${CLAUDE_PLUGIN_ROOT}`; this has not been verified in a live session.
+- The guard hook has been tested by running it directly, not yet inside a live Claude Code session or subagent.
 
 ## 12. Change log
 
@@ -336,5 +504,7 @@ None.
 | 6 | 2026-10-29 | Add the approved Explore pre-planning command (ROOT-D15 to D18) | user |
 | 7 | 2026-10-29 | Resolve Explore handling of sensitive repository evidence (ROOT-D19) | user |
 | 8 | 2026-10-29 | Resolve three-versus-four command descriptions (ROOT-D20) | user |
+| 9 | 2026-11-03 | Framework, phased delivery, risk-sorted decisions, preview, demo, status, independent review, guard hook (ROOT-D21 to D25) | user |
+| 10 | 2026-11-05 | Fixes from independent review; ROOT-D26 to D29 | user |
 
 - 2026-10-29: implemented Explore and synchronized the four-command docs; redaction/read-only review and structural validations passed, including manifest JSON, skill inventory/frontmatter, synchronized rules, docs, and spec/task consistency. No project test suite was run.

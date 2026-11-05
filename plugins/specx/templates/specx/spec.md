@@ -13,7 +13,7 @@ The root spec. Everything here applies to every spec in this tree. The format is
 
 ## 1. Overview
 
-**Purpose:** Not written yet. Run `/specx:plan`.
+**Purpose:** Not written yet. Run `/specx:explore` and ask it to write the framework, or run `/specx:plan`.
 
 **In scope:** None yet.
 
@@ -98,12 +98,14 @@ None yet. Project-wide conventions go here, such as the stack, folder structure,
 
 ## 8. Children
 
-| Spec | Responsibility | Depends on | Build order | Shared context and relation | Status |
-|---|---|---|---|---|---|
+The roadmap: one row per phase. A phase stays one line here until it is next; only then does it get a spec.
+
+| Spec | Stage | Responsibility | Depends on | Build order | Version | Shared context and relation | Status |
+|---|---|---|---|---|---|---|---|
 
 ## 9. Decisions
 
-None yet. Project-wide decisions go here, including the main branch and worktree location that `/specx:execute` asks for.
+None yet. Project-wide decisions go here, including the main branch, worktree location, and pull request size that `/specx:execute` asks for.
 
 ## 10. Tasks
 

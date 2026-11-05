@@ -11,7 +11,7 @@
     {
       "name": "specx",
       "source": "./plugins/specx",
-      "description": "Explore ideas, plan specifications and tasks, execute them in worktrees with tests and security review, and review code. Every decision is the user’s."
+      "description": "Explore ideas, plan phase by phase, build milestones in worktrees with previews, demos, and independent review, and review code. The user decides."
     }
   ]
 }
