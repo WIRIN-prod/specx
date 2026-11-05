@@ -31,7 +31,7 @@ Start a new session or run `/reload-plugins`. To update later: `claude plugin ma
 
 There is no separate setup step. Open your project in Claude Code. Use `/specx:explore` to discuss an idea and ask it to write the framework, then run `/specx:plan`, `/specx:execute`, and `/specx:plan` again for the next phase. The first command that writes in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md` and `AGENTS.md`. It makes no decisions and overwrites nothing.
 
-`/specx:execute` needs `gh` installed and signed in, and a git remote. It asks you once for the main branch, the worktree location (next to the repo by default), how to commit progress updates, and how large pull requests should be after the first phase, and records them as decisions in `specx/spec.md`.
+`/specx:execute` needs `gh` installed and signed in, and a git remote. It asks you once for the main branch, the worktree location (next to the repo by default), and how large pull requests should be after the first phase, and records them as decisions in `specx/spec.md`.
 
 ## How work is divided
 

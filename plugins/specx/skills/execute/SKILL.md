@@ -32,8 +32,7 @@ Follow the rules in `specx/RULES.md` for everything below (step 0).
 These are project-wide decisions in `specx/spec.md`. If they are not answered yet, ask the user once and record them there as decisions:
 
 - **Main branch**: the branch pull requests target. Ask; do not guess, even if `main` exists.
-- **Worktree location**: worktrees go next to the repository by default, as `<parent folder>/<repo>-<task-id>` and `<parent folder>/<repo>-delivery-<id>`. Ask whether the user wants a different location.
-- **Recording progress**: how updates to `specx/` (task statuses, logs, `STATUS.md`) are committed, for example with each pull request or separately by the user.
+- **Worktree location**: worktrees go next to the repository by default, as `<parent folder>/<repo>-<task-id>`. Ask whether the user wants a different location.
 - **Pull request size after the first phase**: the first phase is always one pull request, and each Ongoing item gets its own. For later phases the user chooses one of:
   1. One per phase: fewer reviews, but each is large.
   2. One per milestone: smaller reviews that merge sooner, but more approvals.
@@ -42,6 +41,8 @@ These are project-wide decisions in `specx/spec.md`. If they are not answered ye
   You may recommend per-milestone pull requests once working code exists, because later phases change that code. The user decides.
 
 A **delivery** is the work one pull request carries, following that decision. Merging into the main branch happens only through pull requests. If the repository has no remote, or `gh` is not installed and signed in, stop and tell the user.
+
+**Where `specx/` lives:** the delivery branch is checked out in the main checkout, and every `specx/` change during a delivery is committed on it, so specs, status, and code reach the main branch in the same pull request. Updates made after a merge, such as `done` and the PR link, stay uncommitted on the main branch and become part of the next delivery's first commit. One delivery runs at a time.
 
 ## 3. Preview and approve
 
@@ -58,7 +59,7 @@ The user can approve, redirect, or reorder before any code exists. A redirect th
 
 You, the main session, own `specx/`: you update task statuses, logs, assumptions, `TASKS.md`, and `STATUS.md`. Subagents never edit `specx/`.
 
-1. If this delivery has no branch yet, create it from the latest main branch: `git fetch`, then `git worktree add <worktree location>/<repo>-delivery-<id> -b specx/delivery-<id> origin/<main branch>` (or the local branch when there is no remote-tracking branch). `<id>` is the phase, milestone, or task ID the pull request covers.
+1. If this delivery has no branch yet, check that the main checkout is on the main branch, then run `git fetch` and `git switch -c specx/delivery-<id> origin/<main branch>` there (or the local branch when there is no remote-tracking branch). Uncommitted changes come with it. If the switch refuses, stop and show the user why. Then commit only `specx/` (`git add specx/`) as the delivery's first commit, naming the specs and tasks it carries. The user's other uncommitted work stays uncommitted. `<id>` is the phase, milestone, or task ID the pull request covers.
 
 For each approved task whose dependencies are done:
 
@@ -72,7 +73,7 @@ For each approved task whose dependencies are done:
    - stop and report instead of choosing whenever a big or small choice is unclear, missing, or outside the task;
    - use only the behavior-change test method recorded in the approved spec. For test-first/TDD, write and run the focused failing test before changing behavior; for a bug fix, first add a regression test that reproduces it. If the method is missing or unclear, block the task and ask the user through `/specx:plan` rather than choosing.
 6. You decide how many subagents run at once from the dependency graph. Run tasks that have no dependency between them and no shared files at the same time. If the host has no subagents, build the tasks one at a time.
-7. When a subagent finishes, record its assumptions in the task's **Assumptions** and in `STATUS.md`. Run the checks in step 6.1 in its worktree. Confirm `git log specx/delivery-<id>..specx/<task-id>` shows its commits and `git status` in the worktree is clean; if not, stop and find out why. Then, from the delivery worktree, merge its branch with `git merge --no-ff`, remove the task worktree, and delete the task branch. A later task in the milestone starts from the updated delivery branch.
+7. When a subagent finishes, record its assumptions in the task's **Assumptions** and in `STATUS.md`. Run the checks in step 6.1 in its worktree. Confirm `git log specx/delivery-<id>..specx/<task-id>` shows its commits and `git status` in the worktree is clean; if not, stop and find out why. Then, in the main checkout, merge its branch with `git merge --no-ff`, commit your `specx/` updates for that task, remove the task worktree, and delete the task branch. A later task in the milestone starts from the updated delivery branch.
 
 For a `spike`, there is no delivery branch, review, demo, or pull request. Create its worktree with `git worktree add <worktree location>/<repo>-<task-id> -b specx/<task-id> origin/<main branch>`. When the question is answered, record the answer in the task log, then run `git worktree remove --force <worktree>` and `git branch -D specx/<task-id>`, and set the task to `done`. Spike code is never merged.
 
@@ -88,12 +89,12 @@ For a `spike`, there is no delivery branch, review, demo, or pull request. Creat
 2. When a check fails, keep its output and diagnose in order: reproduce the failure, localize it to the task, spec, or environment, make the smallest in-scope correction, then rerun the focused check and affected required gates. For a behavior regression, add a reproducing test under the approved method. Never skip, disable, delete, or weaken a check or assertion to get a pass.
 3. If the failure reveals a spec conflict, missing decision, or work outside scope, stop the task and related tasks as specified in step 5. Record the evidence and ask the user; do not improvise a fix.
 4. When all of a milestone's or item's tasks are merged into the delivery branch, rerun the required checks there and check every acceptance criterion it covers, with evidence.
-5. If the code's behavior now differs from the spec in a way the user approved, update the spec on the delivery branch, in the same pull request, with its version bump and change-log row.
+5. If the code's behavior now differs from the spec in a way the user approved, update the spec and commit it on the delivery branch, with its version bump and change-log row.
 6. Verify that no approved quality gate was weakened in the diff. Record what ran and the results in each task's log.
 
 ## 7. Independent review
 
-This applies to every milestone and Ongoing item except a spike. Start a new subagent that did not build this work, and have it follow the **Milestone review** in `${CLAUDE_PLUGIN_ROOT}/skills/review/SKILL.md`. Give it `specx/RULES.md`, the delivery worktree, the diff range from the start point recorded in step 3, the specs in scope, and the logged assumptions, and nothing about how the build went. It reports findings and does not change code. Save its report to `specx/_reviews/` and link it from `STATUS.md`.
+This applies to every milestone and Ongoing item except a spike. Start a new subagent that did not build this work, and have it follow the **Milestone review** in `${CLAUDE_PLUGIN_ROOT}/skills/review/SKILL.md`. Give it `specx/RULES.md`, the main checkout path, the diff range from the start point recorded in step 3, the specs in scope, and the logged assumptions, and nothing about how the build went. It reports findings and does not change code. Save its report to `specx/_reviews/` and link it from `STATUS.md`.
 
 A critical or high finding blocks the demo until it is fixed within scope, or the user decides what to do. A fix is a new or reopened task with its own worktree and scope file (step 4). Rerun step 6.4 onward and step 7 after it. If the host has no subagents, say so in the demo: the review was not independent.
 
@@ -113,16 +114,15 @@ If the delivery still has milestones left, go back to step 3 for the next one.
 
 ## 9. Open the pull request
 
-1. Commit anything left on the delivery branch with a message that names the task or milestone IDs. Push `specx/delivery-<id>`.
+1. Set the delivery's tasks to `in-review`, and update `TASKS.md` and `STATUS.md`. Commit `specx/` and anything else left for this delivery, with a message that names the task or milestone IDs. Push `specx/delivery-<id>`.
 2. Run `gh pr create --base <main branch> --head specx/delivery-<id>`. The body states the delivery, its spec, the milestones, tasks, requirements, and acceptance criteria covered, what changed, the tests run and their results, the review results, the assumptions, and anything not checked.
-3. Set the delivery's tasks to `in-review` with the PR link, and update `TASKS.md` and `STATUS.md`.
-4. Show the user the pull request link.
+3. Show the user the pull request link. It is recorded in `specx/` after the merge.
 
 ## 10. Merge only on approval
 
 - Wait for the user's explicit approval of that pull request. Then run `gh pr merge <pr> --merge`. Use a merge commit only: never squash or rebase, never push straight to the main branch, and never bypass branch protection.
-- If the user asks for changes, make them in the delivery worktree, repeat steps 6 and 7, push, and ask again.
-- After the merge: remove the delivery worktree (`git worktree remove`), delete the local branch, set the tasks to `done`, and update `TASKS.md` and `STATUS.md`. When all of a parent task's child tasks are done, tell the user the parent task can proceed.
+- If the user asks for changes, make them as new or reopened tasks (step 4), repeat steps 6 and 7, commit, push, and ask again.
+- After the merge: in the main checkout, run `git switch <main branch>`, `git pull --ff-only`, and `git branch -d specx/delivery-<id>`. Then set the tasks to `done` with the PR link, and update `TASKS.md` and `STATUS.md`. These stay uncommitted until the next delivery's first commit. When all of a parent task's child tasks are done, tell the user the parent task can proceed.
 - When a stage's last phase merges, tell the user that stage's version is reached. Tag it only if the user asks.
 
 ## 11. Finish

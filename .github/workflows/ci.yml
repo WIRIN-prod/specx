@@ -33,7 +33,8 @@ jobs:
           python3 - <<'PY'
           import re
           rules = open("plugins/specx/templates/RULES.md").read().strip()
-          claude = open("CLAUDE.md").read()
-          m = re.search(r"<!-- specx:rules:begin -->\n(.*?)\n<!-- specx:rules:end -->", claude, re.S)
-          assert m and m.group(1).strip() == rules, "CLAUDE.md rules differ from plugin template"
+          for name in ("CLAUDE.md", "AGENTS.md"):
+              text = open(name).read()
+              m = re.search(r"<!-- specx:rules:begin -->\n(.*?)\n<!-- specx:rules:end -->", text, re.S)
+              assert m and m.group(1).strip() == rules, f"{name} rules differ from plugin template"
           PY

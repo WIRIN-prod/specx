@@ -79,11 +79,31 @@ with tempfile.TemporaryDirectory() as root:
         "git push origin x \\\n  --force",
         "gh -R a/b pr merge 3",
         "gh api -X PUT repos/a/b/pulls/3/merge",
+        "git push origin --delete x",
+        "git push origin :x",
+        "git push -u origin main",
+        "git push origin HEAD:master",
+        "git rebase main",
+        "git -C /x filter-branch",
+        "git commit --amend",
+        "git checkout -- .",
+        "git restore .",
     ):
         assert bash(command, repo) == "ask", command
     assert bash("git push origin specx/T1", repo) is None, "ordinary push"
     assert bash("git status", repo) is None, "ordinary command"
-    for command in ("git stash list", "git stash show", "git clean -n", "git push -u origin x"):
+    for command in (
+        "git stash list",
+        "git stash show",
+        "git clean -n",
+        "git push -u origin x",
+        "git push origin specx/delivery-main-page",
+        "git checkout specx/T1",
+        "git restore --staged a",
+        "git branch -D specx/T1",
+        "git worktree remove --force ../t",
+        "git commit -m amend",
+    ):
         assert bash(command, repo) is None, command
     assert bash("gh pr merge 3 --merge", root) is None, "not a SpecX project"
 

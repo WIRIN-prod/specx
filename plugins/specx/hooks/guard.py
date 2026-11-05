@@ -25,6 +25,13 @@ RISKY_COMMAND = re.compile(
     r"|" + GIT + r"reset\b[^|;&\n]*\s--hard\b"
     r"|" + GIT + r"clean\b(?![^|;&\n]*\s(-n|--dry-run)\b)"
     r"|" + GIT + r"stash\b(?!\s+(list|show)\b)"
+    r"|" + GIT + r"push\b[^|;&]*?\s(--delete\b|-d\b|:\S+)"
+    # shortcut: guesses the main branch is `main` or `master`; read it from specx/spec.md if others appear.
+    r"|" + GIT + r"push\b[^|;&]*?\s(\S*:)?(main|master)(\s|$)"
+    r"|" + GIT + r"(rebase|filter-branch)\b"
+    r"|" + GIT + r"commit\b[^|;&\n]*\s--amend\b"
+    r"|" + GIT + r"checkout\b[^|;&\n]*\s--(\s|$)"
+    r"|" + GIT + r"restore\b(?![^|;&\n]*\s(--staged|-S)\b)"
 )
 
 

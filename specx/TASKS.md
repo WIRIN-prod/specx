@@ -8,4 +8,4 @@ Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus 
 |---|---|---|---|---|---|---|---|---|
 | ROOT-T1 | Align SpecX workflows with agent-skills | feature | — | [ROOT](spec.md) | done | — | — | [#1](https://github.com/WIRIN-prod/specx/pull/1) |
 | ROOT-T2 | Add the Explore pre-planning command | feature | — | [ROOT](spec.md) | done | — | ROOT-T1 | [#2](https://github.com/WIRIN-prod/specx/pull/2) |
-| ROOT-T3 | Phased delivery and visible control | feature | — | [ROOT](spec.md) | blocked | — | ROOT-T2 | — |
+| ROOT-T3 | Phased delivery and visible control | feature | — | [ROOT](spec.md) | in-progress | — | ROOT-T2 | — |
