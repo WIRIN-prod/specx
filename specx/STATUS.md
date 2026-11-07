@@ -4,11 +4,11 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-ROOT-T3 (phased delivery and visible control) is on `specx/ROOT-T3`, approved (spec v10) and in review as a pull request.
+ROOT-T4 (guard without `python3`) is being built on `specx/delivery-ROOT-T4`.
 
 ## Waiting on you
 
-- Approve or request changes on the ROOT-T3 pull request.
+Nothing right now.
 
 ## Roadmap
 
@@ -16,7 +16,8 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 
 | Stage | Phase | Milestone | Progress | Version |
 |---|---|---|---|---|
-| — | — | ROOT-T3 | in review | 0.5.1 |
+| — | — | ROOT-T3 | done | 0.5.1 |
+| Ongoing | — | ROOT-T4 to T7 | T4 in progress; T5 to T7 approved | 0.6.0 planned |
 
 ## Assumptions to check
 

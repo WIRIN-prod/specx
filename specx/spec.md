@@ -2,7 +2,7 @@
 id: ROOT
 title: SpecX
 status: approved
-version: 10
+version: 11
 parent: none
 depends_on: []
 ---
@@ -63,6 +63,7 @@ None (root).
 | ROOT-R21 | Functional | WHEN a milestone or item starts, THE SYSTEM SHALL show a short preview, and WHEN a milestone is built, THE SYSTEM SHALL show a demo with run steps, evidence, and assumptions, and wait for the user. | ROOT-D25 |
 | ROOT-R22 | Functional | THE SYSTEM SHALL keep `specx/STATUS.md` current with what is happening, what is waiting on the user, and the assumptions made. | ROOT-D25 |
 | ROOT-R23 | Process | WHEN a milestone is built, THE SYSTEM SHALL have it reviewed by an agent that did not build it, using `/specx:review`'s milestone mode. | ROOT-D25 |
+| ROOT-R25 | Security | WHERE `python3` is missing, THE SYSTEM SHALL run the guard with `python`, and IF neither runs Python 3, THEN THE SYSTEM SHALL show the user a warning at session start in SpecX projects and let work continue. | ROOT-D32 |
 | ROOT-R24 | Security | WHERE the guard hook can run, THE SYSTEM SHALL deny edits outside a task's scope and require confirmation for merges and history-destroying git commands. | ROOT-D25 |
 
 ## 5. Acceptance criteria
@@ -373,6 +374,34 @@ None.
 - **Answer:** "A,a,a,a", answering ROOT-D26 to D29 in order (user, 2026-11-05). Option 1: add `AGENTS.md` here with the same rules, and check it in CI.
 - **Affects:** ROOT-T3
 
+### ROOT-D30: Sample app for the end-to-end run
+
+- **Status:** answered (2026-11-07)
+- **Question:** What small app should SpecX build through Explore, Plan, Execute, and Review to prove the workflow before launch?
+- **Answer:** "Notes API, Python (Recommended)": a small notes REST API in Python using FastAPI and SQLite. (user, 2026-11-07)
+- **Affects:** ROOT-T5
+
+### ROOT-D31: Where the sample lives
+
+- **Status:** answered (2026-11-07)
+- **Question:** Where should the sample app's repository live?
+- **Answer:** "New public repo (Recommended)": `WIRIN-prod/specx-example` on GitHub, linked from the README. (user, 2026-11-07)
+- **Affects:** ROOT-T5, ROOT-T6
+
+### ROOT-D32: Guard without Python 3
+
+- **Status:** answered (2026-11-07)
+- **Question:** What should happen when no Python is found, as is common on Windows?
+- **Answer:** "Fall back, then warn (Recommended)": try `python3`, then `python`; if neither exists, show a visible warning that the guard is off and let work continue. The README lists Python 3 as required. (user, 2026-11-07)
+- **Affects:** ROOT-R25, ROOT-T4, ROOT-T6
+
+### ROOT-D33: Public release
+
+- **Status:** answered (2026-11-07)
+- **Question:** When should the public release be tagged?
+- **Answer:** "After the sample run (Recommended)": fix what the sample run finds, then tag v0.6.0 with release notes and set the repository's description and topics. (user, 2026-11-07)
+- **Affects:** ROOT-T7
+
 ## 10. Tasks
 
 ### ROOT-T1: Align SpecX workflows with agent-skills
@@ -451,7 +480,7 @@ None.
 
 ### ROOT-T3: Phased delivery and visible control
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** feature
 - **Story:** As a SpecX user, I want working code early and a clear view of what the agents do, so that I can steer without answering every question up front.
 - **Milestone:** —
@@ -461,7 +490,7 @@ None.
 - **Decisions:** ROOT-D21, ROOT-D22, ROOT-D23, ROOT-D24, ROOT-D25, ROOT-D26, ROOT-D27, ROOT-D28, ROOT-D29
 - **Files:** `plugins/specx/`, `.github/workflows/ci.yml`, `.claude-plugin/marketplace.json`, `README.md`, `CLAUDE.md`, `AGENTS.md`, `specx/`
 - **Model:** frontier, because this changes the workflow across every command and the rules
-- **Branch / worktree / PR:** `specx/ROOT-T3` / main checkout / not opened
+- **Branch / worktree / PR:** `specx/ROOT-T3` / main checkout / [#3](https://github.com/WIRIN-prod/specx/pull/3)
 - **Assumptions:** None.
 
 **Steps**
@@ -486,6 +515,131 @@ None.
 - 2026-11-05: the user answered ROOT-D26 to D29: "A,a,a,a". Applied all four; resumed. Spec version 10 awaits approval.
 - 2026-11-05: second independent review (`specx/_reviews/2026-11-05-ROOT-T3.md`) found no critical or high findings, 3 medium and 6 low. Fixed all except L6 (quoted text prompts), a known guard limit.
 - 2026-11-05: the user approved spec version 10: "Yes". Pushed `specx/ROOT-T3` and opened a pull request; the link is recorded after merge.
+- 2026-11-05: PR #3 merged into `main` as merge commit `4e0584b`.
+
+### ROOT-T4: Run the guard without `python3`
+
+- **Status:** in-progress
+- **Type:** chore
+- **Why:** on Windows `python3` is often missing, so the guard silently does nothing (ROOT-D32).
+- **Done when:** with `python3` missing the guard runs through `python`; with no Python 3 at all, a SpecX project shows a warning at session start; the self-check proves both.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T3
+- **Covers:** ROOT-R25
+- **Decisions:** ROOT-D32
+- **Files:** `plugins/specx/hooks/`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the behavior is fully stated in ROOT-R25
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Make the guard's hook command try `python3`, then `python`, and stay silent if neither runs.
+2. Add a session-start hook that, in a project with `specx/RULES.md`, warns the user when no Python 3 is found.
+3. Extend the self-check to run both commands with no Python on the path.
+
+**Verification**
+
+- `python3 plugins/specx/hooks/guard_test.py`: prints `guard ok`
+- A live headless session still denies an out-of-scope write.
+
+**Log**
+
+- 2026-11-07: created after the user asked for all four launch fixes: "do all four".
+- 2026-11-07: the user approved spec version 11, tasks ROOT-T4 to T7, and starting T4: "Yes".
+
+### ROOT-T5: End-to-end sample run
+
+- **Status:** todo
+- **Type:** spike
+- **Question:** Does SpecX work from start to finish on a real project, and what breaks?
+- **Time limit:** the first phase of the sample app (Core stage) through one merged pull request.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T4
+- **Covers:** None: a spike
+- **Decisions:** ROOT-D30, ROOT-D31
+- **Files:** `specx/` (findings only); the sample's own files live in `WIRIN-prod/specx-example`
+- **Model:** frontier, because it judges the workflow itself
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Create the public repository `WIRIN-prod/specx-example`.
+2. Run `/specx:explore` and write the framework for a FastAPI and SQLite notes API, then `/specx:plan` for the roadmap and the first phase, then `/specx:execute` for its milestones and pull request, then `/specx:review`. SpecX asks the user its own decisions there.
+3. Record every problem SpecX shows in a review report here, and bring each fix back as a new task through `/specx:plan`.
+
+**Verification**
+
+- The sample repository has a merged first-phase pull request, its specs, `STATUS.md`, and review reports.
+- A findings report exists in `specx/_reviews/`.
+
+**Log**
+
+- 2026-11-07: created.
+
+### ROOT-T6: Launch README
+
+- **Status:** todo
+- **Type:** chore
+- **Why:** new users need to know why SpecX exists, what it needs, and what a session looks like; the README is mostly upgrade notes.
+- **Done when:** the README has a why, requirements (Python 3, `gh`, a git remote), a short walkthrough linking the sample repository, and upgrade notes moved to the end; no personal path remains in the repository.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T5
+- **Covers:** None: documentation
+- **Decisions:** ROOT-D31, ROOT-D32
+- **Files:** `README.md`, `specx/spec.md`
+- **Model:** mid, because the copy must match the skills exactly
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Rewrite the README's opening, requirements, and walkthrough; keep install and rules; move upgrade notes to the end; use "SpecX" consistently.
+2. Replace the Windows user path in ROOT-T2's record with "a worktree next to the repository".
+3. Show the copy to the user as a defaults sheet before committing.
+
+**Verification**
+
+- Every command, file, and step named in the README exists in the skills.
+- `grep -rn 'C:\\Users' .` finds nothing.
+
+**Log**
+
+- 2026-11-07: created.
+
+### ROOT-T7: Release v0.6.0
+
+- **Status:** todo
+- **Type:** chore
+- **Why:** a tagged release and a described repository for the public launch (ROOT-D33).
+- **Done when:** tag `v0.6.0` and its GitHub release exist with notes, the plugin version is 0.6.0, and the repository has a description and topics the user approved.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T5, ROOT-T6, and every fix task the sample run creates
+- **Covers:** None: release
+- **Decisions:** ROOT-D33
+- **Files:** `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Bump the plugin to 0.6.0 through a pull request.
+2. After it merges, tag `v0.6.0` and create the GitHub release with notes the user approved.
+3. Set the description and topics the user approved.
+
+**Verification**
+
+- `gh release view v0.6.0` shows the release; `gh repo view` shows the description and topics.
+
+**Log**
+
+- 2026-11-07: created.
 
 ## 11. Open questions
 
@@ -506,5 +660,6 @@ None.
 | 8 | 2026-10-29 | Resolve three-versus-four command descriptions (ROOT-D20) | user |
 | 9 | 2026-11-03 | Framework, phased delivery, risk-sorted decisions, preview, demo, status, independent review, guard hook (ROOT-D21 to D25) | user |
 | 10 | 2026-11-05 | Fixes from independent review; ROOT-D26 to D29 | user |
+| 11 | 2026-11-07 | Launch work: guard without `python3`, sample run, README, release (ROOT-D30 to D33) | user |
 
 - 2026-10-29: implemented Explore and synchronized the four-command docs; redaction/read-only review and structural validations passed, including manifest JSON, skill inventory/frontmatter, synchronized rules, docs, and spec/task consistency. No project test suite was run.
