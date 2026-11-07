@@ -2,7 +2,7 @@
 id: ROOT
 title: SpecX
 status: approved
-version: 11
+version: 12
 parent: none
 depends_on: []
 ---
@@ -63,6 +63,7 @@ None (root).
 | ROOT-R21 | Functional | WHEN a milestone or item starts, THE SYSTEM SHALL show a short preview, and WHEN a milestone is built, THE SYSTEM SHALL show a demo with run steps, evidence, and assumptions, and wait for the user. | ROOT-D25 |
 | ROOT-R22 | Functional | THE SYSTEM SHALL keep `specx/STATUS.md` current with what is happening, what is waiting on the user, and the assumptions made. | ROOT-D25 |
 | ROOT-R23 | Process | WHEN a milestone is built, THE SYSTEM SHALL have it reviewed by an agent that did not build it, using `/specx:review`'s milestone mode. | ROOT-D25 |
+| ROOT-R26 | Documentation | THE SYSTEM SHALL require every agent to write new and changed text in SpecX documents (specs, `TASKS.md`, `STATUS.md`, review reports, and the rules) in ASD-STE100 Simplified Technical English, and SHALL make `/specx:review` report breaks as low findings. | ROOT-D34 |
 | ROOT-R25 | Security | WHERE `python3` is missing, THE SYSTEM SHALL run the guard with `python`, and IF neither runs Python 3, THEN THE SYSTEM SHALL show the user a warning at session start in SpecX projects and let work continue. | ROOT-D32 |
 | ROOT-R24 | Security | WHERE the guard hook can run, THE SYSTEM SHALL deny edits outside a task's scope and require confirmation for merges and history-destroying git commands. | ROOT-D25 |
 
@@ -402,6 +403,13 @@ None.
 - **Answer:** "After the sample run (Recommended)": fix what the sample run finds, then tag v0.6.0 with release notes and set the repository's description and topics. (user, 2026-11-07)
 - **Affects:** ROOT-T7
 
+### ROOT-D34: Write SpecX documents in ASD-STE100
+
+- **Status:** answered (2026-11-08)
+- **Question:** Must agents write specs in ASD-STE100 Simplified Technical English, and how far does the rule reach?
+- **Answer:** "For writting specs the agent should follow ASD-STE100 standard always this should be a rule make these change." Then: coverage "All SpecX documents (Recommended)"; strictness "Writing rules + known words (Recommended)", because the licensed dictionary cannot ship in the plugin; checking "Rule + review check (Recommended)"; existing text "New writing only (Recommended)". (user, 2026-11-08)
+- **Affects:** ROOT-R26, ROOT-T8
+
 ## 10. Tasks
 
 ### ROOT-T1: Align SpecX workflows with agent-skills
@@ -519,7 +527,7 @@ None.
 
 ### ROOT-T4: Run the guard without `python3`
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** chore
 - **Why:** on Windows `python3` is often missing, so the guard silently does nothing (ROOT-D32).
 - **Done when:** with `python3` missing the guard runs through `python`; with no Python 3 at all, a SpecX project shows a warning at session start; the self-check proves both.
@@ -550,10 +558,11 @@ None.
 - 2026-11-07: the user approved spec version 11, tasks ROOT-T4 to T7, and starting T4: "Yes".
 - 2026-11-07: start point `a352cbe`. Built in worktree `specx-ROOT-T4` with a scope file; the main session built it instead of a subagent because the change is three small files. `guard_test.py` passed (also run from `/`). Live headless sessions: an out-of-scope write was denied, and with Python removed from `PATH` the session showed "SpecX: the guard hook is off because Python 3 was not found". Plugin bumped to 0.5.2. Not tested on Windows.
 - 2026-11-07: independent review [2026-11-07-ROOT-T4.md](_reviews/2026-11-07-ROOT-T4.md): no high findings, 2 medium, 5 low. The user approved fixing M2, L1, L3, and L4 in this task: "do the fixes". The warning now finds the project from the git top level, needs Python 3.7, and tests cover a broken `python3` and a subfolder start; each new test was seen failing with its fix undone. `guard_test.py` passed from the repo and from `/`; live sessions denied an out-of-scope write and showed the warning from a subfolder with no Python. Plugin 0.5.3. M1 stays open: Windows unverified. L2 and L5 left as they are.
+- 2026-11-07: CI passed; the user approved PR #4: "Yes". Merged as `23237e6`.
 
 ### ROOT-T5: End-to-end sample run
 
-- **Status:** todo
+- **Status:** in-progress
 - **Type:** spike
 - **Question:** Does SpecX work from start to finish on a real project, and what breaks?
 - **Time limit:** the first phase of the sample app (Core stage) through one merged pull request.
@@ -581,6 +590,8 @@ None.
 **Log**
 
 - 2026-11-07: created.
+- 2026-11-07: the user approved the preview, including creating the public repository: "Yes t5 approve".
+- 2026-11-07: created `WIRIN-prod/specx-example` (public, README only). The user chose to have the main session drive the run with the 0.5.3 skills from this repository: "Option A".
 
 ### ROOT-T6: Launch README
 
@@ -643,6 +654,52 @@ None.
 
 - 2026-11-07: created.
 
+### ROOT-T8: Write SpecX documents in Simplified Technical English
+
+- **Status:** in-progress
+- **Type:** chore
+- **Why:** the user wants every spec in ASD-STE100 (ROOT-D34).
+- **Done when:** the rules have rule 10 with the text below in all four copies; `/specx:review` checks it; CI passes.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T4
+- **Covers:** ROOT-R26
+- **Decisions:** ROOT-D34
+- **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/skills/review/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`, `README.md`
+- **Model:** small, because the rule text is fixed here
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Rule text** (added after rule 9, before **Layout**):
+
+```markdown
+## 10. Write in Simplified Technical English
+
+- Write all new and changed text in SpecX documents in ASD-STE100 Simplified Technical English. This includes specs, `TASKS.md`, `STATUS.md`, review reports, and these rules. Old text changes only when you edit it.
+- Write one instruction in each sentence. Use the imperative for instructions.
+- Use not more than 20 words in a procedural sentence and not more than 25 words in a descriptive sentence.
+- Use the active voice and simple verb tenses.
+- Use not more than six sentences in a paragraph.
+- Use approved STE words with their approved meanings when you know them. Use technical names and technical verbs when necessary, for example `FastAPI`, `endpoint`, and `deploy`.
+- Do not change tables, code, commands, paths, or the user's quoted words to obey this rule.
+```
+
+**Steps**
+
+1. Add the rule text to `plugins/specx/templates/RULES.md`, then copy the rules to `specx/RULES.md` and to the marked sections of `CLAUDE.md` and `AGENTS.md`.
+2. In `/specx:review`, add a check: new or changed text in `specx/` that breaks rule 10 is a low finding, with the sentence and the part of the rule it breaks.
+3. Add one line to the README about rule 10. Bump the plugin to 0.5.4.
+
+**Verification**
+
+- The CI rules check passes: all four copies are the same.
+- `claude plugin validate plugins/specx` passes.
+
+**Log**
+
+- 2026-11-08: created after the user asked for the rule: "make these change".
+- 2026-11-08: the user approved spec version 12, the rule text, and starting T8: "Yes approve, start T8".
+
 ## 11. Open questions
 
 - Plugin skills locate templates through `${CLAUDE_PLUGIN_ROOT}`; this has not been verified in a live session.
@@ -663,5 +720,6 @@ None.
 | 9 | 2026-11-03 | Framework, phased delivery, risk-sorted decisions, preview, demo, status, independent review, guard hook (ROOT-D21 to D25) | user |
 | 10 | 2026-11-05 | Fixes from independent review; ROOT-D26 to D29 | user |
 | 11 | 2026-11-07 | Launch work: guard without `python3`, sample run, README, release (ROOT-D30 to D33) | user |
+| 12 | 2026-11-08 | Rule 10: write SpecX documents in ASD-STE100 (ROOT-D34, ROOT-T8) | user |
 
 - 2026-10-29: implemented Explore and synchronized the four-command docs; redaction/read-only review and structural validations passed, including manifest JSON, skill inventory/frontmatter, synchronized rules, docs, and spec/task consistency. No project test suite was run.
