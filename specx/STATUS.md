@@ -4,11 +4,13 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-ROOT-T4 (guard without `python3`) is built on `specx/delivery-ROOT-T4` reviewed, and fixed (M2, L1, L3, L4); its pull request is open. Windows is unverified.
+The main session built ROOT-T8 (rule 10: write in ASD-STE100) on `specx/delivery-ROOT-T8`. An independent agent reviewed it, and the main session applied the fixes that the user chose. The pull request is open.
+
+ROOT-T4 merged in [#4](https://github.com/WIRIN-prod/specx/pull/4) (plugin 0.5.3; Windows unverified). ROOT-T5, the sample run in [specx-example](https://github.com/WIRIN-prod/specx-example), is paused before `/specx:plan`; it resumes after ROOT-T8.
 
 ## Waiting on you
 
-- Review and approve the ROOT-T4 pull request.
+- Approve root spec version 13 (new rule 10 text for tables and EARS) with the ROOT-T8 pull request.
 
 ## Roadmap
 
@@ -17,7 +19,7 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 | Stage | Phase | Milestone | Progress | Version |
 |---|---|---|---|---|
 | — | — | ROOT-T3 | done | 0.5.1 |
-| Ongoing | — | ROOT-T4 to T7 | T4 in review; T5 to T7 approved | 0.6.0 planned |
+| Ongoing | — | ROOT-T4 to T7 | T4 done; T5 in progress; T6, T7 approved; T8 in review | 0.6.0 planned |
 
 ## Assumptions to check
 
@@ -27,4 +29,4 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 
 ## Latest review
 
-[2026-11-07-ROOT-T4.md](_reviews/2026-11-07-ROOT-T4.md), after [2026-11-05-ROOT-T3.md](_reviews/2026-11-05-ROOT-T3.md) and [2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)
+[2026-11-08-ROOT-T8.md](_reviews/2026-11-08-ROOT-T8.md), after [2026-11-07-ROOT-T4.md](_reviews/2026-11-07-ROOT-T4.md), after [2026-11-05-ROOT-T3.md](_reviews/2026-11-05-ROOT-T3.md) and [2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)

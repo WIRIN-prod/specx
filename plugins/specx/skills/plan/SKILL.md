@@ -107,6 +107,7 @@ Before showing a spec to the user, check it against every item. Fix what fails, 
 - [ ] Every entity has every field with type, nullability, default, and indexes; every migration has a rollback.
 - [ ] Every requirement is measurable and has an acceptance criterion; every criterion maps to a test level.
 - [ ] No vague words remain: "appropriate", "as needed", "etc.", "handle errors", "fast", "secure", "TBD".
+- [ ] New and changed text, including table cells, follows ASD-STE100 Simplified Technical English (rule 10).
 - [ ] It reads as a specification, not code: no file paths, function signatures, or code, except in Current state and in each task's `Files`.
 - [ ] An implementer would have to choose nothing except implementation details (rule 1). If not, list the questions as open decisions.
 
