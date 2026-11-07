@@ -146,7 +146,31 @@ with tempfile.TemporaryDirectory() as root:
     payload = json.dumps({"tool_name": "Edit", "tool_input": {"file_path": "docs/b.md"}, "cwd": tree})
     assert "deny" in script("run-guard.sh", tree, only_python, payload), "falls back to python"
     assert script("run-guard.sh", tree, "/nonexistent", payload) == "", "no python: silent"
-    assert script("run-guard.sh", tree, os.environ["PATH"], payload), "python3 still used"
+    # A python3 that exits without reading input, like the Windows Store alias, and a python that cannot run the guard.
+    broken = os.path.join(root, "broken")
+    os.makedirs(broken)
+    with open(os.path.join(broken, "stub"), "w", encoding="utf-8") as stub:
+        stub.write("#!/bin/sh\nexit 9\n")
+    os.chmod(os.path.join(broken, "stub"), 0o755)
+    stub_python3 = os.path.join(root, "stub-python3")
+    os.makedirs(stub_python3)
+    for name, target in [("python3", os.path.join(broken, "stub")), ("python", sys.executable), ("git", shutil.which("git"))]:
+        os.symlink(target, os.path.join(stub_python3, name))
+    assert "deny" in script("run-guard.sh", tree, stub_python3, payload), "broken python3: falls back"
+    stub_python = os.path.join(root, "stub-python")
+    os.makedirs(stub_python)
+    for name, target in [("python3", sys.executable), ("python", os.path.join(broken, "stub")), ("git", shutil.which("git"))]:
+        os.symlink(target, os.path.join(stub_python, name))
+    assert "deny" in script("run-guard.sh", tree, stub_python, payload), "python3 is tried first"
+    only_git = os.path.join(root, "only-git")
+    os.makedirs(only_git)
+    os.symlink(shutil.which("git"), os.path.join(only_git, "git"))
+    os.makedirs(os.path.join(repo, "src"))
+    assert "guard hook is off" in script("check-python.sh", os.path.join(repo, "src"), only_git), "warns from a subfolder"
+    stub_only = os.path.join(root, "stub-only")
+    os.makedirs(stub_only)
+    os.symlink(os.path.join(broken, "stub"), os.path.join(stub_only, "python3"))
+    assert "guard hook is off" in script("check-python.sh", repo, stub_only), "broken python3 only: warns"
     assert "guard hook is off" in script("check-python.sh", repo, "/nonexistent"), "warns"
     assert script("check-python.sh", repo, only_python) == "", "python is enough"
     assert script("check-python.sh", root, "/nonexistent") == "", "not a SpecX project"
