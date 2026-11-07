@@ -79,7 +79,8 @@ Agents never choose on the user's behalf, except for implementation details. Eve
 - Use the active voice and simple verb tenses.
 - Use not more than six sentences in a paragraph.
 - Use approved STE words with their approved meanings when you know them. Use technical names and technical verbs when necessary, for example `FastAPI`, `endpoint`, and `deploy`.
-- Do not change tables, code, commands, paths, or the user's quoted words to obey this rule.
+- Write text in table cells in STE. Do not change table structure, code, commands, paths, or the user's quoted words to obey this rule.
+- EARS keywords (`THE SYSTEM SHALL`, `WHEN`, `WHILE`, `WHERE`, `IF`, `THEN`) are technical terms. Use them in requirements.
 
 ## Layout
 
