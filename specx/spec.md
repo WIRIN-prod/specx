@@ -530,7 +530,7 @@ None.
 - **Decisions:** ROOT-D32
 - **Files:** `plugins/specx/hooks/`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the behavior is fully stated in ROOT-R25
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T4` / `specx-ROOT-T4` / [#4](https://github.com/WIRIN-prod/specx/pull/4)
 - **Assumptions:** The fallback is a small `run-guard.sh` and the warning a `check-python.sh`, both run with `bash`, rather than inline shell in `hooks.json`; easier to test.
 
 **Steps**
