@@ -71,6 +71,16 @@ Agents never choose on the user's behalf, except for implementation details. Eve
 - Do not invent thresholds, commands, or block-or-warn policies. Existing CI and test configuration are evidence of current behavior; do not silently promote them into new product requirements.
 - Never weaken, disable, skip, or delete an approved gate, test, or assertion to make work pass. Ask the user before changing an approved gate.
 
+## 10. Write in Simplified Technical English
+
+- Write all new and changed text in SpecX documents in ASD-STE100 Simplified Technical English. This includes specs, `TASKS.md`, `STATUS.md`, review reports, and these rules. Old text changes only when you edit it.
+- Write one instruction in each sentence. Use the imperative for instructions.
+- Use not more than 20 words in a procedural sentence and not more than 25 words in a descriptive sentence.
+- Use the active voice and simple verb tenses.
+- Use not more than six sentences in a paragraph.
+- Use approved STE words with their approved meanings when you know them. Use technical names and technical verbs when necessary, for example `FastAPI`, `endpoint`, and `deploy`.
+- Do not change tables, code, commands, paths, or the user's quoted words to obey this rule.
+
 ## Layout
 
 ```text

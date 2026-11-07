@@ -66,6 +66,7 @@ The same rules are in `specx/RULES.md` and the project's `CLAUDE.md` and `AGENTS
 6. **Nothing moves without approval.** That covers the roadmap, specs, tasks, each milestone, and merging.
 7. **Agents stay in scope.** They change only the files a task lists.
 8. **Reports are honest.** Agents never claim a check passed unless it ran and passed.
+9. **Documents are written in Simplified Technical English.** Agents write specs, tasks, status, and reviews in ASD-STE100: short sentences, one instruction each, active voice. They follow its writing rules and the approved words they know; the licensed dictionary is not included.
 
 ## Specs: one `spec.md` per folder
 
