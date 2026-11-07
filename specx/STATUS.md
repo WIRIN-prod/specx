@@ -4,7 +4,7 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-ROOT-T4 (guard without `python3`) is being built on `specx/delivery-ROOT-T4`.
+ROOT-T4 (guard without `python3`) is built on `specx/delivery-ROOT-T4` and in independent review.
 
 ## Waiting on you
 
@@ -21,7 +21,10 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 
 ## Assumptions to check
 
-None logged.
+| Assumption | Why | Task |
+|---|---|---|
+| The fallback and warning live in two small scripts run with `bash`, not inline in `hooks.json` | easier to read and test | ROOT-T4 |
+| The no-Python warning checks only the folder the session starts in | a cheap check; a session started in a subfolder gets no warning | ROOT-T4 |
 
 ## Latest review
 

@@ -531,7 +531,7 @@ None.
 - **Files:** `plugins/specx/hooks/`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the behavior is fully stated in ROOT-R25
 - **Branch / worktree / PR:** —
-- **Assumptions:** None yet.
+- **Assumptions:** The fallback is a small `run-guard.sh` and the warning a `check-python.sh`, both run with `bash`, rather than inline shell in `hooks.json`; easier to test. The warning checks only the folder the session starts in.
 
 **Steps**
 
@@ -548,6 +548,7 @@ None.
 
 - 2026-11-07: created after the user asked for all four launch fixes: "do all four".
 - 2026-11-07: the user approved spec version 11, tasks ROOT-T4 to T7, and starting T4: "Yes".
+- 2026-11-07: start point `a352cbe`. Built in worktree `specx-ROOT-T4` with a scope file; the main session built it instead of a subagent because the change is three small files. `guard_test.py` passed (also run from `/`). Live headless sessions: an out-of-scope write was denied, and with Python removed from `PATH` the session showed "SpecX: the guard hook is off because Python 3 was not found". Plugin bumped to 0.5.2. Not tested on Windows.
 
 ### ROOT-T5: End-to-end sample run
 
