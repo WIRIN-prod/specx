@@ -1,7 +1,7 @@
 {
   "name": "specx",
   "description": "Explore ideas, plan, execute, and review software with AI agents. The user decides; agents execute and log the details they choose.",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "author": {
     "name": "WIRIN",
     "url": "https://github.com/WIRIN-prod/specx"
