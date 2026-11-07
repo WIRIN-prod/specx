@@ -2,16 +2,30 @@
 """Self-check for guard.py, using a real git repository and worktree."""
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 
-GUARD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "guard.py")
+HOOKS = os.path.dirname(os.path.abspath(__file__))
+GUARD = os.path.join(HOOKS, "guard.py")
+BASH = shutil.which("bash")
+
+
+def script(name, cwd, path, payload=""):
+    """Run a hook script the way hooks.json does, with a chosen PATH."""
+    done = subprocess.run(
+        [BASH, os.path.join(HOOKS, name)], input=payload, capture_output=True,
+        text=True, cwd=cwd, env={"PATH": path}, check=False,
+    )
+    assert done.returncode == 0, (name, done.stderr)
+    return done.stdout
 
 
 def run(payload):
     done = subprocess.run(
-        [sys.executable, GUARD], input=payload, capture_output=True, text=True, check=True
+        [sys.executable, GUARD], input=payload, capture_output=True, text=True, check=True,
+        cwd=os.sep,  # the guard falls back to its own cwd; keep it outside any scoped worktree
     )
     if not done.stdout:
         return None
@@ -123,6 +137,19 @@ with tempfile.TemporaryDirectory() as root:
     ):
         assert bash(command, repo) is None, command
     assert bash("gh pr merge 3 --merge", root) is None, "not a SpecX project"
+
+    # Python fallback and warning (ROOT-R25).
+    only_python = os.path.join(root, "only-python")
+    os.makedirs(only_python)
+    os.symlink(sys.executable, os.path.join(only_python, "python"))
+    os.symlink(shutil.which("git"), os.path.join(only_python, "git"))
+    payload = json.dumps({"tool_name": "Edit", "tool_input": {"file_path": "docs/b.md"}, "cwd": tree})
+    assert "deny" in script("run-guard.sh", tree, only_python, payload), "falls back to python"
+    assert script("run-guard.sh", tree, "/nonexistent", payload) == "", "no python: silent"
+    assert script("run-guard.sh", tree, os.environ["PATH"], payload), "python3 still used"
+    assert "guard hook is off" in script("check-python.sh", repo, "/nonexistent"), "warns"
+    assert script("check-python.sh", repo, only_python) == "", "python is enough"
+    assert script("check-python.sh", root, "/nonexistent") == "", "not a SpecX project"
 
 assert run("not json") is None, "bad input does not block work"
 assert run("[1]") is None, "wrong shape does not block work"

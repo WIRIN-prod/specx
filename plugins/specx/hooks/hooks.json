@@ -1,13 +1,23 @@
 {
   "description": "SpecX guard: makes the rules that must not rest on an agent's memory real.",
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/check-python.sh\""
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Edit|MultiEdit|Write|NotebookEdit|Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guard.py\""
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/run-guard.sh\""
           }
         ]
       }
