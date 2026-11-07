@@ -668,7 +668,7 @@ None.
 - **Decisions:** ROOT-D34
 - **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/skills/review/SKILL.md`, `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`, `README.md`
 - **Model:** small, because the rule text is fixed here
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T8` / `specx-ROOT-T8` / [#5](https://github.com/WIRIN-prod/specx/pull/5)
 - **Assumptions:** None yet.
 
 **Rule text** (added after rule 9, before **Layout**):
