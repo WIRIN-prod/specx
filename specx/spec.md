@@ -519,7 +519,7 @@ None.
 
 ### ROOT-T4: Run the guard without `python3`
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** chore
 - **Why:** on Windows `python3` is often missing, so the guard silently does nothing (ROOT-D32).
 - **Done when:** with `python3` missing the guard runs through `python`; with no Python 3 at all, a SpecX project shows a warning at session start; the self-check proves both.
@@ -531,7 +531,7 @@ None.
 - **Files:** `plugins/specx/hooks/`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the behavior is fully stated in ROOT-R25
 - **Branch / worktree / PR:** —
-- **Assumptions:** The fallback is a small `run-guard.sh` and the warning a `check-python.sh`, both run with `bash`, rather than inline shell in `hooks.json`; easier to test. The warning checks only the folder the session starts in.
+- **Assumptions:** The fallback is a small `run-guard.sh` and the warning a `check-python.sh`, both run with `bash`, rather than inline shell in `hooks.json`; easier to test.
 
 **Steps**
 
@@ -549,6 +549,7 @@ None.
 - 2026-11-07: created after the user asked for all four launch fixes: "do all four".
 - 2026-11-07: the user approved spec version 11, tasks ROOT-T4 to T7, and starting T4: "Yes".
 - 2026-11-07: start point `a352cbe`. Built in worktree `specx-ROOT-T4` with a scope file; the main session built it instead of a subagent because the change is three small files. `guard_test.py` passed (also run from `/`). Live headless sessions: an out-of-scope write was denied, and with Python removed from `PATH` the session showed "SpecX: the guard hook is off because Python 3 was not found". Plugin bumped to 0.5.2. Not tested on Windows.
+- 2026-11-07: independent review [2026-11-07-ROOT-T4.md](_reviews/2026-11-07-ROOT-T4.md): no high findings, 2 medium, 5 low. The user approved fixing M2, L1, L3, and L4 in this task: "do the fixes". The warning now finds the project from the git top level, needs Python 3.7, and tests cover a broken `python3` and a subfolder start; each new test was seen failing with its fix undone. `guard_test.py` passed from the repo and from `/`; live sessions denied an out-of-scope write and showed the warning from a subfolder with no Python. Plugin 0.5.3. M1 stays open: Windows unverified. L2 and L5 left as they are.
 
 ### ROOT-T5: End-to-end sample run
 

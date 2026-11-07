@@ -4,11 +4,11 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-ROOT-T4 (guard without `python3`) is built on `specx/delivery-ROOT-T4` and in independent review.
+ROOT-T4 (guard without `python3`) is built on `specx/delivery-ROOT-T4` reviewed, and fixed (M2, L1, L3, L4); its pull request is open. Windows is unverified.
 
 ## Waiting on you
 
-Nothing right now.
+- Review and approve the ROOT-T4 pull request.
 
 ## Roadmap
 
@@ -17,15 +17,14 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 | Stage | Phase | Milestone | Progress | Version |
 |---|---|---|---|---|
 | — | — | ROOT-T3 | done | 0.5.1 |
-| Ongoing | — | ROOT-T4 to T7 | T4 in progress; T5 to T7 approved | 0.6.0 planned |
+| Ongoing | — | ROOT-T4 to T7 | T4 in review; T5 to T7 approved | 0.6.0 planned |
 
 ## Assumptions to check
 
 | Assumption | Why | Task |
 |---|---|---|
 | The fallback and warning live in two small scripts run with `bash`, not inline in `hooks.json` | easier to read and test | ROOT-T4 |
-| The no-Python warning checks only the folder the session starts in | a cheap check; a session started in a subfolder gets no warning | ROOT-T4 |
 
 ## Latest review
 
-[2026-11-05-ROOT-T3.md](_reviews/2026-11-05-ROOT-T3.md), after [2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)
+[2026-11-07-ROOT-T4.md](_reviews/2026-11-07-ROOT-T4.md), after [2026-11-05-ROOT-T3.md](_reviews/2026-11-05-ROOT-T3.md) and [2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)
