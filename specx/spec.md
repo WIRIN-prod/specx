@@ -699,6 +699,7 @@ None.
 
 - 2026-11-08: created after the user asked for the rule: "make these change".
 - 2026-11-08: the user approved spec version 12, the rule text, and starting T8: "Yes approve, start T8".
+- 2026-11-08: start point `767e17c`. Built in worktree `specx-ROOT-T8` with a scope file, by the main session, because the rule text is fixed in this spec. The CI rules check (run locally), `guard_test.py`, and `claude plugin validate plugins/specx` passed. Plugin 0.5.4.
 
 ## 11. Open questions
 

@@ -4,7 +4,7 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-ROOT-T8 (rule 10: write in ASD-STE100) is in progress on `specx/delivery-ROOT-T8`.
+ROOT-T8 (rule 10: write in ASD-STE100) is built on `specx/delivery-ROOT-T8` and in independent review.
 
 ROOT-T4 merged in [#4](https://github.com/WIRIN-prod/specx/pull/4) (plugin 0.5.3; Windows unverified). ROOT-T5, the sample run in [specx-example](https://github.com/WIRIN-prod/specx-example), is paused before `/specx:plan`; it resumes after ROOT-T8.
 
