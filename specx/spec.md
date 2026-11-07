@@ -1,8 +1,8 @@
 ---
 id: ROOT
 title: SpecX
-status: approved
-version: 12
+status: draft
+version: 13
 parent: none
 depends_on: []
 ---
@@ -409,6 +409,7 @@ None.
 - **Question:** Must agents write specs in ASD-STE100 Simplified Technical English, and how far does the rule reach?
 - **Answer:** "For writting specs the agent should follow ASD-STE100 standard always this should be a rule make these change." Then: coverage "All SpecX documents (Recommended)"; strictness "Writing rules + known words (Recommended)", because the licensed dictionary cannot ship in the plugin; checking "Rule + review check (Recommended)"; existing text "New writing only (Recommended)". (user, 2026-11-08)
 - **Affects:** ROOT-R26, ROOT-T8
+- **Follow-up (2026-11-08):** after review finding F1, the user chose "Cells in STE, EARS allowed (Recommended)": write text in table cells in STE, keep the table structure, and use EARS keywords as technical terms. For F3 and F4, the user chose to fix both in ROOT-T8.
 
 ## 10. Tasks
 
@@ -656,7 +657,7 @@ None.
 
 ### ROOT-T8: Write SpecX documents in Simplified Technical English
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** chore
 - **Why:** the user wants every spec in ASD-STE100 (ROOT-D34).
 - **Done when:** the rules have rule 10 with the text below in all four copies; `/specx:review` checks it; CI passes.
@@ -665,7 +666,7 @@ None.
 - **Depends on:** ROOT-T4
 - **Covers:** ROOT-R26
 - **Decisions:** ROOT-D34
-- **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/skills/review/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`, `README.md`
+- **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/skills/review/SKILL.md`, `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`, `README.md`
 - **Model:** small, because the rule text is fixed here
 - **Branch / worktree / PR:** —
 - **Assumptions:** None yet.
@@ -681,7 +682,8 @@ None.
 - Use the active voice and simple verb tenses.
 - Use not more than six sentences in a paragraph.
 - Use approved STE words with their approved meanings when you know them. Use technical names and technical verbs when necessary, for example `FastAPI`, `endpoint`, and `deploy`.
-- Do not change tables, code, commands, paths, or the user's quoted words to obey this rule.
+- Write text in table cells in STE. Do not change table structure, code, commands, paths, or the user's quoted words to obey this rule.
+- EARS keywords (`THE SYSTEM SHALL`, `WHEN`, `WHILE`, `WHERE`, `IF`, `THEN`) are technical terms. Use them in requirements.
 ```
 
 **Steps**
@@ -689,6 +691,7 @@ None.
 1. Add the rule text to `plugins/specx/templates/RULES.md`, then copy the rules to `specx/RULES.md` and to the marked sections of `CLAUDE.md` and `AGENTS.md`.
 2. In `/specx:review`, add a check: new or changed text in `specx/` that breaks rule 10 is a low finding, with the sentence and the part of the rule it breaks.
 3. Add one line to the README about rule 10. Bump the plugin to 0.5.4.
+4. Review fixes (F3, F4): add the missing README line for rule 9, so the README numbers agree with the rules. In `/specx:review`, report writing breaks as one low finding for each file, with the list of sentences. In the plan build-ready check (step 5), add an item for rule 10.
 
 **Verification**
 
@@ -699,7 +702,10 @@ None.
 
 - 2026-11-08: created after the user asked for the rule: "make these change".
 - 2026-11-08: the user approved spec version 12, the rule text, and starting T8: "Yes approve, start T8".
-- 2026-11-08: start point `767e17c`. Built in worktree `specx-ROOT-T8` with a scope file, by the main session, because the rule text is fixed in this spec. The CI rules check (run locally), `guard_test.py`, and `claude plugin validate plugins/specx` passed. Plugin 0.5.4.
+- 2026-11-08: The start point is `767e17c`. The main session built T8 in worktree `specx-ROOT-T8` with a scope file, because this spec fixes the rule text. The CI rules check (run locally), `guard_test.py`, and `claude plugin validate plugins/specx` passed. The plugin version is 0.5.4.
+- 2026-11-08: An independent agent reviewed T8: [2026-11-08-ROOT-T8.md](_reviews/2026-11-08-ROOT-T8.md). It found no critical or high findings, one medium finding, and three low findings. The main session corrected F2 in its own record lines.
+- 2026-11-08: For F1, the user chose "Cells in STE, EARS allowed (Recommended)". For F3 and F4, the user chose to fix both. This changes the approved rule text, so the spec is now version 13 and needs approval again.
+- 2026-11-08: The main session applied F1, F3, and F4 in worktree `specx-ROOT-T8`. The CI rules check (run locally) passed and confirmed that the rule text agrees with this spec. `guard_test.py` and `claude plugin validate plugins/specx` passed. No independent agent reviewed these fixes again.
 
 ## 11. Open questions
 
@@ -722,5 +728,6 @@ None.
 | 10 | 2026-11-05 | Fixes from independent review; ROOT-D26 to D29 | user |
 | 11 | 2026-11-07 | Launch work: guard without `python3`, sample run, README, release (ROOT-D30 to D33) | user |
 | 12 | 2026-11-08 | Rule 10: write SpecX documents in ASD-STE100 (ROOT-D34, ROOT-T8) | user |
+| 13 | 2026-11-08 | Rule 10: text in table cells follows STE; EARS keywords are technical terms (review F1) | pending |
 
 - 2026-10-29: implemented Explore and synchronized the four-command docs; redaction/read-only review and structural validations passed, including manifest JSON, skill inventory/frontmatter, synchronized rules, docs, and spec/task consistency. No project test suite was run.
