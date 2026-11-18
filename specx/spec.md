@@ -799,7 +799,7 @@ Run the upgrade on a copy of an old `TASKS.md`. Every row keeps its values, and 
 
 ### ROOT-T10: Require exact error bodies in specs
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** feature
 - **Why:** ROOT-T5 findings F11 and F16. A spec named an error body in words, and the build agent chose one form.
 - **Done when:** The build-ready check fails for an error row without a literal body, and for an error described in two different ways.
@@ -810,7 +810,7 @@ Run the upgrade on a copy of an old `TASKS.md`. Every row keeps its values, and 
 - **Decisions:** ROOT-D34 for the text rules.
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/templates/specx/_templates/spec.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the check is one list
-- **Branch / worktree / PR:** `specx/ROOT-T10` / `../specx-ROOT-T10` / —
+- **Branch / worktree / PR:** `specx/ROOT-T10` / `../specx-ROOT-T10` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -828,6 +828,7 @@ Review the plan skill text. It contains both items, and each item names a failin
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-18: the user approved the preview of ROOT-T10: \"approve the preview of ROOT-T10\". The build starts in worktree `../specx-ROOT-T10`.
+- 2026-11-18: the builder committed 048abc0, d34a299, and 9a47a70. Two independent reviews asked for changes; the third review passed the wording fixes ([report](_reviews/2026-11-18-ROOT-T10.md)). Open for the user: the 204 rule (a 204 with no body fails item 1) and template section 6.3 (F6).
 
 ### ROOT-T11: Require a check that fails before the change
 
