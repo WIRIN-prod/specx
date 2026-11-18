@@ -4,13 +4,10 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-The main session built ROOT-T8 (rule 10: write in ASD-STE100) on `specx/delivery-ROOT-T8`. An independent agent reviewed it, and the main session applied the fixes that the user chose. The pull request is open.
-
-ROOT-T4 merged in [#4](https://github.com/WIRIN-prod/specx/pull/4) (plugin 0.5.3; Windows unverified). ROOT-T5, the sample run in [specx-example](https://github.com/WIRIN-prod/specx-example), is paused before `/specx:plan`; it resumes after ROOT-T8.
+ROOT-T8 (rule 10: ASD-STE100) merged in [#5](https://github.com/WIRIN-prod/specx/pull/5). The plugin version is 0.5.4. ROOT-T5, the sample run in [specx-example](https://github.com/WIRIN-prod/specx-example), is done. Its NOTES phase merged as [pull request #1](https://github.com/WIRIN-prod/specx-example/pull/1). The findings report is [2026-11-18-ROOT-T5.md](_reviews/2026-11-18-ROOT-T5.md). Your answers to the eight decisions ROOT-D35 to D42 are recorded. Seventeen findings map to twelve draft tasks (ROOT-T9 to T20). Finding F12 was already fixed in ROOT-T8. The spec is approved as version 14. The user approved the ROOT-T9 preview, and an agent now builds it.
 
 ## Waiting on you
 
-- Approve root spec version 13 (new rule 10 text for tables and EARS) with the ROOT-T8 pull request.
 
 ## Roadmap
 
@@ -19,7 +16,8 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 | Stage | Phase | Milestone | Progress | Version |
 |---|---|---|---|---|
 | — | — | ROOT-T3 | done | 0.5.1 |
-| Ongoing | — | ROOT-T4 to T7 | T4 done; T5 in progress; T6, T7 approved; T8 in review | 0.6.0 planned |
+| Ongoing | — | ROOT-T4 to T7 | T4 done; T5 done; T6, T7 todo; T8 done | 0.6.0 planned |
+| Ongoing | — | ROOT-T9 to T20 | ROOT-T9 in progress; T10 to T20 todo | 0.6.x planned |
 
 ## Assumptions to check
 
@@ -29,4 +27,4 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 
 ## Latest review
 
-[2026-11-08-ROOT-T8.md](_reviews/2026-11-08-ROOT-T8.md), after [2026-11-07-ROOT-T4.md](_reviews/2026-11-07-ROOT-T4.md), after [2026-11-05-ROOT-T3.md](_reviews/2026-11-05-ROOT-T3.md) and [2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)
+[2026-11-18-ROOT-T5.md](_reviews/2026-11-18-ROOT-T5.md), after [2026-11-08-ROOT-T8.md](_reviews/2026-11-08-ROOT-T8.md), after [2026-11-07-ROOT-T4.md](_reviews/2026-11-07-ROOT-T4.md), after [2026-11-05-ROOT-T3.md](_reviews/2026-11-05-ROOT-T3.md) and [2026-11-03-ROOT-T3.md](_reviews/2026-11-03-ROOT-T3.md)
