@@ -17,7 +17,7 @@ SpecX itself has no stages or phases yet; its work is tracked as single items.
 |---|---|---|---|---|
 | — | — | ROOT-T3 | done | 0.5.1 |
 | Ongoing | — | ROOT-T4 to T7 | T4 done; T5 done; T6, T7 todo; T8 done | 0.6.0 planned |
-| Ongoing | — | ROOT-T9 to T20 | ROOT-T9 in progress; T10 to T20 todo | 0.6.x planned |
+| Ongoing | — | ROOT-T9 to T20 | ROOT-T9 done; ROOT-T10 in progress; T11 to T20 todo | 0.6.x planned |
 
 ## Assumptions to check
 
