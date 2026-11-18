@@ -22,7 +22,9 @@ Plan is frontier-model work, one phase at a time. Everything planned must be spe
 On every run, check the `specx/TASKS.md` columns. If the file does not exist, skip this check.
 - Compare the header row of `specx/TASKS.md` with the header row of `${CLAUDE_PLUGIN_ROOT}/templates/specx/TASKS.md`.
 - List each template column that the project header lacks, in template order.
-- Pad each row that has fewer cells than the header with `—`, up to the header width before this step.
+- Count cells with unescaped `|` only. Counting does not change the row text.
+- If a row does not end with `|`, add a trailing `|` first.
+- Pad every row to the current header width on every run, even when no column is listed. Write `—` in each padded cell, including cells in old columns.
 - Append each listed column to the end of the header row.
 - Write `---` in each new cell of the separator row.
 - Write one `—` for each listed column at the end of every existing row.
