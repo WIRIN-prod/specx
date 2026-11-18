@@ -116,6 +116,8 @@ Before showing a spec to the user, check it against every item. Fix what fails, 
 - [ ] Every section and §6 subsection is filled, or marked "None: <reason>", "Inherited: …", or "Deferred: <phase ID>". Nothing this phase builds is deferred.
 - [ ] Every library, framework, service, and tool has an exact version and traces to an answered decision or to the code.
 - [ ] Every interface states its inputs with types and rules, its output and side effects, and every error's status, code, and message.
+- [ ] Every error row has a literal body, either exact JSON or exact message text. A row that describes the body in words fails this item.
+- [ ] Each error has one description across all specs. If two specs describe the same error in different words, make both match, or turn it into a decision.
 - [ ] Every entity has every field with type, nullability, default, and indexes; every migration has a rollback.
 - [ ] Every requirement is measurable and has an acceptance criterion; every criterion maps to a test level.
 - [ ] No vague words remain: "appropriate", "as needed", "etc.", "handle errors", "fast", "secure", "TBD".
