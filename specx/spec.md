@@ -1,8 +1,8 @@
 ---
 id: ROOT
 title: SpecX
-status: draft
-version: 13
+status: approved
+version: 14
 parent: none
 depends_on: []
 ---
@@ -411,6 +411,97 @@ None.
 - **Affects:** ROOT-R26, ROOT-T8
 - **Follow-up (2026-11-08):** after review finding F1, the user chose "Cells in STE, EARS allowed (Recommended)": write text in table cells in STE, keep the table structure, and use EARS keywords as technical terms. For F3 and F4, the user chose to fix both in ROOT-T8.
 
+### ROOT-D35: Choices the user delegates
+
+- **Status:** answered (2026-11-18)
+- **Question:** How should SpecX record a choice that the user hands to the agent, such as "You choose what is right"?
+- **Options:**
+  - A. A new rule 11. The agent records the user's words, the date, and its choice. It shows the choice at the next demo. (Recommended: the choice stays visible and the user can overturn it.)
+  - B. Record the choice only in the decision section. No rule is added.
+  - C. Keep the current behavior. Nothing is recorded.
+- **Answer:** "New rule 11 (Recommended)". (user, 2026-11-18)
+- **Source:** ROOT-T5 finding F3.
+- **Affects:** ROOT-T15
+
+### ROOT-D36: Files that a command commits
+
+- **Status:** answered (2026-11-18)
+- **Question:** Which files do `/specx:explore`, `/specx:plan`, and `/specx:execute` commit?
+- **Options:**
+  - A. Explore never commits. Plan and execute commit `specx/`, `CLAUDE.md`, and `AGENTS.md` in the delivery commit. (Recommended: no file changed by a rule stays uncommitted.)
+  - B. Commit only `specx/`. This is the current behavior.
+  - C. Ask the user before each commit.
+- **Answer:** "Explore never; plan/execute commit specx/, CLAUDE.md, AGENTS.md (Recommended)". (user, 2026-11-18)
+- **Source:** ROOT-T5 findings F2 and F10.
+- **Affects:** ROOT-T13, ROOT-T15
+
+### ROOT-D37: Where milestones live before the phase spec exists
+
+- **Status:** answered (2026-11-18)
+- **Question:** Where does a milestone live before its phase spec is written?
+- **Options:**
+  - A. The root spec's **Children** table holds each milestone, with its goal and "done when" line. (Recommended: the roadmap stays in one place.)
+  - B. `specx/STATUS.md` holds the milestones.
+  - C. Write the phase spec before any milestone is named.
+- **Answer:** "Root spec Children table (Recommended)". (user, 2026-11-18)
+- **Source:** ROOT-T5 finding F4.
+- **Affects:** ROOT-T16
+
+### ROOT-D38: Long EARS requirements under rule 10
+
+- **Status:** answered (2026-11-18)
+- **Question:** What does a requirement do when its EARS sentence is longer than 25 words?
+- **Options:**
+  - A. Split the requirement into two numbered requirements. Keep the 25-word limit. (Recommended: the rule stays simple.)
+  - B. Allow EARS sentences up to 35 words.
+- **Answer:** "Split into two requirements (Recommended)". (user, 2026-11-18)
+- **Source:** ROOT-T5 finding F5.
+- **Affects:** ROOT-T17
+
+### ROOT-D39: Conjunctions in rule 10
+
+- **Status:** answered (2026-11-18)
+- **Question:** Does rule 10 change its sentences that join two instructions with "and"?
+- **Options:**
+  - A. Rewrite each sentence so that it holds one instruction. (Recommended: this follows rule 10 itself.)
+  - B. Keep the current text.
+- **Answer:** "Rewrite (Recommended)". (user, 2026-11-18)
+- **Source:** ROOT-T5 finding F13.
+- **Affects:** ROOT-T17
+
+### ROOT-D40: Lookups that time out
+
+- **Status:** answered (2026-11-18)
+- **Question:** What does plan do when a package lookup times out?
+- **Options:**
+  - A. Use the installed tool version. Record the version and the timeout in the spec. (Recommended: planning continues without a network call.)
+  - B. Stop and ask the user for the version.
+- **Answer:** "Use installed version (Recommended)". (user, 2026-11-18)
+- **Source:** ROOT-T5 finding F8.
+- **Affects:** ROOT-T20
+
+### ROOT-D41: Question rounds
+
+- **Status:** answered (2026-11-18)
+- **Question:** How many questions does one round ask?
+- **Options:**
+  - A. Group independent questions into one round, up to four. (Recommended: fewer replies from the user.)
+  - B. Ask one question at a time.
+- **Answer:** "Group up to four (Recommended)". (user, 2026-11-18)
+- **Source:** ROOT-T5 finding F7.
+- **Affects:** ROOT-T19
+
+### ROOT-D42: Process kills by agents
+
+- **Status:** answered (2026-11-18)
+- **Question:** How does SpecX stop agents from killing processes by pattern?
+- **Options:**
+  - A. The guard hook denies `pkill` and `killall` inside SpecX worktrees. The build brief also forbids pattern kills. (Recommended: the rule is enforced, not only requested.)
+  - B. The build brief forbids pattern kills. The hook does not change.
+- **Answer:** "Hook denies it + brief (Recommended)". (user, 2026-11-18)
+- **Source:** ROOT-T5 finding F18.
+- **Affects:** ROOT-T12, ROOT-T14
+
 ## 10. Tasks
 
 ### ROOT-T1: Align SpecX workflows with agent-skills
@@ -593,6 +684,7 @@ None.
 - 2026-11-07: created.
 - 2026-11-07: the user approved the preview, including creating the public repository: "Yes t5 approve".
 - 2026-11-07: created `WIRIN-prod/specx-example` (public, README only). The user chose to have the main session drive the run with the 0.5.3 skills from this repository: "Option A".
+- 2026-11-18: the findings report is [2026-11-18-ROOT-T5.md](_reviews/2026-11-18-ROOT-T5.md). It lists 18 findings. None is a task yet. Each must go through `/specx:plan` and get user approval.
 
 ### ROOT-T6: Launch README
 
@@ -657,7 +749,7 @@ None.
 
 ### ROOT-T8: Write SpecX documents in Simplified Technical English
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** chore
 - **Why:** the user wants every spec in ASD-STE100 (ROOT-D34).
 - **Done when:** the rules have rule 10 with the text below in all four copies; `/specx:review` checks it; CI passes.
@@ -674,6 +766,374 @@ None.
 **Rule text** (added after rule 9, before **Layout**):
 
 ```markdown
+### ROOT-T9: Add new TASKS.md columns on upgrade
+
+- **Status:** in-progress
+- **Type:** bug
+- **Why:** ROOT-T5 finding F1. An upgraded project keeps the old `TASKS.md` table.
+- **Done when:** The plan upgrade step adds each missing column to an existing `TASKS.md` and keeps every row.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T8
+- **Covers:** None: bug fix.
+- **Decisions:** None: the fix follows the current template.
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/templates/specx/TASKS.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the change is one step
+- **Branch / worktree / PR:** `specx/ROOT-T9` / `../specx-ROOT-T9` / —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add a step to plan step 0.2 that compares the `TASKS.md` header with the template.
+2. Add each missing column with `—` in every row.
+3. Bump the plugin version.
+
+**Verification**
+
+Run the upgrade on a copy of an old `TASKS.md`. Every row keeps its values, and the new columns appear.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T10: Require exact error bodies in specs
+
+- **Status:** todo
+- **Type:** feature
+- **Why:** ROOT-T5 findings F11 and F16. A spec named an error body in words, and the build agent chose one form.
+- **Done when:** The build-ready check fails for an error row without a literal body, and for an error described in two different ways.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T9
+- **Covers:** None: the check is a planning step.
+- **Decisions:** ROOT-D34 for the text rules.
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/templates/specx/_templates/spec.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the check is one list
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add a build-ready item: every error row has a literal body.
+2. Add a build-ready item: one error has one description across the specs.
+3. Bump the plugin version.
+
+**Verification**
+
+Review the plan skill text. It contains both items, and each item names a failing example.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T11: Require a check that fails before the change
+
+- **Status:** todo
+- **Type:** feature
+- **Why:** ROOT-T5 findings F14 and F15. A test passed on code that it should have failed on, and nothing caught it.
+- **Done when:** The build-ready check asks whether each check fails on the code before the change. Execute runs that check on a copy before merge.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T10
+- **Covers:** None: the check is a planning and execution step.
+- **Decisions:** None.
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/skills/execute/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the change is two steps
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add a build-ready item: the check fails on the code before the change.
+2. Add an execute step: run each new check on a copy of the code before the change, outside the worktree, before merge.
+3. Bump the plugin version.
+
+**Verification**
+
+Review both skill files. Each change names the check and the copy.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T12: Forbid pattern kills and limit build assumptions
+
+- **Status:** todo
+- **Type:** chore
+- **Why:** ROOT-T5 findings F17 and F18. A build agent killed processes it did not own, and it listed spec-fixed behavior as assumptions.
+- **Done when:** The build brief forbids pattern kills and lists only spec-open choices.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T11
+- **Covers:** None: the brief text.
+- **Decisions:** ROOT-D42
+- **Files:** `plugins/specx/skills/execute/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the brief is one block
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add to the build brief: never use `pkill`, `killall`, or a pattern kill. Stop a server only by its saved process ID.
+2. Add to the build brief: list only choices the spec leaves open. Cite the spec line for any other point.
+3. Bump the plugin version.
+
+**Verification**
+
+Review the brief. It contains both rules.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T13: Ask for a branch only when several exist; commit the rule files
+
+- **Status:** todo
+- **Type:** bug
+- **Why:** ROOT-T5 findings F9 and F10. Execute asked for a main branch that was the only branch, and it left rule files uncommitted.
+- **Done when:** Execute asks for the main branch only when more than one exists, and commits every rule file it changed, as ROOT-D36 decides.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T12
+- **Covers:** None: bug fix.
+- **Decisions:** ROOT-D36
+- **Files:** `plugins/specx/skills/execute/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the change is two steps
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Skip the branch question when one main branch exists.
+2. Add `CLAUDE.md`, `AGENTS.md`, and the rule files to the delivery commit, as ROOT-D36 decides.
+3. Bump the plugin version.
+
+**Verification**
+
+Run execute on a copy with one branch. It does not ask. The commit lists the rule files.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T14: Block pattern kills in SpecX worktrees
+
+- **Status:** todo
+- **Type:** feature
+- **Why:** ROOT-T5 finding F18. A pattern kill stopped services outside the task.
+- **Done when:** The guard hook denies `pkill` and `killall` inside SpecX worktrees, and its tests cover the rule.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T12
+- **Covers:** ROOT-R11 for the guard test.
+- **Decisions:** ROOT-D42
+- **Files:** `plugins/specx/hooks/guard.py`, `plugins/specx/hooks/guard_test.py`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** mid, because the guard needs a test for each case
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Deny `pkill` and `killall` inside a SpecX worktree, and print the reason.
+2. Add tests for the allowed and denied cases.
+3. Bump the plugin version.
+
+**Verification**
+
+Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T15: Record delegated choices
+
+- **Status:** todo
+- **Type:** feature
+- **Why:** ROOT-T5 finding F3. No rule says how the agent records a choice the user delegates.
+- **Done when:** The rules record each delegated choice with the user's words, the date, and the agent's choice, as ROOT-D35 decides.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T14
+- **Covers:** ROOT-R2 for the decision path.
+- **Decisions:** ROOT-D35
+- **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the rule is one addition
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add rule 11 as ROOT-D35 decides.
+2. Copy the rule to the four copies, as ROOT-T8 did.
+3. Bump the plugin version.
+
+**Verification**
+
+Run the rule check from ROOT-T8. The four copies match.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T16: Place milestones in the root spec
+
+- **Status:** todo
+- **Type:** chore
+- **Why:** ROOT-T5 finding F4. A milestone has no place before its phase spec exists.
+- **Done when:** Plan writes each milestone in the root spec's Children table with its goal and done-when line, as ROOT-D37 decides.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T15
+- **Covers:** None: plan step text.
+- **Decisions:** ROOT-D37
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the change is one step
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add the step in plan step 2 that writes milestones to the Children table.
+2. Bump the plugin version.
+
+**Verification**
+
+Review plan step 2. It names the table.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T17: Make rule 10 hold for long requirements
+
+- **Status:** todo
+- **Type:** chore
+- **Why:** ROOT-T5 findings F5 and F13. Long EARS sentences break rule 10, and some sentences join two instructions.
+- **Done when:** Rule 10 gives the limit for EARS sentences, and its sentences hold one instruction each, as ROOT-D38 and ROOT-D39 decide.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T16
+- **Covers:** ROOT-R2 for the rule text.
+- **Decisions:** ROOT-D38, ROOT-D39
+- **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the rule text is short
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Apply ROOT-D38 to the EARS rule.
+2. Apply ROOT-D39 to rule 10's sentences.
+3. Copy the rule to the four copies. Bump the plugin version.
+
+**Verification**
+
+Run the rule check from ROOT-T8. The four copies match.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T18: Stop plan from filling in behavior
+
+- **Status:** todo
+- **Type:** bug
+- **Why:** ROOT-T5 finding F6. Plan wrote five behaviors into a spec before the user answered.
+- **Done when:** Plan asks before it writes any behavior, and writes only the answers the user gives.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T17
+- **Covers:** ROOT-R3 for the question rule.
+- **Decisions:** None: the rule already forbids it (rule 4).
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the change is one step
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add to plan step 3: ask about each behavior before writing it.
+2. Bump the plugin version.
+
+**Verification**
+
+Review plan step 3. It names the question step.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T19: Group questions into rounds
+
+- **Status:** todo
+- **Type:** chore
+- **Why:** ROOT-T5 finding F7. Plan and explore asked questions in many small rounds.
+- **Done when:** Plan and explore group independent questions into one round, as ROOT-D41 decides.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T18
+- **Covers:** None: skill text.
+- **Decisions:** ROOT-D41
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/skills/explore/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the change is one rule per skill
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add the round rule to plan and explore, as ROOT-D41 decides.
+2. Bump the plugin version.
+
+**Verification**
+
+Review both skill files. Each names the round limit.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
+### ROOT-T20: Use the installed version when a lookup times out
+
+- **Status:** todo
+- **Type:** chore
+- **Why:** ROOT-T5 finding F8. A package lookup timed out for a large package.
+- **Done when:** Plan uses the installed tool version when a lookup times out, and records it, as ROOT-D40 decides.
+- **Milestone:** —
+- **Parent:** None
+- **Depends on:** ROOT-T19
+- **Covers:** None: skill text.
+- **Decisions:** ROOT-D40
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Model:** small, because the change is one step
+- **Branch / worktree / PR:** —
+- **Assumptions:** None yet.
+
+**Steps**
+
+1. Add the timeout fallback to plan step 4, as ROOT-D40 decides.
+2. Bump the plugin version.
+
+**Verification**
+
+Review plan step 4. It names the fallback.
+
+**Log**
+
+- 2026-11-18: created from the ROOT-T5 findings report.
+- 2026-11-18: the user approved the task list: \"yes\".
+
 ## 10. Write in Simplified Technical English
 
 - Write all new and changed text in SpecX documents in ASD-STE100 Simplified Technical English. This includes specs, `TASKS.md`, `STATUS.md`, review reports, and these rules. Old text changes only when you edit it.
@@ -706,6 +1166,7 @@ None.
 - 2026-11-08: An independent agent reviewed T8: [2026-11-08-ROOT-T8.md](_reviews/2026-11-08-ROOT-T8.md). It found no critical or high findings, one medium finding, and three low findings. The main session corrected F2 in its own record lines.
 - 2026-11-08: For F1, the user chose "Cells in STE, EARS allowed (Recommended)". For F3 and F4, the user chose to fix both. This changes the approved rule text, so the spec is now version 13 and needs approval again.
 - 2026-11-08: The main session applied F1, F3, and F4 in worktree `specx-ROOT-T8`. The CI rules check (run locally) passed and confirmed that the rule text agrees with this spec. `guard_test.py` and `claude plugin validate plugins/specx` passed. No independent agent reviewed these fixes again.
+- 2026-11-08: CI passed. The user approved PR #5 and spec version 13: "Yes approve". GitHub merged it as `8da17dc`.
 
 ## 11. Open questions
 
@@ -728,6 +1189,7 @@ None.
 | 10 | 2026-11-05 | Fixes from independent review; ROOT-D26 to D29 | user |
 | 11 | 2026-11-07 | Launch work: guard without `python3`, sample run, README, release (ROOT-D30 to D33) | user |
 | 12 | 2026-11-08 | Rule 10: write SpecX documents in ASD-STE100 (ROOT-D34, ROOT-T8) | user |
-| 13 | 2026-11-08 | Rule 10: text in table cells follows STE; EARS keywords are technical terms (review F1) | pending |
+| 13 | 2026-11-08 | Rule 10: text in table cells follows STE; EARS keywords are technical terms (review F1) | user |
+| 14 | 2026-11-18 | Fixes from the ROOT-T5 findings: decisions ROOT-D35 to D42, tasks ROOT-T9 to T20 | user, "yes" |
 
 - 2026-10-29: implemented Explore and synchronized the four-command docs; redaction/read-only review and structural validations passed, including manifest JSON, skill inventory/frontmatter, synchronized rules, docs, and spec/task consistency. No project test suite was run.
