@@ -22,9 +22,12 @@ Plan is frontier-model work, one phase at a time. Everything planned must be spe
 On every run, check the `specx/TASKS.md` columns. If the file does not exist, skip this check.
 - Compare the header row of `specx/TASKS.md` with the header row of `${CLAUDE_PLUGIN_ROOT}/templates/specx/TASKS.md`.
 - List each template column that the project header lacks, in template order.
-- Append each listed column to the right end of the header row and the separator row.
-- Write `—` in the new cell of every existing row.
-- Keep every existing column, cell, and row. Do not reorder or delete them.
+- Pad each row that has fewer cells than the header with `—`, up to the header width before this step.
+- Append each listed column to the end of the header row.
+- Write `---` in each new cell of the separator row.
+- Write one `—` for each listed column at the end of every existing row.
+- Do not split or join rows. Append new cells at the end of each row line.
+- Keep every existing cell text byte-for-byte, including `\|`. Do not reorder or delete a column or row.
 
 ## 1. Get context
 
