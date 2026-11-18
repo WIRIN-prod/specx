@@ -768,7 +768,7 @@ None.
 ```markdown
 ### ROOT-T9: Add new TASKS.md columns on upgrade
 
-- **Status:** in-progress
+- **Status:** done
 - **Type:** bug
 - **Why:** ROOT-T5 finding F1. An upgraded project keeps the old `TASKS.md` table.
 - **Done when:** The plan upgrade step adds each missing column to an existing `TASKS.md` and keeps every row.
@@ -779,7 +779,7 @@ None.
 - **Decisions:** None: the fix follows the current template.
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/templates/specx/TASKS.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
-- **Branch / worktree / PR:** `specx/ROOT-T9` / `../specx-ROOT-T9` / —
+- **Branch / worktree / PR:** `specx/ROOT-T9` / `../specx-ROOT-T9` / [#6](https://github.com/WIRIN-prod/specx/pull/6)
 - **Assumptions:** None yet.
 
 **Steps**
