@@ -19,6 +19,18 @@ Plan is frontier-model work, one phase at a time. Everything planned must be spe
 3. Read `specx/RULES.md` completely and follow it for everything below.
 4. If `specx/` contains an older layout (`specs/`, `decisions/`, `tasks/`, `reviews/`, `Home.md`, `knowledge/`, `proposals/`, `plans/`, `specifications/`, `work/`), tell the user SpecX no longer reads it, and offer to convert it (step 9). Never delete it without the user's approval.
 
+On every run, check the `specx/TASKS.md` columns. If the file does not exist, skip this check.
+- Compare the header row of `specx/TASKS.md` with the header row of `${CLAUDE_PLUGIN_ROOT}/templates/specx/TASKS.md`.
+- List each template column that the project header lacks, in template order.
+- Count cells with unescaped `|` only. Counting does not change the row text.
+- If a row does not end with `|`, add a trailing `|` first.
+- Pad every row to the current header width on every run, even when no column is listed. Write `—` in each padded cell, including cells in old columns.
+- Append each listed column to the end of the header row.
+- Write `---` in each new cell of the separator row.
+- Write one `—` for each listed column at the end of every existing row.
+- Do not split or join rows. Append new cells at the end of each row line.
+- Keep every existing cell text byte-for-byte, including `\|`. Do not reorder or delete a column or row.
+
 ## 1. Get context
 
 1. Read `specx/spec.md`, `specx/TASKS.md`, `specx/STATUS.md`, `specx/_templates/spec.md`, and every existing `spec.md` in the area you are planning, with its full context chain.
