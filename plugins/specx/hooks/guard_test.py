@@ -138,6 +138,13 @@ with tempfile.TemporaryDirectory() as root:
         assert bash(command, repo) is None, command
     assert bash("gh pr merge 3 --merge", root) is None, "not a SpecX project"
 
+    # Pattern kills are denied only inside a SpecX worktree (ROOT-D42).
+    assert bash("pkill -f server", tree) == "deny", "pkill in a worktree"
+    assert bash("killall node", tree) == "deny", "killall in a worktree"
+    assert bash("pkill -f server", repo) is None, "pkill in the main checkout"
+    assert bash("ls -la", tree) is None, "no pattern kill in a worktree"
+    assert bash("mypkillthing --help", tree) is None, "pkill inside another word"
+
     # Python fallback and warning (ROOT-R25).
     only_python = os.path.join(root, "only-python")
     os.makedirs(only_python)
