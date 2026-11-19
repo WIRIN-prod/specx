@@ -936,7 +936,7 @@ Run execute on a copy with one branch. It does not ask. The commit lists the rul
 
 ### ROOT-T14: Block pattern kills in SpecX worktrees
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** feature
 - **Why:** ROOT-T5 finding F18. A pattern kill stopped services outside the task.
 - **Done when:** The guard hook denies `pkill` and `killall` inside SpecX worktrees, and its tests cover the rule.
@@ -948,7 +948,7 @@ Run execute on a copy with one branch. It does not ask. The commit lists the rul
 - **Files:** `plugins/specx/hooks/guard.py`, `plugins/specx/hooks/guard_test.py`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** mid, because the guard needs a test for each case
 - **Branch / worktree / PR:** `specx/ROOT-T14` / `../specx-ROOT-T14` / pending
-- **Assumptions:** None yet.
+- **Assumptions:** Linked-worktree detection compares the git directory with the common directory, resolved with realpath (git 2.31 is not required). The rule also denies `pkill` inside quoted text; the guard header already notes this false positive.
 
 **Steps**
 
@@ -965,6 +965,7 @@ Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T14: \"yes\". The build starts in worktree `../specx-ROOT-T14`.
+- 2026-11-19: the builder committed d71bdf2. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T14.md)).
 
 ### ROOT-T15: Record delegated choices
 
