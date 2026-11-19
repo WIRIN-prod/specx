@@ -970,7 +970,7 @@ Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
 
 ### ROOT-T15: Record delegated choices
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** feature
 - **Why:** ROOT-T5 finding F3. No rule says how the agent records a choice the user delegates.
 - **Done when:** The rules record each delegated choice with the user's words, the date, and the agent's choice, as ROOT-D35 decides.
@@ -981,7 +981,7 @@ Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
 - **Decisions:** ROOT-D35
 - **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the rule is one addition
-- **Branch / worktree / PR:** `specx/ROOT-T15` / `../specx-ROOT-T15` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T15` / `../specx-ROOT-T15` / [#12](https://github.com/WIRIN-prod/specx/pull/12)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1000,10 +1000,11 @@ Run the rule check from ROOT-T8. The four copies match.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T15: \"yes\". The build starts in worktree `../specx-ROOT-T15`.
 - 2026-11-19: the builder committed 33ee833. The independent review found a medium issue (rule 1) and a low one (rendering). The fixes are a56b2bd and 4c0edf8. The re-review passed ([report](_reviews/2026-11-19-ROOT-T15.md)). Open for the user: records go in the task Assumptions (builder choice; please confirm).
+- 2026-11-19: the user approved the pull request: \"yes\". It merged as [#12](https://github.com/WIRIN-prod/specx/pull/12). CI passed.
 
 ### ROOT-T16: Place milestones in the root spec
 
-- **Status:** todo
+- **Status:** in-progress
 - **Type:** chore
 - **Why:** ROOT-T5 finding F4. A milestone has no place before its phase spec exists.
 - **Done when:** Plan writes each milestone in the root spec's Children table with its goal and done-when line, as ROOT-D37 decides.
@@ -1014,7 +1015,7 @@ Run the rule check from ROOT-T8. The four copies match.
 - **Decisions:** ROOT-D37
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T16` / `../specx-ROOT-T16` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1030,6 +1031,7 @@ Review plan step 2. It names the table.
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T16: \"yes\". The build starts in worktree `../specx-ROOT-T16`.
 
 ### ROOT-T17: Make rule 10 hold for long requirements
 
