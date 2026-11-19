@@ -4,14 +4,13 @@ Where the project stands, for the user to read at a glance. The main session upd
 
 ## Now
 
-ROOT-T8 (rule 10: ASD-STE100) merged in [#5](https://github.com/WIRIN-prod/specx/pull/5). The plugin version is 0.5.4. ROOT-T5, the sample run in [specx-example](https://github.com/WIRIN-prod/specx-example), is done. Its NOTES phase merged as [pull request #1](https://github.com/WIRIN-prod/specx-example/pull/1). The findings report is [2026-11-19-ROOT-T11.md](_reviews/2026-11-19-ROOT-T11.md), after [2026-11-18-ROOT-T5.md](_reviews/2026-11-18-ROOT-T5.md). Your answers to the eight decisions ROOT-D35 to D42 are recorded. Seventeen findings map to twelve draft tasks (ROOT-T9 to T20). Finding F12 was already fixed in ROOT-T8. The spec is approved as version 14. The user approved every remaining task. ROOT-T11 merged in [#8](https://github.com/WIRIN-prod/specx/pull/8). ROOT-T12 merged in [#9](https://github.com/WIRIN-prod/specx/pull/9). ROOT-T13 merged in [#10](https://github.com/WIRIN-prod/specx/pull/10). ROOT-T14 merged in [#11](https://github.com/WIRIN-prod/specx/pull/11). ROOT-T15 merged in [#12](https://github.com/WIRIN-prod/specx/pull/12). ROOT-T16 is blocked. Its review found that the Children table has no columns for a milestone goal or done-when line.
+ROOT-T8 (rule 10: ASD-STE100) merged in [#5](https://github.com/WIRIN-prod/specx/pull/5). The plugin version is 0.5.4. ROOT-T5, the sample run in [specx-example](https://github.com/WIRIN-prod/specx-example), is done. Its NOTES phase merged as [pull request #1](https://github.com/WIRIN-prod/specx-example/pull/1). The findings report is [2026-11-19-ROOT-T11.md](_reviews/2026-11-19-ROOT-T11.md), after [2026-11-18-ROOT-T5.md](_reviews/2026-11-18-ROOT-T5.md). Your answers to the eight decisions ROOT-D35 to D42 are recorded. Seventeen findings map to twelve draft tasks (ROOT-T9 to T20). Finding F12 was already fixed in ROOT-T8. The spec is approved as version 14. The user approved every remaining task. ROOT-T11 merged in [#8](https://github.com/WIRIN-prod/specx/pull/8). ROOT-T12 merged in [#9](https://github.com/WIRIN-prod/specx/pull/9). ROOT-T13 merged in [#10](https://github.com/WIRIN-prod/specx/pull/10). ROOT-T14 merged in [#11](https://github.com/WIRIN-prod/specx/pull/11). ROOT-T15 merged in [#12](https://github.com/WIRIN-prod/specx/pull/12). ROOT-T16 is in progress. You chose option A: a Milestones table in the root spec.
 
 ## Waiting on you
 
 - Decide whether a 204 response with no body passes the literal-body check (ROOT-T10 item 1).
 - Decide whether to change the spec template's error section (ROOT-T10 finding F6).
 - Decide what execute does when no candidate main branch exists (ROOT-T13 open point).
-- Decide the format of milestone rows for ROOT-T16. Option A (recommended): a separate Milestones table in the root spec with columns ID, Phase, Goal, Done when, Status, and matching template text. Option B: add Goal and Done when columns to the Children table. Option C: keep milestones in STATUS.md only (changes ROOT-D37).
 - Decide whether to clarify `specx/RULES.md` line 11 about logged assumptions (ROOT-T12 review).
 
 ## Roadmap

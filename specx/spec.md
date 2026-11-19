@@ -446,6 +446,7 @@ None.
 - **Answer:** "Root spec Children table (Recommended)". (user, 2026-11-18)
 - **Source:** ROOT-T5 finding F4.
 - **Affects:** ROOT-T16
+- **Amended (2026-11-19):** the user chose option A, \"Choose option A\". The milestones go in a separate Milestones table in the root spec, not in the Children table. The Children table keeps one row per phase.
 
 ### ROOT-D38: Long EARS requirements under rule 10
 
@@ -1004,28 +1005,29 @@ Run the rule check from ROOT-T8. The four copies match.
 
 ### ROOT-T16: Place milestones in the root spec
 
-- **Status:** blocked
+- **Status:** in-progress
 - **Type:** chore
 - **Why:** ROOT-T5 finding F4. A milestone has no place before its phase spec exists.
-- **Done when:** Plan writes each milestone in the root spec's Children table with its goal and done-when line, as ROOT-D37 decides.
+- **Done when:** Plan writes each first-phase milestone in a Milestones table in the root spec, with its goal and done-when line, and the template has the table, as ROOT-D37 decides (option A, as amended on 2026-11-19).
 - **Milestone:** —
 - **Parent:** None
 - **Depends on:** ROOT-T15
 - **Covers:** None: plan step text.
 - **Decisions:** ROOT-D37
-- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/templates/specx/spec.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
 - **Branch / worktree / PR:** `specx/ROOT-T16` / `../specx-ROOT-T16` / pending
 - **Assumptions:** None yet.
 
 **Steps**
 
-1. Add the step in plan step 2 that writes milestones to the Children table.
-2. Bump the plugin version.
+1. In plan step 2, write each first-phase milestone as a row in the root spec's Milestones table, with its ID, phase, goal, done-when line, and status.
+2. In the root spec template, add a Milestones table after the Children table, and state that it holds the first-phase milestones. Change the Children comment so that it says the table holds phases only.
+3. Bump the plugin version.
 
 **Verification**
 
-Review plan step 2. It names the table.
+Review plan step 2 and the template. Both name the Milestones table and its columns.
 
 **Log**
 
@@ -1033,6 +1035,7 @@ Review plan step 2. It names the table.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T16: \"yes\". The build starts in worktree `../specx-ROOT-T16`.
 - 2026-11-19: the builder committed 0139f49. The independent review failed. The Children table has no goal or done-when columns, and the template and the root spec do not define them. Fixing this changes the format of the root spec and the template, which are outside the approved Files. Open for the user: the format of milestone rows (see STATUS.md). ([report](_reviews/2026-11-19-ROOT-T16.md) not written yet.)
+- 2026-11-19: the user chose option A for the milestone rows: \"Choose option A\". The Children table has no goal or done-when columns, so the task now uses a separate Milestones table. The template is added to Files. The task is back in progress for the same worktree and branch.
 
 ### ROOT-T17: Make rule 10 hold for long requirements
 
