@@ -1,13 +1,16 @@
-# specX
+# SpecX
 
-**Explore ideas, plan, execute, and review software with AI agents. You decide; agents execute.** You get working code early, specs that stay true, and a clear view of what the agents are doing. SpecX is a Claude Code plugin with four commands:
+**Explore ideas, plan, execute, and review software with AI agents. You decide; agents execute.** SpecX is a Claude Code plugin.
 
-| Command | What it does |
-|---|---|
-| `/specx:explore` | Discusses an idea in a flexible conversation grounded in repository context and recaps it. When you ask, it writes the framework into `specx/spec.md`: what will be built, or for existing code, what is already built. |
-| `/specx:plan` | Proposes a roadmap of stages, phases, and milestones for you to edit, then writes specs, a one-reply defaults sheet, and tasks for the next phase only. Also adds a single feature, bug, chore, or spike. |
-| `/specx:execute` | Previews a milestone, builds each task in its own git worktree and subagent, has an independent agent review it, demos it to you, and opens a pull request. It merges only after you approve. |
-| `/specx:review` | Reviews code, against approved specs or on its own, for gaps, flaws, bugs, security issues, unhandled use cases, and logged assumptions. Execute runs it on each milestone. Findings go back to `plan`. |
+## Why SpecX
+
+AI agents can write code fast. SpecX keeps you in charge: you make the decisions, and the agents execute them. You get working code early, specs that stay true to the code, and a clear view of what the agents are doing.
+
+## Requirements
+
+- **Python 3**, as `python3` or `python`. The guard hook needs it. Without Python 3, SpecX shows a warning that the guard is off, and work continues.
+- **GitHub CLI (`gh`)**, installed and signed in. `/specx:execute` uses it to open and merge pull requests.
+- **A git remote** for the project. `/specx:execute` stops if the repository has no remote.
 
 ## Install
 
@@ -27,11 +30,22 @@ claude plugin install specx@specx-marketplace --scope user
 
 Start a new session or run `/reload-plugins`. To update later: `claude plugin marketplace update specx-marketplace`, then reinstall the plugin.
 
-## Start
+## Walkthrough
 
-There is no separate setup step. Open your project in Claude Code. Use `/specx:explore` to discuss an idea and ask it to write the framework, then run `/specx:plan`, `/specx:execute`, and `/specx:plan` again for the next phase. The first command that writes in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md` and `AGENTS.md`. It makes no decisions and overwrites nothing.
+Run the four commands in this order. Each one reads the rules before it acts.
 
-`/specx:execute` needs `gh` installed and signed in, and a git remote. It asks you once for the main branch, the worktree location (next to the repo by default), and how large pull requests should be after the first phase, and records them as decisions in `specx/spec.md`.
+| Command | What it does |
+|---|---|
+| `/specx:explore` | Discusses an idea in a flexible conversation grounded in repository context and recaps it. When you ask, it writes the framework into `specx/spec.md`: what will be built, or for existing code, what is already built. |
+| `/specx:plan` | Proposes a roadmap of stages, phases, and milestones for you to edit, then writes specs, a one-reply defaults sheet, and tasks for the next phase only. Also adds a single feature, bug, chore, or spike. |
+| `/specx:execute` | Previews a milestone, builds each task in its own git worktree and subagent, has an independent agent review it, demos it to you, and opens a pull request. It merges only after you approve. |
+| `/specx:review` | Reviews code, against approved specs or on its own, for gaps, flaws, bugs, security issues, unhandled use cases, and logged assumptions. Execute runs it on each milestone. Findings go back to `plan`. |
+
+There is no separate setup step. Open your project in Claude Code and run `/specx:explore`. The first command that writes in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md` and `AGENTS.md`. It makes no decisions and overwrites nothing.
+
+If these are not set yet, the first `/specx:execute` asks you once for the main branch, the worktree location (next to the repo by default), and how large pull requests should be after the first phase. It records the answers as decisions in `specx/spec.md`.
+
+For a worked example, see [WIRIN-prod/specx-example](https://github.com/WIRIN-prod/specx-example), a FastAPI notes API built with SpecX.
 
 ## How work is divided
 
@@ -118,6 +132,21 @@ How tasks run:
 - **Parallel**: ready tasks that share no files and do not depend on each other can run at the same time, one subagent each.
 - **Blocked**: if a task hits a new decision, that task and every related task pause: its dependents, unfinished dependencies, parent and child tasks, and tasks in the same spec or sharing its decisions. Unrelated tasks continue.
 
+## Development
+
+```text
+.claude-plugin/marketplace.json     marketplace listing
+plugins/specx/.claude-plugin/       plugin manifest (bump `version` on every change)
+plugins/specx/skills/               the four commands
+plugins/specx/hooks/                the guard hook and its self-check
+plugins/specx/templates/            RULES.md and the specx/ scaffold copied into projects
+specx/                              this repository's own SpecX record
+```
+
+`CLAUDE.md`, `AGENTS.md`, and `specx/RULES.md` in this repository must match `plugins/specx/templates/RULES.md`; CI checks it.
+
+MIT License. See [LICENSE](LICENSE).
+
 ## Upgrading
 
 **From 0.4:** the next `plan`, `execute`, or `review` notices the rules changed and asks before replacing them. It adds `STATUS.md`. Existing specs keep working; new tasks gain `Type` and `Milestone`, and a `TASKS.md` table without those columns needs them added.
@@ -135,18 +164,3 @@ bash upgrade-from-0.1.sh /path/to/project             # asks before deleting
 ```
 
 It removes only SpecX-generated skills, commands, rules, and `.specx/`, and takes the SpecX section out of `AGENTS.md` and `.github/copilot-instructions.md`. Your old `specx/knowledge`, `proposals`, `plans`, `specifications`, and `work` folders are kept unless you add `--include-old-record`. Then run `npm unlink -g @specx/cli`, update the plugin, and use `/specx:plan`.
-
-## Development
-
-```text
-.claude-plugin/marketplace.json     marketplace listing
-plugins/specx/.claude-plugin/       plugin manifest (bump `version` on every change)
-plugins/specx/skills/               the four commands
-plugins/specx/hooks/                the guard hook and its self-check
-plugins/specx/templates/            RULES.md and the specx/ scaffold copied into projects
-specx/                              this repository's own SpecX record
-```
-
-`CLAUDE.md`, `AGENTS.md`, and `specx/RULES.md` in this repository must match `plugins/specx/templates/RULES.md`; CI checks it.
-
-MIT License. See [LICENSE](LICENSE).
