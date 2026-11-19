@@ -118,6 +118,7 @@ Before showing a spec to the user, check it against every item. Fix what fails, 
 - [ ] Every interface states its inputs with types and rules, its output and side effects, and every error's status, code, and message.
 - [ ] Every error row has a literal body. An error row is a table row in an error table that names a status code. A literal body is a JSON block, or a message in quotation marks, copied exactly. An empty body or a placeholder, such as `...`, fails this item. A row such as `409 EMAIL_TAKEN a conflict message` fails this item.
 - [ ] Each error has one description across all specs in `specx/`. Two rows describe the same error when they share the status code and the error name, or the same message text. The description is the exact literal body. For example, one spec has `409 EMAIL_TAKEN "Email already in use."` and another has `409 EMAIL_TAKEN "Email is taken."`, which fails this item. Ask the user which description is correct. Record the answer as a decision.
+- [ ] Each check that the spec names fails on the code before the change. A check that passes on the old code fails this item. The spec names each check with its command.
 - [ ] Every entity has every field with type, nullability, default, and indexes; every migration has a rollback.
 - [ ] Every requirement is measurable and has an acceptance criterion; every criterion maps to a test level.
 - [ ] No vague words remain: "appropriate", "as needed", "etc.", "handle errors", "fast", "secure", "TBD".
