@@ -85,6 +85,7 @@ Agents never choose on the user's behalf, except for implementation details. Eve
 - Record the agent's choice.
 - Write each record in the task's **Assumptions**.
 - Show each record at the next demo, so that the user can change the choice.
+A delegated choice does not replace rule 1. A delegated big choice still needs an answered decision in the Decisions section.
 
 ## Layout
 
