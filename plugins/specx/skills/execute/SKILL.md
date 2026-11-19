@@ -68,8 +68,10 @@ For each approved task whose dependencies are done:
 4. Set the task to `in-progress` with its branch and worktree, and update `TASKS.md` and `STATUS.md`.
 5. Start one subagent for the task. Give it the task, its spec, every ancestor spec in its context chain, `specx/RULES.md`, and the worktree path. That is its whole context. Tell it to:
    - work only inside its worktree and only on the task's `Files`, and commit its work on the task branch before reporting;
+   - never use `pkill`, `killall`, or any other pattern-based kill command. Stop a server only by the process ID that you saved when you started it;
    - follow the task's steps and the spec exactly (behavior, contracts, data, rules, errors, versions), choosing the code structure by the project's conventions, meet the requirements and acceptance criteria it covers, and write the tests with the code;
    - choose implementation details itself and report each one as an assumption with its reason, as rule 1 defines them;
+   - list only the choices that the spec leaves open as assumptions. For any other point, cite the spec line instead;
    - stop and report instead of choosing whenever a big or small choice is unclear, missing, or outside the task;
    - use only the behavior-change test method recorded in the approved spec. For test-first/TDD, write and run the focused failing test before changing behavior; for a bug fix, first add a regression test that reproduces it. If the method is missing or unclear, block the task and ask the user through `/specx:plan` rather than choosing.
 6. You decide how many subagents run at once from the dependency graph. Run tasks that have no dependency between them and no shared files at the same time. If the host has no subagents, build the tasks one at a time.
