@@ -84,6 +84,7 @@ specx/auth/login/sso/spec.md           AUTH.LOGIN.SSO
 - **Existing code:** read only what this phase touches: its manifests, entry points, modules, routes and APIs, data models and migrations, config, tests, and security-sensitive code. Every claim in **Current state** cites `path:line` and the symbol. Record the commit you observed and list what you did not inspect. If a spec for this area already exists, update it rather than starting again.
 - Record existing checks and CI behavior as current-state evidence. Do not treat a configured check as a newly approved target gate unless the user confirms it.
 - **New work:** ask the user about this phase's flows, edge cases, and failure behavior, in small batches.
+- **Behavior questions:** In this step, before you write a behavior into a spec, ask the user about it. Write only the behavior the user answers.
 - If a previous phase changed what this phase assumed, say so, and update the affected spec with the user's approval.
 - If docs and code disagree, show both and ask the user which is correct (rule 2).
 
