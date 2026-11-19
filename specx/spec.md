@@ -689,7 +689,7 @@ None.
 
 ### ROOT-T6: Launch README
 
-- **Status:** todo
+- **Status:** in-progress
 - **Type:** chore
 - **Why:** new users need to know why SpecX exists, what it needs, and what a session looks like; the README is mostly upgrade notes.
 - **Done when:** the README has a why, requirements (Python 3, `gh`, a git remote), a short walkthrough linking the sample repository, and upgrade notes moved to the end; no personal path remains in the repository.
@@ -700,7 +700,7 @@ None.
 - **Decisions:** ROOT-D31, ROOT-D32
 - **Files:** `README.md`, `specx/spec.md`
 - **Model:** mid, because the copy must match the skills exactly
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T6` / `../specx-ROOT-T6` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -717,6 +717,8 @@ None.
 **Log**
 
 - 2026-11-07: created.
+- 2026-11-19: the user approved the preview of ROOT-T6: \"yes\". The build starts in worktree `../specx-ROOT-T6`. The copy is shown as a defaults sheet before it is committed.
+
 
 ### ROOT-T7: Release v0.6.0
 
@@ -1141,7 +1143,7 @@ Review both skill files. Each names the round limit.
 
 ### ROOT-T20: Use the installed version when a lookup times out
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** chore
 - **Why:** ROOT-T5 finding F8. A package lookup timed out for a large package.
 - **Done when:** Plan uses the installed tool version when a lookup times out, and records it, as ROOT-D40 decides.
@@ -1152,7 +1154,7 @@ Review both skill files. Each names the round limit.
 - **Decisions:** ROOT-D40
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
-- **Branch / worktree / PR:** `specx/ROOT-T20` / `../specx-ROOT-T20` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T20` / `../specx-ROOT-T20` / [#17](https://github.com/WIRIN-prod/specx/pull/17)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1171,6 +1173,7 @@ Review plan step 4. It names the fallback.
 - 2026-11-19: the user approved the preview of ROOT-T20: \"yes\". The build starts in worktree `../specx-ROOT-T20`.
 - 2026-11-19: the builder committed 88cadcb. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T20.md)). Open for the user: the timeout length, and what counts as a timeout. The pull request waits for that answer.
 - 2026-11-19: the user chose option A, \"Pick A\": use the tool's own default timeout. The wording now names the installed tool and the spec. The review report is [here](_reviews/2026-11-19-ROOT-T20.md).
+- 2026-11-19: the user approved the pull request: \"yes\". It merged as [#17](https://github.com/WIRIN-prod/specx/pull/17). CI passed.
 
 
 ## 10. Write in Simplified Technical English

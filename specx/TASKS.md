@@ -11,7 +11,7 @@ Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus 
 | ROOT-T3 | Phased delivery and visible control | feature | — | [ROOT](spec.md) | done | — | ROOT-T2 | [#3](https://github.com/WIRIN-prod/specx/pull/3) |
 | ROOT-T4 | Run the guard without `python3` | chore | — | [ROOT](spec.md) | done | — | ROOT-T3 | [#4](https://github.com/WIRIN-prod/specx/pull/4) |
 | ROOT-T5 | End-to-end sample run | spike | — | [ROOT](spec.md) | in-progress | — | ROOT-T4 | — |
-| ROOT-T6 | Launch README | chore | — | [ROOT](spec.md) | todo | — | ROOT-T5 | — |
+| ROOT-T6 | Launch README | chore | — | [ROOT](spec.md) | in-progress | — | ROOT-T5 | — |
 | ROOT-T7 | Release v0.6.0 | chore | — | [ROOT](spec.md) | todo | — | ROOT-T5, ROOT-T6 | — |
 | ROOT-T8 | Write SpecX documents in Simplified Technical English | chore | — | [ROOT](spec.md) | done | — | ROOT-T4 | [#5](https://github.com/WIRIN-prod/specx/pull/5) |
 | ROOT-T9 | Add new TASKS.md columns on upgrade | bug | — | [ROOT](spec.md) | done | — | ROOT-T8 | [#6](https://github.com/WIRIN-prod/specx/pull/6) |
@@ -25,4 +25,4 @@ Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus 
 | ROOT-T17 | Make rule 10 hold for long requirements | chore | — | [ROOT](spec.md) | done | — | ROOT-T16 | [#14](https://github.com/WIRIN-prod/specx/pull/14) |
 | ROOT-T18 | Stop plan from filling in behavior | bug | — | [ROOT](spec.md) | done | — | ROOT-T17 | [#15](https://github.com/WIRIN-prod/specx/pull/15) |
 | ROOT-T19 | Group questions into rounds | chore | — | [ROOT](spec.md) | done | — | ROOT-T18 | [#16](https://github.com/WIRIN-prod/specx/pull/16) |
-| ROOT-T20 | Use the installed version when a lookup times out | chore | — | [ROOT](spec.md) | in-review | — | ROOT-T19 | — |
+| ROOT-T20 | Use the installed version when a lookup times out | chore | — | [ROOT](spec.md) | done | — | ROOT-T19 | [#17](https://github.com/WIRIN-prod/specx/pull/17) |
