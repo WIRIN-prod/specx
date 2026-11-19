@@ -91,7 +91,7 @@ For a `spike`, there is no delivery branch, review, demo, or pull request. Creat
 4. When all of a milestone's or item's tasks are merged into the delivery branch, rerun the required checks there and check every acceptance criterion it covers, with evidence.
 5. If the code's behavior now differs from the spec in a way the user approved, update the spec and commit it on the delivery branch, with its version bump and change-log row.
 6. Verify that no approved quality gate was weakened in the diff. Record what ran and the results in each task's log.
-7. Before merge, run each new check on a copy of the code before the change. Make the copy outside the worktree, for example by extracting `git archive <base commit>` into a new empty folder. Each new check must fail on that copy. If a new check passes on the old code, stop. Report it to the user as a check that cannot fail.
+7. Before the pull request in section 9, test each new check on a copy of the old code. The new checks are the commands that the task's spec names. A check with no command is a review, so record its result in the task log instead. Make the copy outside the worktree. Extract the start point recorded in step 4.1 with `git archive` into a new empty folder. Copy in only the new check files that the task adds, from the worktree. Run each new check on the copy. Each new check must fail there. If a check passes, or fails only because a file is missing, stop. Report it to the user as a check that cannot fail.
 
 ## 7. Independent review
 
