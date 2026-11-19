@@ -799,7 +799,7 @@ Run the upgrade on a copy of an old `TASKS.md`. Every row keeps its values, and 
 
 ### ROOT-T10: Require exact error bodies in specs
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** feature
 - **Why:** ROOT-T5 findings F11 and F16. A spec named an error body in words, and the build agent chose one form.
 - **Done when:** The build-ready check fails for an error row without a literal body, and for an error described in two different ways.
@@ -810,7 +810,7 @@ Run the upgrade on a copy of an old `TASKS.md`. Every row keeps its values, and 
 - **Decisions:** ROOT-D34 for the text rules.
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/templates/specx/_templates/spec.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the check is one list
-- **Branch / worktree / PR:** `specx/ROOT-T10` / `../specx-ROOT-T10` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T10` / `../specx-ROOT-T10` / [#7](https://github.com/WIRIN-prod/specx/pull/7)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -829,10 +829,11 @@ Review the plan skill text. It contains both items, and each item names a failin
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-18: the user approved the preview of ROOT-T10: \"approve the preview of ROOT-T10\". The build starts in worktree `../specx-ROOT-T10`.
 - 2026-11-18: the builder committed 048abc0, d34a299, and 9a47a70. Two independent reviews asked for changes; the third review passed the wording fixes ([report](_reviews/2026-11-18-ROOT-T10.md)). Open for the user: the 204 rule (a 204 with no body fails item 1) and template section 6.3 (F6).
+- 2026-11-18: the user approved the demo and the merge: \"yes\". The 204 question was not answered and stays open. The pull request merged as [#7](https://github.com/WIRIN-prod/specx/pull/7).
 
 ### ROOT-T11: Require a check that fails before the change
 
-- **Status:** todo
+- **Status:** in-progress
 - **Type:** feature
 - **Why:** ROOT-T5 findings F14 and F15. A test passed on code that it should have failed on, and nothing caught it.
 - **Done when:** The build-ready check asks whether each check fails on the code before the change. Execute runs that check on a copy before merge.
@@ -843,7 +844,7 @@ Review the plan skill text. It contains both items, and each item names a failin
 - **Decisions:** None.
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/skills/execute/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is two steps
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T11` / `../specx-ROOT-T11` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -860,6 +861,7 @@ Review both skill files. Each change names the check and the copy.
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T11 and every other task: \"Yes all task are approved keep going\". The build starts in worktree `../specx-ROOT-T11`.
 
 ### ROOT-T12: Forbid pattern kills and limit build assumptions
 
