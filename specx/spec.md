@@ -1041,7 +1041,7 @@ Review plan step 2 and the template. Both name the Milestones table and its colu
 
 ### ROOT-T17: Make rule 10 hold for long requirements
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** chore
 - **Why:** ROOT-T5 findings F5 and F13. Long EARS sentences break rule 10, and some sentences join two instructions.
 - **Done when:** Rule 10 gives the limit for EARS sentences, and its sentences hold one instruction each, as ROOT-D38 and ROOT-D39 decide.
@@ -1052,7 +1052,7 @@ Review plan step 2 and the template. Both name the Milestones table and its colu
 - **Decisions:** ROOT-D38, ROOT-D39
 - **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the rule text is short
-- **Branch / worktree / PR:** `specx/ROOT-T17` / `../specx-ROOT-T17` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T17` / `../specx-ROOT-T17` / [#14](https://github.com/WIRIN-prod/specx/pull/14)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1071,10 +1071,11 @@ Run the rule check from ROOT-T8. The four copies match.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T17: \"yes\". The build starts in worktree `../specx-ROOT-T17`.
 - 2026-11-19: the builder committed 47ccfda. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T17.md)). Open: the root spec section 10 still quotes the old rule 10 wording.
+- 2026-11-19: the user approved the pull request: \"yes\". It merged as [#14](https://github.com/WIRIN-prod/specx/pull/14). CI passed.
 
 ### ROOT-T18: Stop plan from filling in behavior
 
-- **Status:** todo
+- **Status:** in-review
 - **Type:** bug
 - **Why:** ROOT-T5 finding F6. Plan wrote five behaviors into a spec before the user answered.
 - **Done when:** Plan asks before it writes any behavior, and writes only the answers the user gives.
@@ -1085,7 +1086,7 @@ Run the rule check from ROOT-T8. The four copies match.
 - **Decisions:** None: the rule already forbids it (rule 4).
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T18` / `../specx-ROOT-T18` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1101,6 +1102,8 @@ Review plan step 3. It names the question step.
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T18: \"yes\". The build starts in worktree `../specx-ROOT-T18`.
+- 2026-11-19: the builder committed ae1f80e. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T18.md)). Open: other plan steps can still fill in behavior (the checklist and "fix what fails"); these need a follow-up task.
 
 ### ROOT-T19: Group questions into rounds
 
