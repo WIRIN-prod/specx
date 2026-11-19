@@ -1170,6 +1170,7 @@ Review plan step 4. It names the fallback.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T20: \"yes\". The build starts in worktree `../specx-ROOT-T20`.
 - 2026-11-19: the builder committed 88cadcb. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T20.md)). Open for the user: the timeout length, and what counts as a timeout. The pull request waits for that answer.
+- 2026-11-19: the user chose option A, \"Pick A\": use the tool's own default timeout. The wording now names the installed tool and the spec. The review report is [here](_reviews/2026-11-19-ROOT-T20.md).
 
 
 ## 10. Write in Simplified Technical English

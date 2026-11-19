@@ -11,7 +11,6 @@ ROOT-T8 (rule 10: ASD-STE100) merged in [#5](https://github.com/WIRIN-prod/specx
 - Decide whether a 204 response with no body passes the literal-body check (ROOT-T10 item 1).
 - Decide whether to change the spec template's error section (ROOT-T10 finding F6).
 - Decide what execute does when no candidate main branch exists (ROOT-T13 open point).
-- Decide the timeout for a package lookup (ROOT-T20). Option A (recommended): use the tool's own default timeout. Option B: a fixed number of seconds that you choose.
 - Decide whether to clarify `specx/RULES.md` line 11 about logged assumptions (ROOT-T12 review).
 
 ## Roadmap
