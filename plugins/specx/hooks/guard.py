@@ -38,6 +38,7 @@ RISKY_COMMAND = re.compile(
     r"|" + GIT + r"restore\b(?![^|;&\n]*\s(--staged|-S)\b)"
     r"|" + GIT + r"restore\b[^|;&\n]*\s(--worktree|-W)\b"
 )
+PATTERN_KILL = re.compile(r"\b(pkill|killall)\b")
 
 
 def git(cwd, *args):
@@ -50,6 +51,15 @@ def git(cwd, *args):
 def is_specx_project(cwd):
     top = git(cwd, "rev-parse", "--show-toplevel")
     return bool(top) and os.path.isfile(os.path.join(top, "specx", "RULES.md"))
+
+
+def is_linked_worktree(cwd):
+    """Return True when cwd is a linked git worktree, not the main checkout."""
+    git_dir = git(cwd, "rev-parse", "--absolute-git-dir")
+    common_dir = git(cwd, "rev-parse", "--git-common-dir")
+    if not git_dir or not common_dir:
+        return False
+    return os.path.realpath(git_dir) != os.path.realpath(os.path.join(cwd, common_dir))
 
 
 def scope_of(folder):
@@ -88,6 +98,11 @@ def check(payload):
     cwd = payload.get("cwd") or os.getcwd()
     if tool == "Bash":
         command = tool_input.get("command", "")
+        if PATTERN_KILL.search(command) and is_specx_project(cwd) and is_linked_worktree(cwd):
+            return "deny", (
+                "SpecX rule ROOT-D42: do not use pkill or killall in a SpecX worktree. "
+                "Stop a server only by the process ID you saved when you started it."
+            )
         if RISKY_COMMAND.search(command) and is_specx_project(cwd):
             return "ask", "SpecX: this merges or rewrites history. Confirm you approved it."
         return None
