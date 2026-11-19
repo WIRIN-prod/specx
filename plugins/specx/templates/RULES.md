@@ -70,12 +70,13 @@ Agents never choose on the user's behalf, except for implementation details. Eve
 
 - Write all new and changed text in SpecX documents in ASD-STE100 Simplified Technical English. This includes specs, `TASKS.md`, `STATUS.md`, review reports, and these rules. Old text changes only when you edit it.
 - Write one instruction in each sentence. Use the imperative for instructions.
-- Use not more than 20 words in a procedural sentence and not more than 25 words in a descriptive sentence.
-- Use the active voice and simple verb tenses.
+- Use not more than 20 words in a procedural sentence. Use not more than 25 words in a descriptive sentence.
+- Use the active voice. Use simple verb tenses.
 - Use not more than six sentences in a paragraph.
 - Use approved STE words with their approved meanings when you know them. Use technical names and technical verbs when necessary, for example `FastAPI`, `endpoint`, and `deploy`.
 - Write text in table cells in STE. Do not change table structure, code, commands, paths, or the user's quoted words to obey this rule.
 - EARS keywords (`THE SYSTEM SHALL`, `WHEN`, `WHILE`, `WHERE`, `IF`, `THEN`) are technical terms. Use them in requirements.
+- An EARS requirement sentence uses THE SYSTEM SHALL, WHEN, WHILE, WHERE, IF, or THEN. Use at most 25 words in each EARS requirement sentence. Split a requirement longer than 25 words into two numbered requirements.
 
 ## 11. Record delegated choices
 
