@@ -912,7 +912,7 @@ Review the brief. It contains both rules.
 - **Decisions:** ROOT-D36
 - **Files:** `plugins/specx/skills/execute/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is two steps
-- **Branch / worktree / PR:** `specx/ROOT-T13` / `../specx-ROOT-T13` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T13` / `../specx-ROOT-T13` / [#10](https://github.com/WIRIN-prod/specx/pull/10)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -931,6 +931,7 @@ Run execute on a copy with one branch. It does not ask. The commit lists the rul
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T13: \"yes\". The build starts in worktree `../specx-ROOT-T13`.
 - 2026-11-19: the builder committed d44424f. The independent review passed with notes. Open for the user: whether a staged `CLAUDE.md` or `AGENTS.md` may hold unrelated user edits. Also open: the undefined terms and the paragraph length ([report](_reviews/2026-11-19-ROOT-T13.md)).
+- 2026-11-19: the user approved the merge of the pull request: \"You decide and do it\". The fixes are in f87f248 and passed review round 3. Open for the user: what execute does when zero candidate main branches exist.
 
 ### ROOT-T14: Block pattern kills in SpecX worktrees
 
