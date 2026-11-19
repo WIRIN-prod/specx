@@ -24,5 +24,5 @@ Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus 
 | ROOT-T16 | Place milestones in the root spec | chore | — | [ROOT](spec.md) | done | — | ROOT-T15 | [#13](https://github.com/WIRIN-prod/specx/pull/13) |
 | ROOT-T17 | Make rule 10 hold for long requirements | chore | — | [ROOT](spec.md) | done | — | ROOT-T16 | [#14](https://github.com/WIRIN-prod/specx/pull/14) |
 | ROOT-T18 | Stop plan from filling in behavior | bug | — | [ROOT](spec.md) | done | — | ROOT-T17 | [#15](https://github.com/WIRIN-prod/specx/pull/15) |
-| ROOT-T19 | Group questions into rounds | chore | — | [ROOT](spec.md) | in-review | — | ROOT-T18 | pending |
+| ROOT-T19 | Group questions into rounds | chore | — | [ROOT](spec.md) | done | — | ROOT-T18 | [#16](https://github.com/WIRIN-prod/specx/pull/16) |
 | ROOT-T20 | Use the installed version when a lookup times out | chore | — | [ROOT](spec.md) | todo | — | ROOT-T19 | — |
