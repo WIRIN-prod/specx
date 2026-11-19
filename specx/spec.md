@@ -1005,7 +1005,7 @@ Run the rule check from ROOT-T8. The four copies match.
 
 ### ROOT-T16: Place milestones in the root spec
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** chore
 - **Why:** ROOT-T5 finding F4. A milestone has no place before its phase spec exists.
 - **Done when:** Plan writes each first-phase milestone in a Milestones table in the root spec, with its goal and done-when line, and the template has the table, as ROOT-D37 decides (option A, as amended on 2026-11-19).
@@ -1016,7 +1016,7 @@ Run the rule check from ROOT-T8. The four copies match.
 - **Decisions:** ROOT-D37
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/templates/specx/spec.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
-- **Branch / worktree / PR:** `specx/ROOT-T16` / `../specx-ROOT-T16` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T16` / `../specx-ROOT-T16` / [#13](https://github.com/WIRIN-prod/specx/pull/13)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1037,10 +1037,11 @@ Review plan step 2 and the template. Both name the Milestones table and its colu
 - 2026-11-19: the builder committed 0139f49. The independent review failed. The Children table has no goal or done-when columns, and the template and the root spec do not define them. Fixing this changes the format of the root spec and the template, which are outside the approved Files. Open for the user: the format of milestone rows (see STATUS.md). ([report](_reviews/2026-11-19-ROOT-T16.md) not written yet.)
 - 2026-11-19: the user chose option A for the milestone rows: \"Choose option A\". The Children table has no goal or done-when columns, so the task now uses a separate Milestones table. The template is added to Files. The task is back in progress for the same worktree and branch.
 - 2026-11-19: the builder committed 3fd97a3 and 6e50c2d. The version is 0.5.13 (3f5f2ac). The review found two open points for the user: which copy is the record for milestones (plan section 6 and the root table), and the meaning of "first-phase" ([report](_reviews/2026-11-19-ROOT-T16.md)).
+- 2026-11-19: the user approved the pull request: \"yes\". It merged as [#13](https://github.com/WIRIN-prod/specx/pull/13). CI passed. The user did not answer the two open points; they stay open.
 
 ### ROOT-T17: Make rule 10 hold for long requirements
 
-- **Status:** todo
+- **Status:** in-review
 - **Type:** chore
 - **Why:** ROOT-T5 findings F5 and F13. Long EARS sentences break rule 10, and some sentences join two instructions.
 - **Done when:** Rule 10 gives the limit for EARS sentences, and its sentences hold one instruction each, as ROOT-D38 and ROOT-D39 decide.
@@ -1051,7 +1052,7 @@ Review plan step 2 and the template. Both name the Milestones table and its colu
 - **Decisions:** ROOT-D38, ROOT-D39
 - **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the rule text is short
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T17` / `../specx-ROOT-T17` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1068,6 +1069,8 @@ Run the rule check from ROOT-T8. The four copies match.
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T17: \"yes\". The build starts in worktree `../specx-ROOT-T17`.
+- 2026-11-19: the builder committed 47ccfda. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T17.md)). Open: the root spec section 10 still quotes the old rule 10 wording.
 
 ### ROOT-T18: Stop plan from filling in behavior
 
