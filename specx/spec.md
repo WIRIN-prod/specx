@@ -936,7 +936,7 @@ Run execute on a copy with one branch. It does not ask. The commit lists the rul
 
 ### ROOT-T14: Block pattern kills in SpecX worktrees
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** feature
 - **Why:** ROOT-T5 finding F18. A pattern kill stopped services outside the task.
 - **Done when:** The guard hook denies `pkill` and `killall` inside SpecX worktrees, and its tests cover the rule.
@@ -947,7 +947,7 @@ Run execute on a copy with one branch. It does not ask. The commit lists the rul
 - **Decisions:** ROOT-D42
 - **Files:** `plugins/specx/hooks/guard.py`, `plugins/specx/hooks/guard_test.py`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** mid, because the guard needs a test for each case
-- **Branch / worktree / PR:** `specx/ROOT-T14` / `../specx-ROOT-T14` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T14` / `../specx-ROOT-T14` / [#11](https://github.com/WIRIN-prod/specx/pull/11)
 - **Assumptions:** Linked-worktree detection compares the git directory with the common directory, resolved with realpath (git 2.31 is not required). The rule also denies `pkill` inside quoted text; the guard header already notes this false positive.
 
 **Steps**
@@ -966,10 +966,11 @@ Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T14: \"yes\". The build starts in worktree `../specx-ROOT-T14`.
 - 2026-11-19: the builder committed d71bdf2. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T14.md)).
+- 2026-11-19: the user approved the pull request: \"yes\". It merged as [#11](https://github.com/WIRIN-prod/specx/pull/11). CI passed.
 
 ### ROOT-T15: Record delegated choices
 
-- **Status:** todo
+- **Status:** in-review
 - **Type:** feature
 - **Why:** ROOT-T5 finding F3. No rule says how the agent records a choice the user delegates.
 - **Done when:** The rules record each delegated choice with the user's words, the date, and the agent's choice, as ROOT-D35 decides.
@@ -980,7 +981,7 @@ Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
 - **Decisions:** ROOT-D35
 - **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the rule is one addition
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T15` / `../specx-ROOT-T15` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -997,6 +998,8 @@ Run the rule check from ROOT-T8. The four copies match.
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T15: \"yes\". The build starts in worktree `../specx-ROOT-T15`.
+- 2026-11-19: the builder committed 33ee833. The independent review found a medium issue (rule 1) and a low one (rendering). The fixes are a56b2bd and 4c0edf8. The re-review passed ([report](_reviews/2026-11-19-ROOT-T15.md)). Open for the user: records go in the task Assumptions (builder choice; please confirm).
 
 ### ROOT-T16: Place milestones in the root spec
 

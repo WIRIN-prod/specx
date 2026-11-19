@@ -77,6 +77,17 @@ Agents never choose on the user's behalf, except for implementation details. Eve
 - Write text in table cells in STE. Do not change table structure, code, commands, paths, or the user's quoted words to obey this rule.
 - EARS keywords (`THE SYSTEM SHALL`, `WHEN`, `WHILE`, `WHERE`, `IF`, `THEN`) are technical terms. Use them in requirements.
 
+## 11. Record delegated choices
+
+- When the user delegates a choice to the agent, record the choice.
+- Record the user's exact words.
+- Record the date of the user's words.
+- Record the agent's choice.
+- Write each record in the task's **Assumptions**.
+- Show each record at the next demo, so that the user can change the choice.
+
+A delegated choice does not replace rule 1. A delegated big choice still needs an answered decision in the Decisions section.
+
 ## Layout
 
 ```text
