@@ -1108,7 +1108,7 @@ Review plan step 3. It names the question step.
 
 ### ROOT-T19: Group questions into rounds
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** chore
 - **Why:** ROOT-T5 finding F7. Plan and explore asked questions in many small rounds.
 - **Done when:** Plan and explore group independent questions into one round, as ROOT-D41 decides.
@@ -1119,7 +1119,7 @@ Review plan step 3. It names the question step.
 - **Decisions:** ROOT-D41
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/skills/explore/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one rule per skill
-- **Branch / worktree / PR:** `specx/ROOT-T19` / `../specx-ROOT-T19` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T19` / `../specx-ROOT-T19` / [#16](https://github.com/WIRIN-prod/specx/pull/16)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1137,10 +1137,11 @@ Review both skill files. Each names the round limit.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T19: \"yes\". The build starts in worktree `../specx-ROOT-T19`.
 - 2026-11-19: the builder committed f74ddb4. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T19.md)). Open for the user: rule 1 in the rules files still says "small batches".
+- 2026-11-19: the user approved the pull request: \"yes\". It merged as [#16](https://github.com/WIRIN-prod/specx/pull/16). CI passed.
 
 ### ROOT-T20: Use the installed version when a lookup times out
 
-- **Status:** todo
+- **Status:** in-review
 - **Type:** chore
 - **Why:** ROOT-T5 finding F8. A package lookup timed out for a large package.
 - **Done when:** Plan uses the installed tool version when a lookup times out, and records it, as ROOT-D40 decides.
@@ -1151,7 +1152,7 @@ Review both skill files. Each names the round limit.
 - **Decisions:** ROOT-D40
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T20` / `../specx-ROOT-T20` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1167,6 +1168,10 @@ Review plan step 4. It names the fallback.
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T20: \"yes\". The build starts in worktree `../specx-ROOT-T20`.
+- 2026-11-19: the builder committed 88cadcb. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T20.md)). Open for the user: the timeout length, and what counts as a timeout. The pull request waits for that answer.
+- 2026-11-19: the user chose option A, \"Pick A\": use the tool's own default timeout. The wording now names the installed tool and the spec. The review report is [here](_reviews/2026-11-19-ROOT-T20.md).
+
 
 ## 10. Write in Simplified Technical English
 

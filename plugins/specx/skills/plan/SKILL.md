@@ -92,7 +92,7 @@ specx/auth/login/sso/spec.md           AUTH.LOGIN.SSO
 
 Sort every choice this phase needs (rule 1):
 
-- **Big choices:** ask the user with realistic options and trade-offs. Group independent questions into one round. A round holds at most four questions. Keep questions that depend on each other in separate rounds. For technology choices, check current documentation for the latest stable version and its constraints, and state them in the options. You may recommend one, but never decide. Each becomes a decision in the **Decisions** section of the highest spec it applies to, with its answer in the user's words and the date.
+- **Big choices:** ask the user with realistic options and trade-offs. Group independent questions into one round. A round holds at most four questions. Keep questions that depend on each other in separate rounds. For technology choices, check current documentation for the latest stable version and its constraints, and state them in the options. Use the tool's own default timeout for each package version lookup. If the lookup reaches that timeout, use the version of the tool that is already installed. Record that version and the timeout in the spec you are writing. You may recommend one, but never decide. Each becomes a decision in the **Decisions** section of the highest spec it applies to, with its answer in the user's words and the date.
 - **Small choices:** put them all on one defaults sheet, a table of the choice, your proposed value, and why. Ask the user to accept or edit it in one reply. Record the result as a single answered decision that contains the final table. Do not ask these one at a time.
 - **Implementation details:** do not ask. Execute logs them as assumptions.
 
