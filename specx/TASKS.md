@@ -23,6 +23,6 @@ Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus 
 | ROOT-T15 | Record delegated choices | feature | — | [ROOT](spec.md) | done | — | ROOT-T14 | [#12](https://github.com/WIRIN-prod/specx/pull/12) |
 | ROOT-T16 | Place milestones in the root spec | chore | — | [ROOT](spec.md) | done | — | ROOT-T15 | [#13](https://github.com/WIRIN-prod/specx/pull/13) |
 | ROOT-T17 | Make rule 10 hold for long requirements | chore | — | [ROOT](spec.md) | done | — | ROOT-T16 | [#14](https://github.com/WIRIN-prod/specx/pull/14) |
-| ROOT-T18 | Stop plan from filling in behavior | bug | — | [ROOT](spec.md) | in-progress | — | ROOT-T17 | — |
+| ROOT-T18 | Stop plan from filling in behavior | bug | — | [ROOT](spec.md) | in-review | — | ROOT-T17 | pending |
 | ROOT-T19 | Group questions into rounds | chore | — | [ROOT](spec.md) | todo | — | ROOT-T18 | — |
 | ROOT-T20 | Use the installed version when a lookup times out | chore | — | [ROOT](spec.md) | todo | — | ROOT-T19 | — |

@@ -1075,7 +1075,7 @@ Run the rule check from ROOT-T8. The four copies match.
 
 ### ROOT-T18: Stop plan from filling in behavior
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** bug
 - **Why:** ROOT-T5 finding F6. Plan wrote five behaviors into a spec before the user answered.
 - **Done when:** Plan asks before it writes any behavior, and writes only the answers the user gives.
@@ -1103,6 +1103,7 @@ Review plan step 3. It names the question step.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T18: \"yes\". The build starts in worktree `../specx-ROOT-T18`.
+- 2026-11-19: the builder committed ae1f80e. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T18.md)). Open: other plan steps can still fill in behavior (the checklist and "fix what fails"); these need a follow-up task.
 
 ### ROOT-T19: Group questions into rounds
 
