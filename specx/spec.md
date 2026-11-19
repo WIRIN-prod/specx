@@ -1141,7 +1141,7 @@ Review both skill files. Each names the round limit.
 
 ### ROOT-T20: Use the installed version when a lookup times out
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** chore
 - **Why:** ROOT-T5 finding F8. A package lookup timed out for a large package.
 - **Done when:** Plan uses the installed tool version when a lookup times out, and records it, as ROOT-D40 decides.
@@ -1169,6 +1169,7 @@ Review plan step 4. It names the fallback.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T20: \"yes\". The build starts in worktree `../specx-ROOT-T20`.
+- 2026-11-19: the builder committed 88cadcb. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T20.md)). Open for the user: the timeout length, and what counts as a timeout. The pull request waits for that answer.
 
 
 ## 10. Write in Simplified Technical English
