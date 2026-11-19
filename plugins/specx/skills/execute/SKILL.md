@@ -31,7 +31,7 @@ Follow the rules in `specx/RULES.md` for everything below (step 0).
 
 These are project-wide decisions in `specx/spec.md`. If they are not answered yet, ask the user once and record them there as decisions:
 
-- **Main branch**: the branch pull requests target. Ask; do not guess, even if `main` exists.
+- **Main branch**: the branch pull requests target. If more than one candidate main branch exists, ask the user. Do not guess. If exactly one exists, use it without asking. State the branch you used in `specx/STATUS.md`.
 - **Worktree location**: worktrees go next to the repository by default, as `<parent folder>/<repo>-<task-id>`. Ask whether the user wants a different location.
 - **Pull request size after the first phase**: the first phase is always one pull request, and each Ongoing item except a spike gets its own. For later phases the user chooses one of:
   1. One per phase: fewer reviews, but each is large.
@@ -59,7 +59,7 @@ The user can approve, redirect, or reorder before any code exists. A redirect th
 
 You, the main session, own `specx/`: you update task statuses, logs, assumptions, `TASKS.md`, and `STATUS.md`. Subagents never edit `specx/`.
 
-1. If this delivery has no branch yet, check that the main checkout is on the main branch, then run `git fetch` and `git switch --no-track -c specx/delivery-<id>` there. Uncommitted changes come with it. Commit only `specx/` (`git add specx/`) as the delivery's first commit, naming the specs and tasks it carries; the user's other uncommitted work stays uncommitted. Then run `git merge --no-ff origin/<main branch>` (skip it when there is no remote-tracking branch) so the delivery starts from the latest main branch. If the merge conflicts, run `git merge --abort` and show the user the conflicting files; do not resolve them yourself. `<id>` is the phase, milestone, or task ID the pull request covers.
+1. If this delivery has no branch yet, check that the main checkout is on the main branch, then run `git fetch` and `git switch --no-track -c specx/delivery-<id>` there. Uncommitted changes come with it. Stage `specx/` (`git add specx/`) and every rule file this run changed. Rule files are `specx/RULES.md`, `CLAUDE.md`, and `AGENTS.md`. Commit the staged files as the delivery's first commit. Name the specs and tasks it carries in the commit message. The user's other uncommitted work stays uncommitted. Then run `git merge --no-ff origin/<main branch>` (skip it when there is no remote-tracking branch) so the delivery starts from the latest main branch. If the merge conflicts, run `git merge --abort` and show the user the conflicting files; do not resolve them yourself. `<id>` is the phase, milestone, or task ID the pull request covers.
 
 For each approved task whose dependencies are done:
 
