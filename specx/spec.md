@@ -1108,7 +1108,7 @@ Review plan step 3. It names the question step.
 
 ### ROOT-T19: Group questions into rounds
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** chore
 - **Why:** ROOT-T5 finding F7. Plan and explore asked questions in many small rounds.
 - **Done when:** Plan and explore group independent questions into one round, as ROOT-D41 decides.
@@ -1136,6 +1136,7 @@ Review both skill files. Each names the round limit.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T19: \"yes\". The build starts in worktree `../specx-ROOT-T19`.
+- 2026-11-19: the builder committed f74ddb4. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T19.md)). Open for the user: rule 1 in the rules files still says "small batches".
 
 ### ROOT-T20: Use the installed version when a lookup times out
 
