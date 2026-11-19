@@ -689,7 +689,7 @@ None.
 
 ### ROOT-T6: Launch README
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** chore
 - **Why:** new users need to know why SpecX exists, what it needs, and what a session looks like; the README is mostly upgrade notes.
 - **Done when:** the README has a why, requirements (Python 3, `gh`, a git remote), a short walkthrough linking the sample repository, and upgrade notes moved to the end; no personal path remains in the repository.
@@ -718,6 +718,7 @@ None.
 
 - 2026-11-07: created.
 - 2026-11-19: the user approved the preview of ROOT-T6: \"yes\". The build starts in worktree `../specx-ROOT-T6`. The copy is shown as a defaults sheet before it is committed.
+- 2026-11-19: the builder committed 671eb62. The user approved the README copy: \"yes, approve the README\". The independent review passed with notes, and two wording fixes were made in 02b2dc9 ([report](_reviews/2026-11-19-ROOT-T6.md)). Open for the user: whether to replace `/home/w1` paths in three review reports (done-when says no personal path remains).
 
 
 ### ROOT-T7: Release v0.6.0
