@@ -83,7 +83,7 @@ specx/auth/login/sso/spec.md           AUTH.LOGIN.SSO
 
 - **Existing code:** read only what this phase touches: its manifests, entry points, modules, routes and APIs, data models and migrations, config, tests, and security-sensitive code. Every claim in **Current state** cites `path:line` and the symbol. Record the commit you observed and list what you did not inspect. If a spec for this area already exists, update it rather than starting again.
 - Record existing checks and CI behavior as current-state evidence. Do not treat a configured check as a newly approved target gate unless the user confirms it.
-- **New work:** ask the user about this phase's flows, edge cases, and failure behavior, in small batches.
+- **New work:** ask the user about this phase's flows, edge cases, and failure behavior. Group independent questions into one round. A round holds at most four questions. Keep questions that depend on each other in separate rounds.
 - **Behavior questions:** In this step, before you write a behavior into a spec, ask the user about it. Write only the behavior the user answers.
 - If a previous phase changed what this phase assumed, say so, and update the affected spec with the user's approval.
 - If docs and code disagree, show both and ask the user which is correct (rule 2).
@@ -92,7 +92,7 @@ specx/auth/login/sso/spec.md           AUTH.LOGIN.SSO
 
 Sort every choice this phase needs (rule 1):
 
-- **Big choices:** ask in small, grouped batches, with realistic options and trade-offs. For technology choices, check current documentation for the latest stable version and its constraints, and state them in the options. You may recommend one, but never decide. Each becomes a decision in the **Decisions** section of the highest spec it applies to, with its answer in the user's words and the date.
+- **Big choices:** ask the user with realistic options and trade-offs. Group independent questions into one round. A round holds at most four questions. Keep questions that depend on each other in separate rounds. For technology choices, check current documentation for the latest stable version and its constraints, and state them in the options. You may recommend one, but never decide. Each becomes a decision in the **Decisions** section of the highest spec it applies to, with its answer in the user's words and the date.
 - **Small choices:** put them all on one defaults sheet, a table of the choice, your proposed value, and why. Ask the user to accept or edit it in one reply. Record the result as a single answered decision that contains the final table. Do not ask these one at a time.
 - **Implementation details:** do not ask. Execute logs them as assumptions.
 
