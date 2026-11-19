@@ -97,7 +97,7 @@ For a `spike`, there is no delivery branch, review, demo, or pull request. Creat
 
 This applies to every milestone and Ongoing item except a spike. Start a new subagent that did not build this work, and have it follow the **Milestone review** in `${CLAUDE_PLUGIN_ROOT}/skills/review/SKILL.md`. Give it `specx/RULES.md`, the main checkout path, the diff range from the start point recorded in step 3, the specs in scope, and the logged assumptions, and nothing about how the build went. It reports findings and does not change code. Save its report to `specx/_reviews/` and link it from `STATUS.md`.
 
-A critical or high finding blocks the demo until it is fixed within scope, or the user decides what to do. A fix is a new or reopened task with its own worktree and scope file (step 4). Rerun step 6.4 onward and step 7 after it. If the host has no subagents, say so in the demo: the review was not independent.
+A critical or high finding blocks the demo until it is fixed within scope, or the user decides what to do. A fix is a new or reopened task with its own worktree and scope file (step 4). Rerun step 6.4 onward and section 7 after it. If the host has no subagents, say so in the demo: the review was not independent.
 
 ## 8. Demo the milestone or item
 
