@@ -1141,7 +1141,7 @@ Review both skill files. Each names the round limit.
 
 ### ROOT-T20: Use the installed version when a lookup times out
 
-- **Status:** todo
+- **Status:** in-progress
 - **Type:** chore
 - **Why:** ROOT-T5 finding F8. A package lookup timed out for a large package.
 - **Done when:** Plan uses the installed tool version when a lookup times out, and records it, as ROOT-D40 decides.
@@ -1152,7 +1152,7 @@ Review both skill files. Each names the round limit.
 - **Decisions:** ROOT-D40
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T20` / `../specx-ROOT-T20` / pending
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1168,6 +1168,8 @@ Review plan step 4. It names the fallback.
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T20: \"yes\". The build starts in worktree `../specx-ROOT-T20`.
+
 
 ## 10. Write in Simplified Technical English
 
