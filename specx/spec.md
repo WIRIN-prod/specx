@@ -833,7 +833,7 @@ Review the plan skill text. It contains both items, and each item names a failin
 
 ### ROOT-T11: Require a check that fails before the change
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** feature
 - **Why:** ROOT-T5 findings F14 and F15. A test passed on code that it should have failed on, and nothing caught it.
 - **Done when:** The build-ready check asks whether each check fails on the code before the change. Execute runs that check on a copy before merge.
@@ -862,6 +862,7 @@ Review both skill files. Each change names the check and the copy.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T11 and every other task: \"Yes all task are approved keep going\". The build starts in worktree `../specx-ROOT-T11`.
+- 2026-11-19: the builder committed 6675a1b. The independent review found a high issue in the copy step and two medium ones. The fix is 1ce0b25 and f8fe379. The re-review passed with notes ([report](_reviews/2026-11-19-ROOT-T11.md)). The delivery branch merged the task at e762e95.
 
 ### ROOT-T12: Forbid pattern kills and limit build assumptions
 
