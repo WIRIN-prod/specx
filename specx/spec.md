@@ -1041,7 +1041,7 @@ Review plan step 2 and the template. Both name the Milestones table and its colu
 
 ### ROOT-T17: Make rule 10 hold for long requirements
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** chore
 - **Why:** ROOT-T5 findings F5 and F13. Long EARS sentences break rule 10, and some sentences join two instructions.
 - **Done when:** Rule 10 gives the limit for EARS sentences, and its sentences hold one instruction each, as ROOT-D38 and ROOT-D39 decide.
@@ -1070,6 +1070,7 @@ Run the rule check from ROOT-T8. The four copies match.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T17: \"yes\". The build starts in worktree `../specx-ROOT-T17`.
+- 2026-11-19: the builder committed 47ccfda. The independent review passed with notes ([report](_reviews/2026-11-19-ROOT-T17.md)). Open: the root spec section 10 still quotes the old rule 10 wording.
 
 ### ROOT-T18: Stop plan from filling in behavior
 
