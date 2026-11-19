@@ -1004,7 +1004,7 @@ Run the rule check from ROOT-T8. The four copies match.
 
 ### ROOT-T16: Place milestones in the root spec
 
-- **Status:** in-progress
+- **Status:** blocked
 - **Type:** chore
 - **Why:** ROOT-T5 finding F4. A milestone has no place before its phase spec exists.
 - **Done when:** Plan writes each milestone in the root spec's Children table with its goal and done-when line, as ROOT-D37 decides.
@@ -1032,6 +1032,7 @@ Review plan step 2. It names the table.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T16: \"yes\". The build starts in worktree `../specx-ROOT-T16`.
+- 2026-11-19: the builder committed 0139f49. The independent review failed. The Children table has no goal or done-when columns, and the template and the root spec do not define them. Fixing this changes the format of the root spec and the template, which are outside the approved Files. Open for the user: the format of milestone rows (see STATUS.md). ([report](_reviews/2026-11-19-ROOT-T16.md) not written yet.)
 
 ### ROOT-T17: Make rule 10 hold for long requirements
 
