@@ -1005,7 +1005,7 @@ Run the rule check from ROOT-T8. The four copies match.
 
 ### ROOT-T16: Place milestones in the root spec
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** chore
 - **Why:** ROOT-T5 finding F4. A milestone has no place before its phase spec exists.
 - **Done when:** Plan writes each first-phase milestone in a Milestones table in the root spec, with its goal and done-when line, and the template has the table, as ROOT-D37 decides (option A, as amended on 2026-11-19).
@@ -1036,6 +1036,7 @@ Review plan step 2 and the template. Both name the Milestones table and its colu
 - 2026-11-19: the user approved the preview of ROOT-T16: \"yes\". The build starts in worktree `../specx-ROOT-T16`.
 - 2026-11-19: the builder committed 0139f49. The independent review failed. The Children table has no goal or done-when columns, and the template and the root spec do not define them. Fixing this changes the format of the root spec and the template, which are outside the approved Files. Open for the user: the format of milestone rows (see STATUS.md). ([report](_reviews/2026-11-19-ROOT-T16.md) not written yet.)
 - 2026-11-19: the user chose option A for the milestone rows: \"Choose option A\". The Children table has no goal or done-when columns, so the task now uses a separate Milestones table. The template is added to Files. The task is back in progress for the same worktree and branch.
+- 2026-11-19: the builder committed 3fd97a3 and 6e50c2d. The version is 0.5.13 (3f5f2ac). The review found two open points for the user: which copy is the record for milestones (plan section 6 and the root table), and the meaning of "first-phase" ([report](_reviews/2026-11-19-ROOT-T16.md)).
 
 ### ROOT-T17: Make rule 10 hold for long requirements
 
