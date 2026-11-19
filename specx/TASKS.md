@@ -20,7 +20,7 @@ Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus 
 | ROOT-T12 | Forbid pattern kills and limit build assumptions | chore | — | [ROOT](spec.md) | done | — | ROOT-T11 | [#9](https://github.com/WIRIN-prod/specx/pull/9) |
 | ROOT-T13 | Ask for a branch only when several exist; commit the rule files | bug | — | [ROOT](spec.md) | done | — | ROOT-T12 | [#10](https://github.com/WIRIN-prod/specx/pull/10) |
 | ROOT-T14 | Block pattern kills in SpecX worktrees | feature | — | [ROOT](spec.md) | done | — | ROOT-T12 | [#11](https://github.com/WIRIN-prod/specx/pull/11) |
-| ROOT-T15 | Record delegated choices | feature | — | [ROOT](spec.md) | in-progress | — | ROOT-T14 | — |
+| ROOT-T15 | Record delegated choices | feature | — | [ROOT](spec.md) | in-review | — | ROOT-T14 | pending |
 | ROOT-T16 | Place milestones in the root spec | chore | — | [ROOT](spec.md) | todo | — | ROOT-T15 | — |
 | ROOT-T17 | Make rule 10 hold for long requirements | chore | — | [ROOT](spec.md) | todo | — | ROOT-T16 | — |
 | ROOT-T18 | Stop plan from filling in behavior | bug | — | [ROOT](spec.md) | todo | — | ROOT-T17 | — |

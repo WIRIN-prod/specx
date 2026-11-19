@@ -970,7 +970,7 @@ Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
 
 ### ROOT-T15: Record delegated choices
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** feature
 - **Why:** ROOT-T5 finding F3. No rule says how the agent records a choice the user delegates.
 - **Done when:** The rules record each delegated choice with the user's words, the date, and the agent's choice, as ROOT-D35 decides.
@@ -999,6 +999,7 @@ Run the rule check from ROOT-T8. The four copies match.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T15: \"yes\". The build starts in worktree `../specx-ROOT-T15`.
+- 2026-11-19: the builder committed 33ee833. The independent review found a medium issue (rule 1) and a low one (rendering). The fixes are a56b2bd and 4c0edf8. The re-review passed ([report](_reviews/2026-11-19-ROOT-T15.md)). Open for the user: records go in the task Assumptions (builder choice; please confirm).
 
 ### ROOT-T16: Place milestones in the root spec
 
