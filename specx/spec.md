@@ -844,7 +844,7 @@ Review the plan skill text. It contains both items, and each item names a failin
 - **Decisions:** None.
 - **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/skills/execute/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is two steps
-- **Branch / worktree / PR:** `specx/ROOT-T11` / `../specx-ROOT-T11` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T11` / `../specx-ROOT-T11` / [#8](https://github.com/WIRIN-prod/specx/pull/8)
 - **Assumptions:** None yet.
 
 **Steps**
