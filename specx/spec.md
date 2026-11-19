@@ -867,7 +867,7 @@ Review both skill files. Each change names the check and the copy.
 
 ### ROOT-T12: Forbid pattern kills and limit build assumptions
 
-- **Status:** in-progress
+- **Status:** in-review
 - **Type:** chore
 - **Why:** ROOT-T5 findings F17 and F18. A build agent killed processes it did not own, and it listed spec-fixed behavior as assumptions.
 - **Done when:** The build brief forbids pattern kills and lists only spec-open choices.
@@ -896,6 +896,7 @@ Review the brief. It contains both rules.
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T12: \"yes\". The build starts in worktree `../specx-ROOT-T12`.
+- 2026-11-19: the builder committed 3580f98. The independent review found a medium issue in the assumptions bullet and a low one in the kill rule. The fix is 153e5e5, and the re-review passed ([report](_reviews/2026-11-19-ROOT-T12.md)). The delivery branch merged the task.
 
 ### ROOT-T13: Ask for a branch only when several exist; commit the rule files
 
