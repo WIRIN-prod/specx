@@ -17,8 +17,8 @@ Statuses: `draft` → `todo` → `in-progress` → `in-review` → `done`, plus 
 | ROOT-T9 | Add new TASKS.md columns on upgrade | bug | — | [ROOT](spec.md) | done | — | ROOT-T8 | [#6](https://github.com/WIRIN-prod/specx/pull/6) |
 | ROOT-T10 | Require exact error bodies in specs | feature | — | [ROOT](spec.md) | done | — | ROOT-T9 | [#7](https://github.com/WIRIN-prod/specx/pull/7) |
 | ROOT-T11 | Require a check that fails before the change | feature | — | [ROOT](spec.md) | done | — | ROOT-T10 | [#8](https://github.com/WIRIN-prod/specx/pull/8) |
-| ROOT-T12 | Forbid pattern kills and limit build assumptions | chore | — | [ROOT](spec.md) | in-review | — | ROOT-T11 | pending |
-| ROOT-T13 | Ask for a branch only when several exist; commit the rule files | bug | — | [ROOT](spec.md) | todo | — | ROOT-T12 | — |
+| ROOT-T12 | Forbid pattern kills and limit build assumptions | chore | — | [ROOT](spec.md) | done | — | ROOT-T11 | [#9](https://github.com/WIRIN-prod/specx/pull/9) |
+| ROOT-T13 | Ask for a branch only when several exist; commit the rule files | bug | — | [ROOT](spec.md) | in-review | — | ROOT-T12 | pending |
 | ROOT-T14 | Block pattern kills in SpecX worktrees | feature | — | [ROOT](spec.md) | todo | — | ROOT-T12 | — |
 | ROOT-T15 | Record delegated choices | feature | — | [ROOT](spec.md) | todo | — | ROOT-T14 | — |
 | ROOT-T16 | Place milestones in the root spec | chore | — | [ROOT](spec.md) | todo | — | ROOT-T15 | — |

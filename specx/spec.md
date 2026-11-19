@@ -867,7 +867,7 @@ Review both skill files. Each change names the check and the copy.
 
 ### ROOT-T12: Forbid pattern kills and limit build assumptions
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** chore
 - **Why:** ROOT-T5 findings F17 and F18. A build agent killed processes it did not own, and it listed spec-fixed behavior as assumptions.
 - **Done when:** The build brief forbids pattern kills and lists only spec-open choices.
@@ -878,7 +878,7 @@ Review both skill files. Each change names the check and the copy.
 - **Decisions:** ROOT-D42
 - **Files:** `plugins/specx/skills/execute/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the brief is one block
-- **Branch / worktree / PR:** `specx/ROOT-T12` / `../specx-ROOT-T12` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T12` / `../specx-ROOT-T12` / [#9](https://github.com/WIRIN-prod/specx/pull/9)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -897,10 +897,11 @@ Review the brief. It contains both rules.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T12: \"yes\". The build starts in worktree `../specx-ROOT-T12`.
 - 2026-11-19: the builder committed 3580f98. The independent review found a medium issue in the assumptions bullet and a low one in the kill rule. The fix is 153e5e5, and the re-review passed ([report](_reviews/2026-11-19-ROOT-T12.md)). The delivery branch merged the task.
+- 2026-11-19: the user approved the pull request: \"yes\". It merged as [#9](https://github.com/WIRIN-prod/specx/pull/9). CI passed.
 
 ### ROOT-T13: Ask for a branch only when several exist; commit the rule files
 
-- **Status:** todo
+- **Status:** in-review
 - **Type:** bug
 - **Why:** ROOT-T5 findings F9 and F10. Execute asked for a main branch that was the only branch, and it left rule files uncommitted.
 - **Done when:** Execute asks for the main branch only when more than one exists, and commits every rule file it changed, as ROOT-D36 decides.
@@ -911,7 +912,7 @@ Review the brief. It contains both rules.
 - **Decisions:** ROOT-D36
 - **Files:** `plugins/specx/skills/execute/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is two steps
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T13` / `../specx-ROOT-T13` / [#10](https://github.com/WIRIN-prod/specx/pull/10)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -928,6 +929,9 @@ Run execute on a copy with one branch. It does not ask. The commit lists the rul
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T13: \"yes\". The build starts in worktree `../specx-ROOT-T13`.
+- 2026-11-19: the builder committed d44424f. The independent review passed with notes. Open for the user: whether a staged `CLAUDE.md` or `AGENTS.md` may hold unrelated user edits. Also open: the undefined terms and the paragraph length ([report](_reviews/2026-11-19-ROOT-T13.md)).
+- 2026-11-19: the user approved the merge of the pull request: \"You decide and do it\". The fixes are in f87f248 and passed review round 3. Open for the user: what execute does when zero candidate main branches exist.
 
 ### ROOT-T14: Block pattern kills in SpecX worktrees
 
