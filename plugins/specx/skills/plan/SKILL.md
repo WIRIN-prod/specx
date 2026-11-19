@@ -63,7 +63,7 @@ Propose the phases for each stage, and milestones for the first phase. Each mile
 
 For an existing codebase, use the framework's current state to mark what is already built. A mature product can start directly in Ongoing.
 
-Record the approved roadmap in the root spec's **Children** table, one row per phase, with its stage, build order, and version. There is no separate roadmap file. Update `specx/STATUS.md`. Write each first-phase milestone as a row in the **Children** table, with its goal and "done when" line.
+Record the approved roadmap in the root spec's **Children** table, one row per phase, with its stage, build order, and version. There is no separate roadmap file. Update `specx/STATUS.md`. Write each first-phase milestone as a row in the root spec's **Milestones** table, with its ID, phase, goal, done-when line, and status.
 
 Specs are folders, like nested routes. Each folder has exactly one `spec.md`.
 
