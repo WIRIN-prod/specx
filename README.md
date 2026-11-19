@@ -32,7 +32,7 @@ Start a new session or run `/reload-plugins`. To update later: `claude plugin ma
 
 ## Walkthrough
 
-Run the four commands in this order. Each one reads the rules before it acts.
+Start with `/specx:explore`, then `/specx:plan` and `/specx:execute`. `/specx:review` runs inside execute on each milestone, and you can also run it on its own. Each command reads the rules before it acts.
 
 | Command | What it does |
 |---|---|
@@ -43,7 +43,7 @@ Run the four commands in this order. Each one reads the rules before it acts.
 
 There is no separate setup step. Open your project in Claude Code and run `/specx:explore`. The first command that writes in a project creates the `specx/` folder, writes the rules to `specx/RULES.md`, and adds them to the project's `CLAUDE.md` and `AGENTS.md`. It makes no decisions and overwrites nothing.
 
-If these are not set yet, the first `/specx:execute` asks you once for the main branch, the worktree location (next to the repo by default), and how large pull requests should be after the first phase. It records the answers as decisions in `specx/spec.md`.
+If these are not set yet, the first `/specx:execute` asks for the main branch only when more than one exists, and asks once for the worktree location (next to the repo by default) and how large pull requests should be after the first phase. It records the answers as decisions in `specx/spec.md`.
 
 For a worked example, see [WIRIN-prod/specx-example](https://github.com/WIRIN-prod/specx-example), a FastAPI notes API built with SpecX.
 
