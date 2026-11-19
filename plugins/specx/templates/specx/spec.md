@@ -103,6 +103,11 @@ The roadmap: one row per phase. A phase stays one line here until it is next; on
 | Spec | Stage | Responsibility | Depends on | Build order | Version | Shared context and relation | Status |
 |---|---|---|---|---|---|---|---|
 
+The first-phase milestones, one row each. A milestone is a part of the phase the user can run and check.
+
+| ID | Phase | Goal | Done when | Status |
+|---|---|---|---|---|
+
 ## 9. Decisions
 
 None yet. Project-wide decisions go here, including the main branch, worktree location, and pull request size that `/specx:execute` asks for.

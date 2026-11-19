@@ -446,6 +446,7 @@ None.
 - **Answer:** "Root spec Children table (Recommended)". (user, 2026-11-18)
 - **Source:** ROOT-T5 finding F4.
 - **Affects:** ROOT-T16
+- **Amended (2026-11-19):** the user chose option A, \"Choose option A\". The milestones go in a separate Milestones table in the root spec, not in the Children table. The Children table keeps one row per phase.
 
 ### ROOT-D38: Long EARS requirements under rule 10
 
@@ -970,7 +971,7 @@ Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
 
 ### ROOT-T15: Record delegated choices
 
-- **Status:** in-review
+- **Status:** done
 - **Type:** feature
 - **Why:** ROOT-T5 finding F3. No rule says how the agent records a choice the user delegates.
 - **Done when:** The rules record each delegated choice with the user's words, the date, and the agent's choice, as ROOT-D35 decides.
@@ -981,7 +982,7 @@ Run `python3 plugins/specx/hooks/guard_test.py`. Every case passes.
 - **Decisions:** ROOT-D35
 - **Files:** `plugins/specx/templates/RULES.md`, `specx/RULES.md`, `CLAUDE.md`, `AGENTS.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the rule is one addition
-- **Branch / worktree / PR:** `specx/ROOT-T15` / `../specx-ROOT-T15` / pending
+- **Branch / worktree / PR:** `specx/ROOT-T15` / `../specx-ROOT-T15` / [#12](https://github.com/WIRIN-prod/specx/pull/12)
 - **Assumptions:** None yet.
 
 **Steps**
@@ -1000,36 +1001,42 @@ Run the rule check from ROOT-T8. The four copies match.
 - 2026-11-18: the user approved the task list: \"yes\".
 - 2026-11-19: the user approved the preview of ROOT-T15: \"yes\". The build starts in worktree `../specx-ROOT-T15`.
 - 2026-11-19: the builder committed 33ee833. The independent review found a medium issue (rule 1) and a low one (rendering). The fixes are a56b2bd and 4c0edf8. The re-review passed ([report](_reviews/2026-11-19-ROOT-T15.md)). Open for the user: records go in the task Assumptions (builder choice; please confirm).
+- 2026-11-19: the user approved the pull request: \"yes\". It merged as [#12](https://github.com/WIRIN-prod/specx/pull/12). CI passed.
 
 ### ROOT-T16: Place milestones in the root spec
 
-- **Status:** todo
+- **Status:** in-review
 - **Type:** chore
 - **Why:** ROOT-T5 finding F4. A milestone has no place before its phase spec exists.
-- **Done when:** Plan writes each milestone in the root spec's Children table with its goal and done-when line, as ROOT-D37 decides.
+- **Done when:** Plan writes each first-phase milestone in a Milestones table in the root spec, with its goal and done-when line, and the template has the table, as ROOT-D37 decides (option A, as amended on 2026-11-19).
 - **Milestone:** —
 - **Parent:** None
 - **Depends on:** ROOT-T15
 - **Covers:** None: plan step text.
 - **Decisions:** ROOT-D37
-- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/.claude-plugin/plugin.json`
+- **Files:** `plugins/specx/skills/plan/SKILL.md`, `plugins/specx/templates/specx/spec.md`, `plugins/specx/.claude-plugin/plugin.json`
 - **Model:** small, because the change is one step
-- **Branch / worktree / PR:** —
+- **Branch / worktree / PR:** `specx/ROOT-T16` / `../specx-ROOT-T16` / pending
 - **Assumptions:** None yet.
 
 **Steps**
 
-1. Add the step in plan step 2 that writes milestones to the Children table.
-2. Bump the plugin version.
+1. In plan step 2, write each first-phase milestone as a row in the root spec's Milestones table, with its ID, phase, goal, done-when line, and status.
+2. In the root spec template, add a Milestones table after the Children table, and state that it holds the first-phase milestones. Change the Children comment so that it says the table holds phases only.
+3. Bump the plugin version.
 
 **Verification**
 
-Review plan step 2. It names the table.
+Review plan step 2 and the template. Both name the Milestones table and its columns.
 
 **Log**
 
 - 2026-11-18: created from the ROOT-T5 findings report.
 - 2026-11-18: the user approved the task list: \"yes\".
+- 2026-11-19: the user approved the preview of ROOT-T16: \"yes\". The build starts in worktree `../specx-ROOT-T16`.
+- 2026-11-19: the builder committed 0139f49. The independent review failed. The Children table has no goal or done-when columns, and the template and the root spec do not define them. Fixing this changes the format of the root spec and the template, which are outside the approved Files. Open for the user: the format of milestone rows (see STATUS.md). ([report](_reviews/2026-11-19-ROOT-T16.md) not written yet.)
+- 2026-11-19: the user chose option A for the milestone rows: \"Choose option A\". The Children table has no goal or done-when columns, so the task now uses a separate Milestones table. The template is added to Files. The task is back in progress for the same worktree and branch.
+- 2026-11-19: the builder committed 3fd97a3 and 6e50c2d. The version is 0.5.13 (3f5f2ac). The review found two open points for the user: which copy is the record for milestones (plan section 6 and the root table), and the meaning of "first-phase" ([report](_reviews/2026-11-19-ROOT-T16.md)).
 
 ### ROOT-T17: Make rule 10 hold for long requirements
 
