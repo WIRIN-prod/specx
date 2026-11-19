@@ -29,9 +29,9 @@ Follow the rules in `specx/RULES.md` for everything below (step 0).
 
 ## 2. Git setup
 
-These are project-wide decisions in `specx/spec.md`. If they are not answered yet, ask the user once and record them there as decisions, except the main branch when exactly one exists:
+These are project-wide decisions in `specx/spec.md`. If they are not answered yet, ask the user once and record them there as decisions, except the main branch when one candidate exists:
 
-- **Main branch**: the branch pull requests target. A candidate is a local or remote branch named `main` or `master`. If zero or more than one candidate exists, ask the user. Do not guess. If exactly one exists, use it without asking, and state it in `specx/STATUS.md`.
+- **Main branch**: the branch pull requests target. A candidate is a branch name, `main` or `master`, counted once even when it exists both locally and on the remote. If more than one candidate exists, ask the user. Do not guess. If exactly one exists, use it without asking. State it in `specx/STATUS.md`.
 - **Worktree location**: worktrees go next to the repository by default, as `<parent folder>/<repo>-<task-id>`. Ask whether the user wants a different location.
 - **Pull request size after the first phase**: the first phase is always one pull request, and each Ongoing item except a spike gets its own. For later phases the user chooses one of:
   1. One per phase: fewer reviews, but each is large.
@@ -61,9 +61,11 @@ You, the main session, own `specx/`: you update task statuses, logs, assumptions
 
 1. If this delivery has no branch yet:
    - Check that the main checkout is on the main branch. Then run `git fetch` and `git switch --no-track -c specx/delivery-<id>` there. Uncommitted changes come with it.
-   - Run `git diff -- CLAUDE.md AGENTS.md`. If a change lies outside the `specx:rules` markers, stop and ask the user. Do not stage that file.
-   - Stage `specx/`, `specx/RULES.md`, `CLAUDE.md`, and `AGENTS.md`, but only the files that SpecX changed. Commit them as the delivery's first commit, and name the specs and tasks in the commit message. The user's other uncommitted work stays uncommitted.
-   - Run `git merge --no-ff origin/<main branch>` (skip it when there is no remote-tracking branch) so the delivery starts from the latest main branch. If the merge conflicts, run `git merge --abort` and show the user the conflicting files. Do not resolve them yourself.
+   - Run `git diff -- CLAUDE.md AGENTS.md`. If a change lies outside the `<!-- specx:rules:begin -->` and `<!-- specx:rules:end -->` markers, stop and ask the user.
+   - Stage `specx/`, `CLAUDE.md`, and `AGENTS.md`, when they changed. Commit the staged files as the delivery's first commit.
+   - Name the specs and tasks in the commit message. The user's other uncommitted work stays uncommitted.
+   - Run `git merge --no-ff origin/<main branch>` so the delivery starts from the latest main branch. Skip this merge when there is no remote-tracking branch.
+   - If the merge conflicts, run `git merge --abort`. Show the user the conflicting files. Do not resolve them yourself.
    - `<id>` is the phase, milestone, or task ID the pull request covers.
 
 For each approved task whose dependencies are done:
